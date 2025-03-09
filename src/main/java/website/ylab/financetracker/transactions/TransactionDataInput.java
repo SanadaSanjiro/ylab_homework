@@ -1,7 +1,6 @@
 package website.ylab.financetracker.transactions;
 
 import website.ylab.financetracker.ServiceProvider;
-import website.ylab.financetracker.auth.TrackerUser;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,10 +51,6 @@ public class TransactionDataInput {
         result = TransactionFilter.filter(result, typeFilter);
         result = TransactionFilter.filter(result, categoryFilter);
         return result.toString();
-    }
-
-    public void deleteUserTransactions(TrackerUser user) {
-        transactionService.deleteUserTransactions(user);
     }
 
     private TransactionType getTypeFilter() {

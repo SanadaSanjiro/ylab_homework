@@ -2,6 +2,7 @@ package website.ylab.financetracker.auth;
 
 import website.ylab.financetracker.ServiceProvider;
 
+import java.util.List;
 import java.util.Optional;
 
 import static website.ylab.financetracker.auth.UserDataVerificator.isUniqueEmail;
@@ -37,6 +38,10 @@ public class UserService {
         return "User data successfully changed";
     }
 
+    public List<TrackerUser> getAllUsers() {
+        return trackerUserRepository.getAllUsers();
+    }
+
     /**
      * Removes a user from the system. Also deletes all of their data.
      * @return String with a result.
@@ -45,6 +50,8 @@ public class UserService {
         TrackerUser user = UserAuthService.getCurrentUser();
         // Удаляет все транзакции пользователя
         ServiceProvider.getTransactionService().deleteUserTransactions(user);
+        ServiceProvider.getBudgetService().deleteBudget(user);
+        ServiceProvider.getTargetService().deleteTarget(user);
         UserAuthService.logout();
         Optional<TrackerUser> optional = trackerUserRepository.delete(user);
         if (optional.isEmpty()) {

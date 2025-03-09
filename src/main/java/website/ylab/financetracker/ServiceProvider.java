@@ -1,11 +1,15 @@
 package website.ylab.financetracker;
 
+import website.ylab.financetracker.api.ApiService;
 import website.ylab.financetracker.auth.UserAuthService;
 import website.ylab.financetracker.auth.UserRegistrationService;
 import website.ylab.financetracker.auth.UserRepositoryProvider;
 import website.ylab.financetracker.auth.UserService;
 import website.ylab.financetracker.budget.BudgetRepositoryProvider;
 import website.ylab.financetracker.budget.BudgetService;
+import website.ylab.financetracker.stat.StatService;
+import website.ylab.financetracker.targets.TargetRepositoryProvider;
+import website.ylab.financetracker.targets.TargetService;
 import website.ylab.financetracker.transactions.TransactionRepositoryProvider;
 import website.ylab.financetracker.transactions.TransactionService;
 
@@ -20,6 +24,8 @@ public class ServiceProvider {
     private static final TransactionService transactionService = new TransactionService(
             TransactionRepositoryProvider.getRepository());
     private static final BudgetService budgetService = new BudgetService(BudgetRepositoryProvider.getRepository());
+    private static final TargetService targetService = new TargetService(TargetRepositoryProvider.getRepository());
+    private static final StatService statService = new StatService();
 
     public static UserAuthService getUserAuthService() {
         return userAuthService;
@@ -36,4 +42,10 @@ public class ServiceProvider {
     public static BudgetService getBudgetService() {
         return budgetService;
     }
+    public static TargetService getTargetService() {
+        return targetService;
+    }
+    public static StatService getStatService() {
+        return statService;
+    };
 }

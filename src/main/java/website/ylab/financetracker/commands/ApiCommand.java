@@ -10,25 +10,25 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * Contains a list of actions performed on a budget.
+ * Contains a list of actions performed via API.
  */
-public enum BudgetCommand {
-    SET {
+public enum ApiCommand {
+    EXCEEDANCE {
         @Override
         String execute(String[] args) {
-            return dataInput.setBudget();
+            return Boolean.valueOf(dataInput.isExceedBudget()).toString();
         }
     },
-    SHOW {
+    EMAILS {
         @Override
         String execute(String[] args) {
-            return dataInput.getBudget();
+            return dataInput.getEmailNotifications().toString();
         }
     };
 
     private static final BudgetDataInput dataInput = new BudgetDataInput();
 
-    private static final Map<String, BudgetCommand> stringToEnum = Stream.of(values()).collect(
+    private static final Map<String, ApiCommand> stringToEnum = Stream.of(values()).collect(
             toMap(Object::toString, e->e));
 
     /**
@@ -36,7 +36,7 @@ public enum BudgetCommand {
      * @param s String representation of the enumeration. Can be either upper or lower case.
      * @return Returns an Optional with the enumeration object, or empty if no such object is found.
      */
-    public static Optional<BudgetCommand> fromString(String s) {
+    public static Optional<ApiCommand> fromString(String s) {
         return Optional.ofNullable(stringToEnum.get(s.toUpperCase()));
     }
 
@@ -46,7 +46,7 @@ public enum BudgetCommand {
         if (Objects.isNull(args) || args.length == 1) {
             return "No required arguments";
         }
-        Optional<BudgetCommand> optionalCommand = fromString(args[1].toUpperCase());
+        Optional<ApiCommand> optionalCommand = fromString(args[1].toUpperCase());
         return optionalCommand.isPresent() ? optionalCommand.get().execute(args) : "Bad command";
     }
 }

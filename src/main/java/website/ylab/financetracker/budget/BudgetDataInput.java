@@ -1,6 +1,8 @@
 package website.ylab.financetracker.budget;
 
 import website.ylab.financetracker.ServiceProvider;
+import website.ylab.financetracker.api.ApiService;
+import website.ylab.financetracker.api.EmailNotification;
 import website.ylab.financetracker.auth.TrackerUser;
 import website.ylab.financetracker.auth.UserAuthService;
 import website.ylab.financetracker.transactions.TrackerTransaction;
@@ -17,6 +19,20 @@ import java.util.Scanner;
 public class BudgetDataInput {
     private final Scanner scanner = new Scanner(System.in);
     private final BudgetService budgetService = ServiceProvider.getBudgetService();
+    private final ApiService apiService;
+
+    public BudgetDataInput() {
+        apiService=new ApiService(this);
+    }
+
+    public boolean isExceedBudget() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        return apiService.isExceeded(user);
+    }
+
+    public List<EmailNotification> getEmailNotifications() {
+        return apiService.getEmailNotifications();
+    }
 
     public String setBudget() {
         TrackerUser user = UserAuthService.getCurrentUser();
@@ -44,11 +60,10 @@ public class BudgetDataInput {
                 + ". Exceeded: " + (limit - expenses);
     }
 
-    public boolean isExceeded() {
-        TrackerUser user = UserAuthService.getCurrentUser();
+    public boolean isExceeded(TrackerUser user) {
         double limit = budgetService.getBudget(user);
         double expenses = getExpenses(user);
-        return limit > expenses;
+        return limit < expenses;
     }
 
     private double getExpenses(TrackerUser user) {
@@ -60,7 +75,7 @@ public class BudgetDataInput {
         return transactions.stream()
                 .filter(t->t.getDate().after(startDate))
                 .filter(t -> t.getType().equals(TransactionType.EXPENSE))
-                .mapToDouble(t->t.getAmount())
+                .mapToDouble(TrackerTransaction::getAmount)
                 .boxed()
                 .reduce(0.0, Double::sum);
     }

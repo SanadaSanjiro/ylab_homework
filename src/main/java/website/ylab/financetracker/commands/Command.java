@@ -47,19 +47,19 @@ public enum Command {
     TARGET {
         @Override
         String execute(String[] args) {
-            return "Target";
+            return TargetCommand.runUserCommand(args);
         }
     },
     STAT {
         @Override
         String execute(String[] args) {
-            return "Stat";
+            return StatCommand.runUserCommand(args);
         }
     },
     API {
         @Override
         String execute(String[] args) {
-            return "API";
+            return ApiCommand.runUserCommand(args);
         }
     },
     ADM {

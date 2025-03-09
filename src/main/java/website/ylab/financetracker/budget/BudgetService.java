@@ -4,6 +4,9 @@ import website.ylab.financetracker.auth.TrackerUser;
 
 import java.util.Optional;
 
+/**
+ * Provides methods for changing budget data.
+ */
 public class BudgetService {
     private final BudgetRepository budgetRepository;
 
