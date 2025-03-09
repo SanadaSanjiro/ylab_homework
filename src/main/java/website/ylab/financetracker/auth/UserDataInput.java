@@ -55,7 +55,7 @@ public class UserDataInput {
             String answer = scanner.nextLine();
             if (answer.equalsIgnoreCase("y")) {
                 UserService userService = ServiceProvider.getUserService();
-                return userService.deleteUser();
+                return userService.deleteCurrentUser();
             }
             if (answer.equalsIgnoreCase("n")) {
                 return "Operation cancelled";

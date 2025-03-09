@@ -53,19 +53,19 @@ class UserServiceTest {
     }
 
     @Test
-    void deleteUser() {
+    void deleteCurrentUser() {
         Mockito.when(trackerUserRepository.delete(Mockito.any())).thenReturn(Optional.of(user));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
             authMock.when(UserAuthService::getCurrentUser).thenReturn(user);
             UserService userService = new UserService(trackerUserRepository);
-            assertEquals("User successfully deleted", userService.deleteUser());
+            assertEquals("User successfully deleted", userService.deleteCurrentUser());
         }
 
         Mockito.when(trackerUserRepository.delete(Mockito.any())).thenReturn(Optional.empty());
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
             authMock.when(UserAuthService::getCurrentUser).thenReturn(user);
             UserService userService = new UserService(trackerUserRepository);
-            assertEquals("Error deleting user", userService.deleteUser());
+            assertEquals("Error deleting user", userService.deleteCurrentUser());
         }
     }
 }

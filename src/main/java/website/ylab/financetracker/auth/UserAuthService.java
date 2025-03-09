@@ -25,6 +25,9 @@ public class UserAuthService {
         if (!user.getPassword().equals(password)) {
             return "Wrong password";
         }
+        if (!user.isEnabled()) {
+            return "Your are blocked. Contact the administrator";
+        }
         currentUser = user;
         return "User " + username + " logged in";
     }

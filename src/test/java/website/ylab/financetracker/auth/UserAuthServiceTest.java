@@ -14,7 +14,7 @@ class UserAuthServiceTest {
     String password = "123456";
     String wrongPassword = "1234";
     String email = "bob@gmail.com";
-    TrackerUser user=new TrackerUser(username, email, password);
+    TrackerUser user = getTestUser();
 
     @Test
     void login() {
@@ -34,5 +34,12 @@ class UserAuthServiceTest {
         UserAuthService userAuthService = new UserAuthService(trackerUserRepository);
         userAuthService.login(username, password);
         assertEquals(user, UserAuthService.getCurrentUser());
+    }
+
+    private TrackerUser getTestUser() {
+        TrackerUser user = new TrackerUser(username, email, password);
+        user.setRole(Role.USER);
+        user.setEnabled(true);
+        return user;
     }
 }

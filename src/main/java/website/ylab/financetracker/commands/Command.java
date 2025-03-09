@@ -26,6 +26,12 @@ public enum Command {
             return LoginDataInput.login();
         }
     },
+    LOGOUT {
+        @Override
+        String execute(String[] args) {
+            return LoginDataInput.logout();
+        }
+    },
     USER {
         @Override
         String execute(String[] args) {
@@ -65,7 +71,7 @@ public enum Command {
     ADM {
         @Override
         String execute(String[] args) {
-            return "Adm";
+            return AdmCommands.runUserCommand(args);
         }
     };
 

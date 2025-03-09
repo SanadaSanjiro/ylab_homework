@@ -46,9 +46,17 @@ public class UserService {
      * Removes a user from the system. Also deletes all of their data.
      * @return String with a result.
      */
-    public String deleteUser() {
+    public String deleteCurrentUser() {
         TrackerUser user = UserAuthService.getCurrentUser();
-        // Удаляет все транзакции пользователя
+        return deleteUser(user);
+    }
+
+    /**
+     * Removes a user from the system. Also deletes all of their data.
+     * @param user TrackerUser
+     * @return String with a result.
+     */
+    public String deleteUser(TrackerUser user) {
         ServiceProvider.getTransactionService().deleteUserTransactions(user);
         ServiceProvider.getBudgetService().deleteBudget(user);
         ServiceProvider.getTargetService().deleteTarget(user);

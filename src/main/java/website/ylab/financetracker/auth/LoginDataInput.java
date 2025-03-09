@@ -16,6 +16,11 @@ public class LoginDataInput {
         return authService.login(name, password);
     }
 
+    public static String logout() {
+        UserAuthService.logout();
+        return "Current user logged out";
+    }
+
     private static String getName(Scanner scanner) {
         System.out.println("Please enter your name.");
         return scanner.nextLine();

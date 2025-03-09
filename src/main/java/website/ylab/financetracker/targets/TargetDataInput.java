@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Prompts the user for information required for target operations
+ */
 public class TargetDataInput {
     private final Scanner scanner = new Scanner(System.in);
     private final TargetService targetService = ServiceProvider.getTargetService();

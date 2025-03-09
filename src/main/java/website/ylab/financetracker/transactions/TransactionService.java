@@ -88,4 +88,13 @@ public class TransactionService {
         List<TrackerTransaction> list = repository.getAllTransactions();
         return list.stream().filter(t->t.getUser().equals(user)).toList();
     }
+
+    /**
+     * Provides all transactions of the user.
+     * @return list of transactions of the user
+     */
+    public List<TrackerTransaction> getUserTransaction(TrackerUser user) {
+        List<TrackerTransaction> list = repository.getAllTransactions();
+        return list.stream().filter(t->t.getUser().equals(user)).toList();
+    }
 }
