@@ -1,0 +1,91 @@
+package website.ylab.financetracker.transactions;
+
+import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.auth.UserAuthService;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Provides methods for changing transaction data.
+ */
+public class TransactionService {
+    private final TrackerTransactionRepository repository;
+    private static long transacCounter=0L;
+
+    public TransactionService(TrackerTransactionRepository repository) {
+        this.repository = repository;
+    }
+
+    public String addNewTransaction (TransactionType type,
+                                     double amount,
+                                     String category,
+                                     Date date,
+                                     String description) {
+        TrackerTransaction transaction = new TrackerTransaction();
+        transaction.setId(++transacCounter);
+        transaction.setType(type);
+        transaction.setAmount(amount);
+        transaction.setCategory(category);
+        transaction.setDate(date);
+        transaction.setDescription(description);
+        transaction.setUser(UserAuthService.getCurrentUser());
+        Optional<TrackerTransaction> optional = repository.create(transaction);
+        if (optional.isPresent()) {
+            return "Transaction added successfully";
+        } else {
+            return "Transaction creation error";
+        }
+    }
+
+
+    public String changeTransaction (long id, double newAmount, String newCategory, String newDescription) {
+        Optional<TrackerTransaction> optional = repository.get(id);
+        if (optional.isEmpty()) {
+            return "Transaction not found";
+        }
+        TrackerTransaction oldTransaction = optional.get();
+        if (!oldTransaction.getUser().equals(UserAuthService.getCurrentUser()) ) {
+            return "You do not have permission to change this transaction";
+        }
+        oldTransaction.setAmount(newAmount);
+        oldTransaction.setCategory(newCategory);
+        oldTransaction.setDescription(newDescription);
+        return "Transaction data successfully changed";
+    }
+
+    public String deleteTransaction (long id) {
+        Optional<TrackerTransaction> optional = repository.get(id);
+        if (optional.isEmpty()) {
+            return "Transaction not found";
+        }
+        TrackerTransaction transaction = optional.get();
+        if (!transaction.getUser().equals(UserAuthService.getCurrentUser()) ) {
+            return "You do not have permission to delete this transaction";
+        }
+        repository.delete(optional.get());
+        return "Transaction successfully deleted";
+    }
+
+    /**
+     * Deletes all transactions of the selected user.
+     * @param user TransactionUser
+     */
+    public void deleteUserTransactions(TrackerUser user) {
+        List<TrackerTransaction> transactions = repository.getAllTransactions()
+                .stream().filter(t->t.getUser().equals(user))
+                .toList();
+        transactions.forEach(repository::delete);
+    }
+
+    /**
+     * Provides all transactions for the current user.
+     * @return list of transactions for the current user
+     */
+    public List<TrackerTransaction> getAllTransactions() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        List<TrackerTransaction> list = repository.getAllTransactions();
+        return list.stream().filter(t->t.getUser().equals(user)).toList();
+    }
+}
