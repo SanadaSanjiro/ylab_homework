@@ -1,0 +1,102 @@
+package website.ylab.financetracker.auth;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class RamUserRepoTest {
+    RamUserRepo ramUserRepo = new RamUserRepo();
+    String username = "bob";
+    String password = "123456";
+    String email = "bob@gmail.com";
+    Optional<TrackerUser> optional;
+
+    @BeforeEach
+    void setUp() {
+        TrackerUser user = new TrackerUser(username, email, password);
+        user.setRole(Role.USER);
+        user.setEnabled(true);
+        optional = ramUserRepo.create(user);
+    }
+
+    @Test
+    void create() {
+        assertTrue(optional.isPresent());
+        assertEquals(username, optional.get().getUsername());
+        assertEquals(email, optional.get().getEmail());
+        assertEquals(password, optional.get().getPassword());
+    }
+
+    @Test
+    void get() {
+        // Если пользователь существует
+        optional = ramUserRepo.get(username);
+        assertTrue(optional.isPresent());
+        assertEquals(username, optional.get().getUsername());
+        assertEquals(email, optional.get().getEmail());
+        assertEquals(password, optional.get().getPassword());
+
+        // Если пользователь отсутствует
+        optional = ramUserRepo.get("badName");
+        assertFalse(optional.isPresent());
+    }
+
+    @Test
+    void update() {
+        // Проверяем изменение имени пользователя
+        String newUsername = "alice";
+        TrackerUser oldUser = ramUserRepo.get(username).get();
+        TrackerUser newUser = new TrackerUser(newUsername, email, password);
+        optional = ramUserRepo.update(oldUser, newUser);
+        assertTrue(optional.isPresent());
+        assertEquals(newUsername, optional.get().getUsername());
+        assertEquals(email, optional.get().getEmail());
+        assertEquals(password, optional.get().getPassword());
+
+        // Проверяем изменение email
+        String newEmail = "alice@gmail.com";
+        oldUser = ramUserRepo.get(newUsername).get();
+        newUser = new TrackerUser(newUsername, newEmail, password);
+        optional = ramUserRepo.update(oldUser, newUser);
+        assertTrue(optional.isPresent());
+        assertEquals(newUsername, optional.get().getUsername());
+        assertEquals(newEmail, optional.get().getEmail());
+        assertEquals(password, optional.get().getPassword());
+
+        // Проверяем изменение пароля
+        String newPass = "654321";
+        oldUser = ramUserRepo.get(newUsername).get();
+        newUser = new TrackerUser(newUsername, newEmail, newPass);
+        optional = ramUserRepo.update(oldUser, newUser);
+        assertTrue(optional.isPresent());
+        assertEquals(newUsername, optional.get().getUsername());
+        assertEquals(newEmail, optional.get().getEmail());
+        assertEquals(newPass, optional.get().getPassword());
+
+        // Если пользователь отсутствует
+        optional = ramUserRepo.update(new TrackerUser(), oldUser);
+        assertFalse(optional.isPresent());
+    }
+
+    @Test
+    void delete() {
+        // Если пользователь отсутствует
+        optional = ramUserRepo.delete(new TrackerUser());
+        assertFalse(optional.isPresent());
+
+        // Если пользователь найден и был успешно удален
+        TrackerUser user = ramUserRepo.get(username).get();
+        optional = ramUserRepo.delete(user);
+        assertTrue(optional.isPresent());
+        assertEquals(username, optional.get().getUsername());
+        assertFalse(ramUserRepo.get(username).isPresent());
+    }
+
+    @Test
+    void getAllUsers() {
+        assertFalse(ramUserRepo.getAllUsers().isEmpty());
+    }
+}
