@@ -11,12 +11,11 @@ import java.util.stream.Collectors;
 
 /**
  * Provides a method for parsing configuration files whose lines look like this:
- * parameter-delimeter-value
+ * parameter-delimiter-value
  * Lines that begin with the character sequence specified by the commentMarker parameter
  * are considered comments and will be ignored.
  */
 public class ConfigReaderImplementation implements ConfigReader {
-    private final String CHARSET = "cp1251";
 
     /**
      * parse configuration files
@@ -31,6 +30,7 @@ public class ConfigReaderImplementation implements ConfigReader {
     public Map<String, String> read(String path, String delimiter, String commentMarker) {
         Map<String, String> map = new HashMap<>();
         try {
+            String CHARSET = "cp1251";
             List<String> lines = Files.readAllLines(Paths.get(path),
                     Charset.forName(CHARSET));
             map = lines.stream()
@@ -39,7 +39,7 @@ public class ConfigReaderImplementation implements ConfigReader {
                             line->line.split(delimiter)[1]));
             System.out.println(map);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            System.out.println(exception.getMessage());
         }
         return map;
     }
