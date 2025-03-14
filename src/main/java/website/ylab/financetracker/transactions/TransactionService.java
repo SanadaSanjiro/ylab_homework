@@ -39,7 +39,6 @@ public class TransactionService {
         }
     }
 
-
     public String changeTransaction (long id, double newAmount, String newCategory, String newDescription) {
         Optional<TrackerTransaction> optional = repository.get(id);
         if (optional.isEmpty()) {
