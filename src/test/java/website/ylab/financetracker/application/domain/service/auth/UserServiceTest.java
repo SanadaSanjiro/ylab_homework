@@ -28,7 +28,7 @@ class UserServiceTest {
 
     @Test
     void changeUser() {
-        assertTrue(userDAO.changeUser(user).isPresent());
+        assertTrue(userDAO.updateUser(user).isPresent());
     }
 
     @Test

@@ -25,7 +25,7 @@ public class UserDAO {
         return storage.getById(id);
     }
 
-    public Optional<UserModel> changeUser(UserModel user) {
+    public Optional<UserModel> updateUser(UserModel user) {
         return storage.update(user);
     }
 

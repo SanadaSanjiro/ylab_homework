@@ -2,7 +2,7 @@ package website.ylab.financetracker.application.domain.service.auth;
 
 import website.ylab.financetracker.application.domain.model.auth.UserModel;
 import website.ylab.financetracker.application.port.in.auth.UserRegistrationUseCase;
-import website.ylab.financetracker.auth.Role;
+import website.ylab.financetracker.application.domain.model.auth.Role;
 
 import java.util.Optional;
 

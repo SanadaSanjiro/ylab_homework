@@ -20,6 +20,7 @@ class UserDataServiceTest {
     UserModel user = createUser();
     UserDAO userDAO;
     UserDataValidator validator = Mockito.mock(UserDataValidator.class);
+    UserDataRemovingService userDataRemovingService = Mockito.mock(UserDataRemovingService.class);
 
     @Test
     void changeUserThatNotExists() {
@@ -28,7 +29,7 @@ class UserDataServiceTest {
         Mockito.when(userDAO.getUserById(Mockito.anyLong())).thenReturn(Optional.empty());
         Mockito.when(validator.isUniqueEmail(Mockito.any())).thenReturn(true);
         Mockito.when(validator.isUniqueName(Mockito.any())).thenReturn(true);
-        UserDataService dataService = new UserDataService(userDAO, validator);
+        UserDataService dataService = new UserDataService(userDAO, validator, userDataRemovingService);
         assertNull(dataService.changeUser(user));
     }
 
@@ -42,7 +43,7 @@ class UserDataServiceTest {
         UserModel newUserData = new UserModel().setUsername(name).setEmail(uniqueEmail).setPassword("");
         Mockito.when(validator.isUniqueEmail(Mockito.any())).thenReturn(true);
         Mockito.when(validator.isUniqueName(Mockito.any())).thenReturn(false);
-        UserDataService dataService = new UserDataService(userDAO, validator);
+        UserDataService dataService = new UserDataService(userDAO, validator, userDataRemovingService);
         assertNull(dataService.changeUser(newUserData));
     }
 
@@ -56,7 +57,7 @@ class UserDataServiceTest {
         UserModel newUserData= new UserModel().setUsername(uniqueName).setEmail(email).setPassword(pass);
         Mockito.when(validator.isUniqueEmail(Mockito.any())).thenReturn(false);
         Mockito.when(validator.isUniqueName(Mockito.any())).thenReturn(true);
-        UserDataService dataService = new UserDataService(userDAO, validator);
+        UserDataService dataService = new UserDataService(userDAO, validator, userDataRemovingService);
         assertNull(dataService.changeUser(newUserData));
     }
 
@@ -68,10 +69,10 @@ class UserDataServiceTest {
         Mockito.when(userDAO.getUserById(Mockito.anyLong())).thenReturn(Optional.of(user));
         Mockito.when(userDAO.getAllUsers()).thenReturn(List.of(user));
         UserModel newUserData= new UserModel().setUsername(uniqueName).setEmail(uniqueEmail).setPassword(newPass);
-        Mockito.when(userDAO.changeUser(user)).thenReturn(Optional.of(newUserData));
+        Mockito.when(userDAO.updateUser(user)).thenReturn(Optional.of(newUserData));
         Mockito.when(validator.isUniqueEmail(Mockito.any())).thenReturn(true);
         Mockito.when(validator.isUniqueName(Mockito.any())).thenReturn(true);
-        UserDataService dataService = new UserDataService(userDAO, validator);
+        UserDataService dataService = new UserDataService(userDAO, validator, userDataRemovingService);
         UserModel changed =  dataService.changeUser(newUserData);
         assertNotNull(changed);
         assertEquals(uniqueName.toLowerCase(), changed.getUsername());
@@ -87,11 +88,11 @@ class UserDataServiceTest {
         Mockito.when(userDAO.getUserById(Mockito.anyLong())).thenReturn(Optional.of(user));
         Mockito.when(userDAO.getAllUsers()).thenReturn(List.of(user));
         UserModel newUserData= new UserModel().setUsername(uniqueName).setEmail("").setPassword("");
-        Mockito.when(userDAO.changeUser(user)).thenReturn(Optional.of(
+        Mockito.when(userDAO.updateUser(user)).thenReturn(Optional.of(
                 new UserModel().setUsername(uniqueName).setEmail(email).setPassword(pass)));
         Mockito.when(validator.isUniqueEmail(Mockito.any())).thenReturn(true);
         Mockito.when(validator.isUniqueName(Mockito.any())).thenReturn(true);
-        UserDataService dataService = new UserDataService(userDAO, validator);
+        UserDataService dataService = new UserDataService(userDAO, validator, userDataRemovingService);
         UserModel changed =  dataService.changeUser(newUserData);
         assertNotNull(changed);
         assertEquals(uniqueName.toLowerCase(), changed.getUsername());
@@ -107,11 +108,11 @@ class UserDataServiceTest {
         Mockito.when(userDAO.getUserById(Mockito.anyLong())).thenReturn(Optional.of(user));
         Mockito.when(userDAO.getAllUsers()).thenReturn(List.of(user));
         UserModel newUserData= new UserModel().setUsername("").setEmail(uniqueEmail).setPassword("");
-        Mockito.when(userDAO.changeUser(user)).thenReturn(Optional.of(
+        Mockito.when(userDAO.updateUser(user)).thenReturn(Optional.of(
                 new UserModel().setUsername(name).setEmail(uniqueEmail).setPassword(pass)));
         Mockito.when(validator.isUniqueEmail(Mockito.any())).thenReturn(true);
         Mockito.when(validator.isUniqueName(Mockito.any())).thenReturn(true);
-        UserDataService dataService = new UserDataService(userDAO, validator);
+        UserDataService dataService = new UserDataService(userDAO, validator, userDataRemovingService);
         UserModel changed =  dataService.changeUser(newUserData);
         assertNotNull(changed);
         assertEquals(name.toLowerCase(), changed.getUsername());
@@ -127,11 +128,11 @@ class UserDataServiceTest {
         Mockito.when(userDAO.getUserById(Mockito.anyLong())).thenReturn(Optional.of(user));
         Mockito.when(userDAO.getAllUsers()).thenReturn(List.of(user));
         UserModel newUserData= new UserModel().setUsername("").setEmail("").setPassword(newPass);
-        Mockito.when(userDAO.changeUser(user)).thenReturn(Optional.of(
+        Mockito.when(userDAO.updateUser(user)).thenReturn(Optional.of(
                 new UserModel().setUsername(name).setEmail(uniqueEmail).setPassword(pass)));
         Mockito.when(validator.isUniqueEmail(Mockito.any())).thenReturn(true);
         Mockito.when(validator.isUniqueName(Mockito.any())).thenReturn(true);
-        UserDataService dataService = new UserDataService(userDAO, validator);
+        UserDataService dataService = new UserDataService(userDAO, validator, userDataRemovingService);
         UserModel changed =  dataService.changeUser(newUserData);
         assertNotNull(changed);
         assertEquals(name.toLowerCase(), changed.getUsername());
@@ -146,7 +147,7 @@ class UserDataServiceTest {
         Mockito.when(userDAO.getUserById(Mockito.anyLong())).thenReturn(Optional.empty());
         Mockito.when(validator.isUniqueEmail(Mockito.any())).thenReturn(true);
         Mockito.when(validator.isUniqueName(Mockito.any())).thenReturn(true);
-        UserDataService dataService = new UserDataService(userDAO, validator);
+        UserDataService dataService = new UserDataService(userDAO, validator, userDataRemovingService);
         assertNull(dataService.deleteUser(id));
     }
 
@@ -158,7 +159,7 @@ class UserDataServiceTest {
         Mockito.when(userDAO.deleteUser(Mockito.anyLong())).thenReturn(Optional.of(user));
         Mockito.when(validator.isUniqueEmail(Mockito.any())).thenReturn(true);
         Mockito.when(validator.isUniqueName(Mockito.any())).thenReturn(true);
-        UserDataService dataService = new UserDataService(userDAO, validator);
+        UserDataService dataService = new UserDataService(userDAO, validator, userDataRemovingService);
         assertNotNull(dataService.deleteUser(id));
     }
 

@@ -3,7 +3,7 @@ package website.ylab.financetracker.adapter.out.persistence.target;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TargetRepositoryImplementation implements TargetRepository{
+public class TargetRepositoryImplementation implements TargetRepository {
     private final Map<Long, TargetEntity> storage = new HashMap<>();
 
     @Override

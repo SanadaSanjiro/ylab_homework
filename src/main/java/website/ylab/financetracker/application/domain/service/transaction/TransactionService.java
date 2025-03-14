@@ -38,6 +38,14 @@ public class TransactionService implements TransactionCrudUseCase {
         return dao.delete(id).orElse(null);
     }
 
+    public void deleteByUser(long userId) {
+        List<Long> transactionIDs = getByUserId(userId)
+                .stream()
+                .mapToLong(TransactionModel::getId).boxed()
+                .toList();
+        transactionIDs.forEach(dao::delete);
+    }
+
     @Override
     public List<TransactionModel> show(Date dateFilter, String categoryFilter, TransactionType typeFilter) {
         UserModel currentUser = sessionProvider.getCurrentUser();
@@ -46,6 +54,10 @@ public class TransactionService implements TransactionCrudUseCase {
         resultList = filterer.filter(resultList, dateFilter);
         resultList = filterer.filter(resultList, categoryFilter);
         return filterer.filter(resultList, typeFilter);
+    }
+
+    public List<TransactionModel> getByUserId(long userId) {
+        return dao.getByUser(userId);
     }
 
     @Override

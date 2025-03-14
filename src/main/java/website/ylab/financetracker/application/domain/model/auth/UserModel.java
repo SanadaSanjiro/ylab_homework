@@ -1,7 +1,5 @@
 package website.ylab.financetracker.application.domain.model.auth;
 
-import website.ylab.financetracker.auth.Role;
-
 public class UserModel {
     private long id;
     private String username;

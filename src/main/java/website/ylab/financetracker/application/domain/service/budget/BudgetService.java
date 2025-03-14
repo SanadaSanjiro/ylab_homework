@@ -36,11 +36,19 @@ public class BudgetService implements BudgetUseCase {
         return dao.getById(currentUser.getId()).orElse(null);
     }
 
+    public BudgetModel getByUserId(long userId) {
+        return dao.getById(userId).orElse(null);
+    }
+
     @Override
     public BudgetModel delete() {
         UserModel currentUser = sessionProvider.getCurrentUser();
         if (Objects.isNull(currentUser)) return null;
         return dao.delete(currentUser.getId()).orElse(null);
+    }
+
+    public BudgetModel deleteById(Long id) {
+        return dao.delete(id).orElse(null);
     }
 
     @Override
@@ -50,6 +58,14 @@ public class BudgetService implements BudgetUseCase {
             return false;
         }
         Optional<BudgetModel> optional = dao.getById(currentUser.getId());
+        if (optional.isEmpty()) return false;
+        BudgetModel budget = optional.get();
+        double monthlyExpenses = transactionService.getMonthlyExpenses();
+        return budget.isExceeded(monthlyExpenses);
+    }
+
+    public boolean isExceededForUser(long id) {
+        Optional<BudgetModel> optional = dao.getById(id);
         if (optional.isEmpty()) return false;
         BudgetModel budget = optional.get();
         double monthlyExpenses = transactionService.getMonthlyExpenses();

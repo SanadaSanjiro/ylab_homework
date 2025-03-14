@@ -56,4 +56,8 @@ public class TargetService implements TargetUseCase {
         double monthlyIncome = transactionService.getMonthlyIncome();
         return target.isReached(monthlyIncome);
     }
+
+    public TargetModel deleteTargetById(long id) {
+        return dao.delete(id).orElse(null);
+    }
 }
