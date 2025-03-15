@@ -2,7 +2,8 @@ package website.ylab.financetracker.transactions;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.out.persistence.TrackerTransactionRepository;
+import website.ylab.financetracker.out.persistence.ram.transaction.RamTransactionRepo;
 
 import java.util.Date;
 import java.util.Optional;

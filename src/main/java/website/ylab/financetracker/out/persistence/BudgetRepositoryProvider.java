@@ -1,4 +1,6 @@
-package website.ylab.financetracker.budget;
+package website.ylab.financetracker.out.persistence;
+
+import website.ylab.financetracker.out.persistence.ram.budget.RamBudgetRepo;
 
 /**
  * Provides an implementation of a budget repository

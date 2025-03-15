@@ -6,10 +6,7 @@ import website.ylab.financetracker.auth.UserAuthService;
 import website.ylab.financetracker.transactions.TrackerTransaction;
 import website.ylab.financetracker.transactions.TransactionType;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Prompts the user for information required for target operations
@@ -34,7 +31,8 @@ public class TargetDataInput {
 
     public String getTarget() {
         TrackerUser user = UserAuthService.getCurrentUser();
-        double target = targetService.getTarget(user);
+        Double target = targetService.getTarget(user);
+        if (Objects.isNull(target)) { return "No target found"; }
         double income = getIncome(user);
         boolean isReached = income > target;
         if (isReached) {

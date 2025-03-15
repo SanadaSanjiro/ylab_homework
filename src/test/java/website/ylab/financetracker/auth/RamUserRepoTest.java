@@ -2,6 +2,7 @@ package website.ylab.financetracker.auth;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import website.ylab.financetracker.out.persistence.ram.auth.RamUserRepo;
 
 import java.util.Optional;
 

@@ -1,17 +1,16 @@
 package website.ylab.financetracker;
 
 import website.ylab.financetracker.adm.AdmService;
-import website.ylab.financetracker.api.ApiService;
 import website.ylab.financetracker.auth.UserAuthService;
 import website.ylab.financetracker.auth.UserRegistrationService;
-import website.ylab.financetracker.auth.UserRepositoryProvider;
+import website.ylab.financetracker.out.persistence.UserRepositoryProvider;
 import website.ylab.financetracker.auth.UserService;
-import website.ylab.financetracker.budget.BudgetRepositoryProvider;
+import website.ylab.financetracker.out.persistence.BudgetRepositoryProvider;
 import website.ylab.financetracker.budget.BudgetService;
 import website.ylab.financetracker.stat.StatService;
-import website.ylab.financetracker.targets.TargetRepositoryProvider;
+import website.ylab.financetracker.out.persistence.TargetRepositoryProvider;
 import website.ylab.financetracker.targets.TargetService;
-import website.ylab.financetracker.transactions.TransactionRepositoryProvider;
+import website.ylab.financetracker.out.persistence.TransactionRepositoryProvider;
 import website.ylab.financetracker.transactions.TransactionService;
 
 /**

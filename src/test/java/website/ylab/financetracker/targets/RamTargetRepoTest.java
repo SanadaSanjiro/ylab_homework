@@ -2,6 +2,8 @@ package website.ylab.financetracker.targets;
 
 import org.junit.jupiter.api.Test;
 import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.out.persistence.TargetRepository;
+import website.ylab.financetracker.out.persistence.ram.target.RamTargetRepo;
 
 import java.util.Optional;
 

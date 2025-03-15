@@ -6,6 +6,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import website.ylab.financetracker.auth.TrackerUser;
 import website.ylab.financetracker.auth.UserAuthService;
+import website.ylab.financetracker.out.persistence.TrackerTransactionRepository;
 
 import java.util.Date;
 import java.util.List;

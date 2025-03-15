@@ -1,4 +1,6 @@
-package website.ylab.financetracker.transactions;
+package website.ylab.financetracker.out.persistence;
+
+import website.ylab.financetracker.transactions.TrackerTransaction;
 
 import java.util.List;
 import java.util.Optional;

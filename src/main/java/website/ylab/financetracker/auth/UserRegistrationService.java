@@ -1,5 +1,7 @@
 package website.ylab.financetracker.auth;
 
+import website.ylab.financetracker.out.persistence.TrackerUserRepository;
+
 import java.util.Optional;
 
 import static website.ylab.financetracker.auth.UserDataVerificator.isUniqueEmail;

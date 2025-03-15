@@ -1,4 +1,4 @@
-package website.ylab.financetracker.budget;
+package website.ylab.financetracker.out.persistence;
 
 import website.ylab.financetracker.auth.TrackerUser;
 

@@ -1,4 +1,6 @@
-package website.ylab.financetracker.transactions;
+package website.ylab.financetracker.out.persistence;
+
+import website.ylab.financetracker.out.persistence.ram.transaction.RamTransactionRepo;
 
 /**
  * Provides an implementation of a transaction repository

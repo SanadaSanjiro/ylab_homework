@@ -1,6 +1,7 @@
 package website.ylab.financetracker.targets;
 
 import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.out.persistence.TargetRepository;
 
 import java.util.Optional;
 

@@ -1,4 +1,6 @@
-package website.ylab.financetracker.targets;
+package website.ylab.financetracker.out.persistence;
+
+import website.ylab.financetracker.out.persistence.ram.target.RamTargetRepo;
 
 /**
  * Provides an implementation of a target repository

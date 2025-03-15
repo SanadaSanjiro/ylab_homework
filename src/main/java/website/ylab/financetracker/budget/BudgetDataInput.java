@@ -8,10 +8,7 @@ import website.ylab.financetracker.auth.UserAuthService;
 import website.ylab.financetracker.transactions.TrackerTransaction;
 import website.ylab.financetracker.transactions.TransactionType;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Prompts the user for information required for budget operations
@@ -50,7 +47,8 @@ public class BudgetDataInput {
 
     public String getBudget() {
         TrackerUser user = UserAuthService.getCurrentUser();
-        double limit = budgetService.getBudget(user);
+        Double limit = budgetService.getBudget(user);
+        if (Objects.isNull(limit)) { return "No budget limits found"; }
         double expenses = getExpenses(user);
         boolean budgetIncrease = limit > expenses;
         if (budgetIncrease) {

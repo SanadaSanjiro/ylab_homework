@@ -1,4 +1,8 @@
-package website.ylab.financetracker.auth;
+package website.ylab.financetracker.out.persistence.ram.auth;
+
+import website.ylab.financetracker.auth.Role;
+import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.out.persistence.TrackerUserRepository;
 
 import java.util.ArrayList;
 import java.util.List;

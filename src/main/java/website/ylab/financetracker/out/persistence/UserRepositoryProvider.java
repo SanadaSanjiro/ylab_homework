@@ -1,4 +1,6 @@
-package website.ylab.financetracker.auth;
+package website.ylab.financetracker.out.persistence;
+
+import website.ylab.financetracker.out.persistence.ram.auth.RamUserRepo;
 
 /**
  * Provides an implementation of a user repository

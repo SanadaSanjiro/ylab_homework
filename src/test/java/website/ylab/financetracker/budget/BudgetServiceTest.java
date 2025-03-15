@@ -3,6 +3,7 @@ package website.ylab.financetracker.budget;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.out.persistence.BudgetRepository;
 
 import java.util.Optional;
 
