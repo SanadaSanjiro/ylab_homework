@@ -14,6 +14,7 @@ import website.ylab.financetracker.out.persistence.postgre.liquibase.LiquibaseSt
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +31,7 @@ class PostgreUserRepositoryTest {
             .withPassword("MyP@ss4DB");
     static ConnectionProvider connectionProvider;
     static LiquibaseStarter liquibaseStarter;
+    static PostgreUserRepository repository;
 
     @BeforeAll
     static void beforeAll() throws Exception {
@@ -63,6 +65,7 @@ class PostgreUserRepositoryTest {
         System.out.println("Applying liquibase migrations");
         liquibaseStarter = new LiquibaseStarter(connectionProvider);
         liquibaseStarter.applyMigrations();
+        repository = new PostgreUserRepository(connectionProvider);
     }
 
     @AfterAll
@@ -77,8 +80,7 @@ class PostgreUserRepositoryTest {
 
 
     @Test
-    void create() throws Exception {
-        PostgreUserRepository repository = new PostgreUserRepository(connectionProvider);
+    void create() {
         Optional<TrackerUser> result = repository.create(user);
         assertTrue(result.isPresent());
         TrackerUser returnedUser = result.get();
@@ -91,22 +93,82 @@ class PostgreUserRepositoryTest {
 
     @Test
     void get() {
+        System.out.println(user);
+        repository.create(user);
+        Optional<TrackerUser> result = repository.get(username);
+        assertTrue(result.isPresent());
+        TrackerUser returnedUser = result.get();
+        assertTrue(username.equalsIgnoreCase(returnedUser.getUsername()));
+        assertEquals(password, returnedUser.getPassword());
+        assertTrue(email.equalsIgnoreCase(returnedUser.getEmail()));
+        assertEquals(Role.USER, returnedUser.getRole());
+        assertTrue(returnedUser.getId()>0L);
     }
 
     @Test
     void getById() {
+        Optional<TrackerUser> result = repository.create(user);
+        assertTrue(result.isPresent());
+        long id = result.get().getId();
+        assertTrue(id>0L);
+        result = repository.getById(id);
+        assertTrue(result.isPresent());
+        TrackerUser returnedUser = result.get();
+        assertTrue(username.equalsIgnoreCase(returnedUser.getUsername()));
+        assertEquals(password, returnedUser.getPassword());
+        assertTrue(email.equalsIgnoreCase(returnedUser.getEmail()));
+        assertEquals(Role.USER, returnedUser.getRole());
     }
 
     @Test
     void update() {
+        String newName = "Alice";
+        String newEmail ="alice@mail.ru";
+        String newPassword ="456";
+        TrackerUser changedUser =  new TrackerUser(newName, newEmail, newPassword);
+        changedUser.setEnabled(false);
+        changedUser.setRole(Role.ADMIN);
+        Optional<TrackerUser> result = repository.create(user);
+        assertTrue(result.isPresent());
+        long id = result.get().getId();
+        assertTrue(id>0L);
+        changedUser.setId(id);
+        result = repository.update(changedUser);
+        assertTrue(result.isPresent());
+        TrackerUser returnedUser = result.get();
+        assertTrue(newName.equalsIgnoreCase(returnedUser.getUsername()));
+        assertEquals(newPassword, returnedUser.getPassword());
+        assertTrue(newEmail.equalsIgnoreCase(returnedUser.getEmail()));
+        assertEquals(Role.ADMIN, returnedUser.getRole());
     }
 
     @Test
     void delete() {
+        Optional<TrackerUser> result = repository.create(user);
+        assertTrue(result.isPresent());
+        TrackerUser returnedUser = result.get();
+        result = repository.delete(returnedUser);
+        assertTrue(result.isPresent());
+        returnedUser = result.get();
+        assertTrue(username.equalsIgnoreCase(returnedUser.getUsername()));
+        assertEquals(password, returnedUser.getPassword());
+        assertTrue(email.equalsIgnoreCase(returnedUser.getEmail()));
+        assertEquals(Role.USER, returnedUser.getRole());
     }
 
     @Test
     void getAllUsers() {
+        String newName = "Alice";
+        String newEmail ="alice@mail.ru";
+        String newPassword ="456";
+        TrackerUser anotherUser =  new TrackerUser(newName, newEmail, newPassword);
+        anotherUser.setEnabled(false);
+        anotherUser.setRole(Role.ADMIN);
+        repository.create(user);
+        repository.create(anotherUser);
+        List<TrackerUser> result = repository.getAllUsers();
+        assertFalse(result.isEmpty());
+        assertTrue(result.size()>=2);
     }
 
     private TrackerUser getTestUser() {

@@ -25,8 +25,8 @@ public class PostgreUserRepository implements TrackerUserRepository {
                 "values(?,?,?,?, ?)";
         try (Connection connection = connectionProvider.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(querry, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, user.getEmail());
+            preparedStatement.setString(1, user.getUsername().toLowerCase());
+            preparedStatement.setString(2, user.getEmail().toLowerCase());
             preparedStatement.setString(3, user.getPassword());
             preparedStatement.setString(4, user.getRole().toString());
             preparedStatement.setBoolean(5, user.isEnabled());
@@ -43,7 +43,7 @@ public class PostgreUserRepository implements TrackerUserRepository {
         String query = "select * from fin_tracker.user where name = ?;";
         try (Connection connection = connectionProvider.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, username);
+            preparedStatement.setString(1, username.toLowerCase());
             ResultSet resultSet = preparedStatement.executeQuery();
             List<TrackerUser> users =  parseRS(resultSet);
             Optional<TrackerUser> optional = users.stream().findFirst();
@@ -82,8 +82,8 @@ public class PostgreUserRepository implements TrackerUserRepository {
         copyUserData(storedUser, user);
         try (Connection connection = connectionProvider.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, storedUser.getUsername());
-            preparedStatement.setString(2, storedUser.getEmail());
+            preparedStatement.setString(1, storedUser.getUsername().toLowerCase());
+            preparedStatement.setString(2, storedUser.getEmail().toLowerCase());
             preparedStatement.setString(3, storedUser.getPassword());
             preparedStatement.setString(4, storedUser.getRole().toString());
             preparedStatement.setBoolean(5, user.isEnabled());
@@ -169,13 +169,13 @@ public class PostgreUserRepository implements TrackerUserRepository {
 
     private void copyUserData(TrackerUser storedUser, TrackerUser newUser) {
         if (Objects.nonNull(newUser.getUsername())) {
-            storedUser.setUsername(newUser.getUsername());
+            storedUser.setUsername(newUser.getUsername().toLowerCase());
         }
         if (Objects.nonNull(newUser.getPassword())) {
             storedUser.setPassword(newUser.getPassword());
         }
         if (Objects.nonNull(newUser.getEmail())) {
-            storedUser.setEmail(newUser.getEmail());
+            storedUser.setEmail(newUser.getEmail().toLowerCase());
         }
         if (Objects.nonNull(newUser.getRole())) {
             storedUser.setRole(newUser.getRole());
