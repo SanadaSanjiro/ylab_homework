@@ -5,6 +5,10 @@ import website.ylab.financetracker.auth.TrackerUser;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository implementation must create admin user with role=Role.ADMIN, name=admin, password=123, isEnabled = true
+ * and non-empty email
+ */
 public interface TrackerUserRepository {
     Optional<TrackerUser> create(TrackerUser user);
     Optional<TrackerUser> getByName(String username);

@@ -1,0 +1,4 @@
+name;email;password;role;enabled
+vasya;vasya@yandex.ru;Pass1234;USER;true
+petya;petya@gmail.com;Pass4321;USER;false
+masha;masha@mail.ru;pass;USER;true

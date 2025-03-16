@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250317_004
+      author: Admin
+      runOnChange: true
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: amount
+                  name: amount
+                  type: DOUBLE
+              - column:
+                  header: userid
+                  name: userid
+                  type: BIGINT
+              - column:
+                  header: uuid
+                  name: uuid
+                  type: VARCHAR
+            commentLineStartsWith: '#'
+            encoding: UTF-8
+            file: testdata/targets.csv
+            quotchar: '"'
+            separator: ';'
+            relativeToChangelogFile: true
+            tableName: target

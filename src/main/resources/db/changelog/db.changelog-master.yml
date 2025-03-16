@@ -1,3 +1,11 @@
 databaseChangeLog:
   - includeAll:
       path: db\changelog\changeset\initial
+  - include:
+      file: db\changelog\changeset\test\create_test_users.yml
+  - include:
+      file: db\changelog\changeset\test\create_test_budgets.yml
+  - include:
+      file: db\changelog\changeset\test\create_test_targets.yml
+  - include:
+      file: db\changelog\changeset\test\create_test_transactions.yml

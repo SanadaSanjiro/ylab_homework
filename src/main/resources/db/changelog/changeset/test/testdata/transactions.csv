@@ -1,0 +1,10 @@
+category;description;type;amount;date;userid;uuid
+food;test data;EXPENSE;10.0;2025-03-04 00:00:00;1;17a20f1c-2f75-4217-9a48-18653724b30a
+car;test data;EXPENSE;20;2025-03-01 00:00:00;2;58a47168-ee36-471e-9b09-3c426f843ee7
+payment;test data;INCOME;30;2025-02-04 00:00:00;3;0d99ebaf-083f-49e6-8932-7f6b2ae6aeb9
+sell;test data;INCOME;40;2025-03-04 00:00:00;1;f4957f45-c987-4f88-a40f-98f53ce24c52
+food;test data;EXPENSE;50;2025-03-05 00:00:00;2;2f6c516e-ba15-4604-9c8d-965b3bee6ae7
+travel;test data;EXPENSE;60;2025-01-04 00:00:00;3;ee76a951-1c6e-48f9-a6cb-df8f3a2521fb
+sell;test data;INCOME;70;2025-03-06 00:00:00;1;fbc25344-add7-4c0a-adbb-54720baca97e
+travel;test data;EXPENSE;80;2025-01-14 00:00:00;2;4a1d80ea-6304-4d58-8710-32f40eff09f4
+car;test data;EXPENSE;90;2025-02-08 00:00:00;3;73f37ccc-d502-48be-a69d-3401587c5a23
