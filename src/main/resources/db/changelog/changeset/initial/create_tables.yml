@@ -86,6 +86,11 @@ databaseChangeLog:
                      nullable: false
                    name: userid
                    type: BIGINT
+               - column:
+                   constraints:
+                     nullable: false
+                   name: uuid
+                   type: VARCHAR(255)
              tableName: ft_transaction
 
   -  changeSet:
@@ -113,6 +118,11 @@ databaseChangeLog:
                      nullable: false
                    name: userid
                    type: BIGINT
+               - column:
+                   constraints:
+                     nullable: false
+                   name: uuid
+                   type: VARCHAR(255)
              tableName: target
 
   -  changeSet:
@@ -140,4 +150,9 @@ databaseChangeLog:
                      nullable: false
                    name: userid
                    type: BIGINT
+               - column:
+                   constraints:
+                     nullable: false
+                   name: uuid
+                   type: VARCHAR(255)
              tableName: budget

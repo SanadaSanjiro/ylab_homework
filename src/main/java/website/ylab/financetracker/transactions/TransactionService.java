@@ -4,16 +4,13 @@ import website.ylab.financetracker.auth.TrackerUser;
 import website.ylab.financetracker.auth.UserAuthService;
 import website.ylab.financetracker.out.persistence.TrackerTransactionRepository;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Provides methods for changing transaction data.
  */
 public class TransactionService {
     private final TrackerTransactionRepository repository;
-    private static long transacCounter=0L;
 
     public TransactionService(TrackerTransactionRepository repository) {
         this.repository = repository;
@@ -25,13 +22,13 @@ public class TransactionService {
                                      Date date,
                                      String description) {
         TrackerTransaction transaction = new TrackerTransaction();
-        transaction.setId(++transacCounter);
         transaction.setType(type);
         transaction.setAmount(amount);
         transaction.setCategory(category);
         transaction.setDate(date);
         transaction.setDescription(description);
         transaction.setUserId(UserAuthService.getCurrentUser().getId());
+        transaction.setUuid(UUID.randomUUID().toString());
         Optional<TrackerTransaction> optional = repository.create(transaction);
         if (optional.isPresent()) {
             return "Transaction added successfully";
@@ -42,7 +39,7 @@ public class TransactionService {
 
 
     public String changeTransaction (long id, double newAmount, String newCategory, String newDescription) {
-        Optional<TrackerTransaction> optional = repository.get(id);
+        Optional<TrackerTransaction> optional = repository.getById(id);
         if (optional.isEmpty()) {
             return "Transaction not found";
         }
@@ -57,7 +54,7 @@ public class TransactionService {
     }
 
     public String deleteTransaction (long id) {
-        Optional<TrackerTransaction> optional = repository.get(id);
+        Optional<TrackerTransaction> optional = repository.getById(id);
         if (optional.isEmpty()) {
             return "Transaction not found";
         }
@@ -86,8 +83,10 @@ public class TransactionService {
      */
     public List<TrackerTransaction> getAllTransactions() {
         TrackerUser user = UserAuthService.getCurrentUser();
-        List<TrackerTransaction> list = repository.getAllTransactions();
-        return list.stream().filter(t->t.getUserId()==user.getId()).toList();
+        if (Objects.isNull(user)) {
+            return new ArrayList<>();
+        }
+        return repository.getByUserId(user.getId());
     }
 
     /**
@@ -95,7 +94,6 @@ public class TransactionService {
      * @return list of transactions of the user
      */
     public List<TrackerTransaction> getUserTransaction(TrackerUser user) {
-        List<TrackerTransaction> list = repository.getAllTransactions();
-        return list.stream().filter(t->t.getUserId()==user.getId()).toList();
+        return repository.getByUserId(user.getId());
     }
 }

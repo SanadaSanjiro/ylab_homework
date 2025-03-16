@@ -15,6 +15,7 @@ public class TrackerTransaction {
     private Date date;
     private String description;
     private long userId;
+    private String uuid;
 
     public long getId() {
         return id;
@@ -72,6 +73,14 @@ public class TrackerTransaction {
         this.userId = userId;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     @Override
     public String toString() {
         return "TrackerTransaction{" +
@@ -79,9 +88,10 @@ public class TrackerTransaction {
                 ", type=" + type +
                 ", amount=" + amount +
                 ", category='" + category + '\'' +
-                ", date=" + date +
+                ", date=" + date + //dateFormat.format(date) +
                 ", description='" + description + '\'' +
                 ", userId=" + userId +
+                ", uuid='" + uuid + '\'' +
                 '}';
     }
 }

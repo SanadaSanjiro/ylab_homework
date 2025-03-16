@@ -27,7 +27,7 @@ public class RamUserRepo implements TrackerUserRepository {
     }
 
     @Override
-    public Optional<TrackerUser> get(String username) {
+    public Optional<TrackerUser> getByName(String username) {
         return users.stream().filter(user -> user.getUsername().equals(username)).findFirst();
     }
 
@@ -46,7 +46,7 @@ public class RamUserRepo implements TrackerUserRepository {
     @Override
     public Optional<TrackerUser> delete(TrackerUser user) {
         if (users.contains(user)) {
-            Optional<TrackerUser> deletedUser = get(user.getUsername());
+            Optional<TrackerUser> deletedUser = getByName(user.getUsername());
             users.remove(user);
             return deletedUser;
         } else { return Optional.empty(); }

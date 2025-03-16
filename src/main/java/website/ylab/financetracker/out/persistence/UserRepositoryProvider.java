@@ -9,7 +9,7 @@ import website.ylab.financetracker.out.persistence.ram.auth.RamUserRepo;
  * Provides an implementation of a user repository
  */
 public class UserRepositoryProvider {
-    private static final ConnectionProvider connectionProvider = new  ConnectionProviderImplementation();
+    private static final ConnectionProvider connectionProvider = new ConnectionProviderImplementation();
     private static final TrackerUserRepository repository = createRepository();
 
     /**

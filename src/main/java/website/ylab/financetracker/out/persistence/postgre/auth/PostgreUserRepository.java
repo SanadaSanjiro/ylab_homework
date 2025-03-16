@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class PostgreUserRepository implements TrackerUserRepository {
+    // The sole purpose of this array is to give names to the values while parsing the values
+    // retrieved from the database, making the code more understandable.
     private final String[] dbFields = {"id", "name", "email", "password", "role", "enabled"};
     private final ConnectionProvider connectionProvider;
 
@@ -31,15 +33,15 @@ public class PostgreUserRepository implements TrackerUserRepository {
             preparedStatement.setString(4, user.getRole().toString());
             preparedStatement.setBoolean(5, user.isEnabled());
             preparedStatement.executeUpdate();
-            return get(user.getUsername());
-        } catch (Exception e) {
+            return getByName(user.getUsername());
+        } catch (SQLException e) {
             System.out.println("Got SQL Exception in transaction " + e.getMessage());
             return Optional.empty();
         }
     }
 
     @Override
-    public Optional<TrackerUser> get(String username) {
+    public Optional<TrackerUser> getByName(String username) {
         String query = "select * from fin_tracker.user where name = ?;";
         try (Connection connection = connectionProvider.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -52,7 +54,7 @@ public class PostgreUserRepository implements TrackerUserRepository {
             } else {
                 return Optional.empty();
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
                 System.out.println("Got SQL Exception in transaction " + e.getMessage());
                 return Optional.empty();
         }
@@ -66,7 +68,7 @@ public class PostgreUserRepository implements TrackerUserRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<TrackerUser> users =  parseRS(resultSet);
             return users.stream().findFirst();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Got SQL Exception in transaction " + e.getMessage());
             return Optional.empty();
         }
@@ -90,7 +92,7 @@ public class PostgreUserRepository implements TrackerUserRepository {
             preparedStatement.setLong(6, user.getId());
             preparedStatement.executeUpdate();
             return getById(user.getId());
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Got SQL Exception in transaction " + e.getMessage());
             return Optional.empty();
         }
@@ -100,13 +102,13 @@ public class PostgreUserRepository implements TrackerUserRepository {
     public Optional<TrackerUser> delete(TrackerUser user) {
         Optional<TrackerUser> optional = getById(user.getId());
         if (optional.isEmpty()) { return optional; }
-        String query = "delete from fin_tracker.user where id = ?";
+        String query = "delete from fin_tracker.user where id = ?;";
         try (Connection connection = connectionProvider.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setLong(1, user.getId());
             preparedStatement.executeUpdate();
             return optional;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Got SQL Exception in transaction " + e.getMessage());
             return Optional.empty();
         }
@@ -118,9 +120,8 @@ public class PostgreUserRepository implements TrackerUserRepository {
         try (Connection connection = connectionProvider.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ResultSet resultSet = preparedStatement.executeQuery();
-            List<TrackerUser> users =  parseRS(resultSet);
-            return users;
-        } catch (Exception e) {
+            return parseRS(resultSet);
+        } catch (SQLException e) {
             System.out.println("Got SQL Exception in transaction " + e.getMessage());
             return new ArrayList<>();
         }
@@ -161,8 +162,8 @@ public class PostgreUserRepository implements TrackerUserRepository {
                         break;
                     }
                 }
-                list.add(user);
             }
+            list.add(user);
         }
         return list;
     }

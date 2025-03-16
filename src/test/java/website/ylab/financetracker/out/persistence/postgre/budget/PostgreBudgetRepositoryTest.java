@@ -1,0 +1,184 @@
+package website.ylab.financetracker.out.persistence.postgre.budget;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.PostgreSQLContainer;
+import website.ylab.financetracker.auth.Role;
+import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.out.persistence.postgre.ConnectionProvider;
+import website.ylab.financetracker.out.persistence.postgre.DbSchemaCreator;
+import website.ylab.financetracker.out.persistence.postgre.auth.PostgreUserRepository;
+import website.ylab.financetracker.out.persistence.postgre.liquibase.LiquibaseStarter;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class PostgreBudgetRepositoryTest {
+    String uuid = "c6aac47f-64b5-47d0-97bc-4974cbdd93f4";
+    double limit = 100.0;
+
+    long userid = 1L;
+    String username = "Bob";
+    String password = "123456";
+    String email = "bob@gmail.com";
+
+
+    static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
+            .withDatabaseName("ylabft_db")
+            .withUsername("ft_admin")
+            .withPassword("MyP@ss4DB");
+    static ConnectionProvider connectionProvider;
+    static LiquibaseStarter liquibaseStarter;
+    static PostgreBudgetRepository repository;
+
+    @BeforeAll
+    static void beforeAll() throws Exception {
+        System.out.println("Starting testcontainer");
+        postgreSQLContainer.start();
+        connectionProvider = new ConnectionProvider() {
+            @Override
+            public Connection getConnection() throws SQLException {
+                return DriverManager.getConnection(postgreSQLContainer.getJdbcUrl(),
+                        postgreSQLContainer.getUsername(),
+                        postgreSQLContainer.getPassword());
+            }
+            @Override
+            public String getSchema() {
+                return "fin_tracker";
+            }
+
+            @Override
+            public String getChangelog() {
+                return "db/changelog/db.changelog-master.yml";
+            }
+
+            @Override
+            public String getPersistenceType() {
+                return "postgresql";
+            }
+        };
+        System.out.println("Creating schema");
+        DbSchemaCreator schemaCreator = new DbSchemaCreator(connectionProvider);
+        schemaCreator.createDbSchema();
+        System.out.println("Applying liquibase migrations");
+        liquibaseStarter = new LiquibaseStarter(connectionProvider);
+        liquibaseStarter.applyMigrations();
+        repository = new PostgreBudgetRepository(connectionProvider);
+    }
+
+    @AfterAll
+    static void afterAll() {
+        postgreSQLContainer.stop();
+    }
+
+
+    @Test
+    void testSetBudget() {
+        TrackerUser user = getTestUser();
+        BudgetEntity budget = getTestBudget();
+        repository = new PostgreBudgetRepository(connectionProvider);
+        Optional<Double> result = repository.setBudget(user, limit);
+        assertTrue(result.isPresent());
+        assertEquals(limit, result.get());
+        Optional<Double> check = repository.getBudget(user);
+        assertTrue(check.isPresent());
+        assertEquals(limit, check.get());
+    }
+
+    @Test
+    void testGetBudget() {
+        TrackerUser user = getTestUser();
+        BudgetEntity budget = getTestBudget();
+        repository = new PostgreBudgetRepository(connectionProvider);
+        Optional<BudgetEntity> optional = repository.createBudget(budget);
+        assertTrue(optional.isPresent());
+        Optional<Double> result = repository.getBudget(user);
+        assertTrue(result.isPresent());
+        assertEquals(limit, result.get());
+    }
+
+    @Test
+    void testDeleteBudgetByUser() {
+        TrackerUser user = getTestUser();
+        BudgetEntity budget = getTestBudget();
+        repository = new PostgreBudgetRepository(connectionProvider);
+        Optional<BudgetEntity> optional = repository.createBudget(budget);
+        assertTrue(optional.isPresent());
+        Optional<Double> result = repository.deleteBudget(user);
+        assertTrue(result.isPresent());
+        assertEquals(limit, result.get());
+    }
+
+    @Test
+    void createBudget() {
+        repository = new PostgreBudgetRepository(connectionProvider);
+        BudgetEntity budget = getTestBudget();
+        repository.createBudget(budget);
+        Optional<BudgetEntity> optional = repository.getByUUID(uuid);
+        assertTrue(optional.isPresent());
+    }
+
+    @Test
+    void testDeleteBudget() {
+        repository = new PostgreBudgetRepository(connectionProvider);
+        BudgetEntity budget = getTestBudget();
+        repository.createBudget(budget);
+        Optional<BudgetEntity> optional = repository.getByUUID(uuid);
+        assertTrue(optional.isPresent());
+        repository.deleteBudget(budget);
+        optional = repository.getByUUID(uuid);
+        assertFalse(optional.isPresent());
+    }
+
+    @Test
+    void testGetBudgetById() {
+        repository = new PostgreBudgetRepository(connectionProvider);
+        BudgetEntity budget = getTestBudget();
+        repository.createBudget(budget);
+        Optional<BudgetEntity> optional = repository.getByUUID(uuid);
+        assertFalse(optional.isEmpty());
+        long id = optional.get().getId();
+        optional=repository.getBudgetById(id);
+        assertTrue(optional.isPresent());
+    }
+
+    @Test
+    void testGetBudgetByUserId() {
+        repository = new PostgreBudgetRepository(connectionProvider);
+        BudgetEntity budget = getTestBudget();
+        repository.createBudget(budget);
+        List<BudgetEntity> list = repository.getBudgetByUserId(userid);
+        assertFalse(list.isEmpty());
+    }
+
+    @Test
+    void testGetByUUID() {
+        repository = new PostgreBudgetRepository(connectionProvider);
+        BudgetEntity budget = getTestBudget();
+        repository.createBudget(budget);
+        Optional<BudgetEntity> optional = repository.getByUUID(uuid);
+        assertTrue(optional.isPresent());
+    }
+    private BudgetEntity getTestBudget() {
+        BudgetEntity budget = new BudgetEntity();
+        budget.setUuid(uuid);
+        budget.setLimit(limit);
+        budget.setUserId(userid);
+        return budget;
+    }
+
+    private TrackerUser getTestUser() {
+        TrackerUser user = new TrackerUser(username, email, password);
+        user.setRole(Role.USER);
+        user.setEnabled(true);
+        user.setId(userid);
+        return user;
+    }
+}

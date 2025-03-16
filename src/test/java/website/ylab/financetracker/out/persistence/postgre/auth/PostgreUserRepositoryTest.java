@@ -75,7 +75,7 @@ class PostgreUserRepositoryTest {
 
     @BeforeEach
     void beforeEach() {
-        user = getTestUser();
+        user = getByNameTestUser();
     }
 
 
@@ -92,10 +92,10 @@ class PostgreUserRepositoryTest {
     }
 
     @Test
-    void get() {
+    void getByName() {
         System.out.println(user);
         repository.create(user);
-        Optional<TrackerUser> result = repository.get(username);
+        Optional<TrackerUser> result = repository.getByName(username);
         assertTrue(result.isPresent());
         TrackerUser returnedUser = result.get();
         assertTrue(username.equalsIgnoreCase(returnedUser.getUsername()));
@@ -171,7 +171,7 @@ class PostgreUserRepositoryTest {
         assertTrue(result.size()>=2);
     }
 
-    private TrackerUser getTestUser() {
+    private TrackerUser getByNameTestUser() {
         TrackerUser user = new TrackerUser(username, email, password);
         user.setRole(Role.USER);
         user.setEnabled(true);

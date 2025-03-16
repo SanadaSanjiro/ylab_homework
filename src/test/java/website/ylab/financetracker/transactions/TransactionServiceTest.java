@@ -58,11 +58,11 @@ class TransactionServiceTest {
         String newCategory = "new category";
         String newDescription = "new description";
 
-        Mockito.when(repository.get(id)).thenReturn(Optional.empty());
+        Mockito.when(repository.getById(id)).thenReturn(Optional.empty());
         assertEquals("Transaction not found", transactionService
                 .changeTransaction(id, newAmount, newCategory, newDescription));
 
-        Mockito.when(repository.get(id)).thenReturn(Optional.of(transaction));
+        Mockito.when(repository.getById(id)).thenReturn(Optional.of(transaction));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
             otherUser.setId(100L);
             authMock.when(UserAuthService::getCurrentUser).thenReturn(otherUser);
@@ -86,10 +86,10 @@ class TransactionServiceTest {
                     .addNewTransaction(type, amount, category, date, description);
         }
 
-        Mockito.when(repository.get(id)).thenReturn(Optional.empty());
+        Mockito.when(repository.getById(id)).thenReturn(Optional.empty());
         assertEquals("Transaction not found", transactionService.deleteTransaction(id));
 
-        Mockito.when(repository.get(id)).thenReturn(Optional.of(transaction));
+        Mockito.when(repository.getById(id)).thenReturn(Optional.of(transaction));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
             otherUser.setId(100L);
             authMock.when(UserAuthService::getCurrentUser).thenReturn(otherUser);
@@ -97,7 +97,7 @@ class TransactionServiceTest {
                     .deleteTransaction(id));
         }
 
-        Mockito.when(repository.get(id)).thenReturn(Optional.of(transaction));
+        Mockito.when(repository.getById(id)).thenReturn(Optional.of(transaction));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
             authMock.when(UserAuthService::getCurrentUser).thenReturn(user);
             assertEquals("Transaction successfully deleted", transactionService

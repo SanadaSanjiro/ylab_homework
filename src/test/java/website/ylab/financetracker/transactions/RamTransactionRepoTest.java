@@ -77,9 +77,9 @@ class RamTransactionRepoTest {
     }
 
     @Test
-    void get() {
+    void getById() {
         // Если транзакция существует
-        optional = repository.get(id);
+        optional = repository.getById(id);
         assertTrue(optional.isPresent());
         assertEquals(id, optional.get().getId());
         assertEquals(type, optional.get().getType());
@@ -89,12 +89,12 @@ class RamTransactionRepoTest {
         assertEquals(date, optional.get().getDate());
 
         // Если транзакция отсутствует
-        optional = repository.get(100L);
+        optional = repository.getById(100L);
         assertFalse(optional.isPresent());
     }
 
     @Test
-    void getAllTransactions() {
+    void getByIdAllTransactions() {
         assertFalse(repository.getAllTransactions().isEmpty());
     }
 

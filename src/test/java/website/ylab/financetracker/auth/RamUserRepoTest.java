@@ -32,16 +32,16 @@ class RamUserRepoTest {
     }
 
     @Test
-    void get() {
+    void getByName() {
         // Если пользователь существует
-        optional = ramUserRepo.get(username);
+        optional = ramUserRepo.getByName(username);
         assertTrue(optional.isPresent());
         assertEquals(username, optional.get().getUsername());
         assertEquals(email, optional.get().getEmail());
         assertEquals(password, optional.get().getPassword());
 
         // Если пользователь отсутствует
-        optional = ramUserRepo.get("badName");
+        optional = ramUserRepo.getByName("badName");
         assertFalse(optional.isPresent());
     }
 
@@ -49,7 +49,7 @@ class RamUserRepoTest {
     void update() {
         // Проверяем изменение имени пользователя
         String newUsername = "alice";
-        TrackerUser oldUser = ramUserRepo.get(username).get();
+        TrackerUser oldUser = ramUserRepo.getByName(username).get();
         TrackerUser newUser = new TrackerUser(newUsername, email, password);
         newUser.setId(oldUser.getId());
         optional = ramUserRepo.update(newUser);
@@ -60,7 +60,7 @@ class RamUserRepoTest {
 
         // Проверяем изменение email
         String newEmail = "alice@gmail.com";
-        oldUser = ramUserRepo.get(newUsername).get();
+        oldUser = ramUserRepo.getByName(newUsername).get();
         newUser = new TrackerUser(newUsername, newEmail, password);
         newUser.setId(oldUser.getId());
         optional = ramUserRepo.update(newUser);
@@ -71,7 +71,7 @@ class RamUserRepoTest {
 
         // Проверяем изменение пароля
         String newPass = "654321";
-        oldUser = ramUserRepo.get(newUsername).get();
+        oldUser = ramUserRepo.getByName(newUsername).get();
         newUser = new TrackerUser(newUsername, newEmail, newPass);
         newUser.setId(oldUser.getId());
         optional = ramUserRepo.update(newUser);
@@ -88,15 +88,15 @@ class RamUserRepoTest {
         assertFalse(optional.isPresent());
 
         // Если пользователь найден и был успешно удален
-        TrackerUser user = ramUserRepo.get(username).get();
+        TrackerUser user = ramUserRepo.getByName(username).get();
         optional = ramUserRepo.delete(user);
         assertTrue(optional.isPresent());
         assertEquals(username, optional.get().getUsername());
-        assertFalse(ramUserRepo.get(username).isPresent());
+        assertFalse(ramUserRepo.getByName(username).isPresent());
     }
 
     @Test
-    void getAllUsers() {
+    void getByNameAllUsers() {
         assertFalse(ramUserRepo.getAllUsers().isEmpty());
     }
 }
