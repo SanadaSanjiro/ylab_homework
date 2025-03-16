@@ -6,6 +6,7 @@ import website.ylab.financetracker.out.persistence.TrackerUserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -31,11 +32,15 @@ public class RamUserRepo implements TrackerUserRepository {
     }
 
     @Override
-    public Optional<TrackerUser> update(TrackerUser oldUser, TrackerUser newUser) {
-        if (users.contains(oldUser)) {
-            copyUserData(oldUser, newUser);
-            return get(newUser.getUsername());
-        } else { return Optional.empty(); }
+    public Optional<TrackerUser> update(TrackerUser user) {
+        long id = user.getId();
+        Optional<TrackerUser> optional = users.stream()
+                .filter(u -> u.getId() == id)
+                .findFirst();
+        if (optional.isEmpty()) {return Optional.empty(); }
+        TrackerUser storedUser = optional.get();
+        copyUserData(storedUser, user);
+        return Optional.of(storedUser);
     }
 
     @Override
@@ -52,12 +57,12 @@ public class RamUserRepo implements TrackerUserRepository {
         return List.copyOf(users);
     }
 
-    private void copyUserData(TrackerUser oldUser, TrackerUser newUser) {
-        oldUser.setUsername(newUser.getUsername());
-        oldUser.setPassword(newUser.getPassword());
-        oldUser.setEmail(newUser.getEmail());
-        oldUser.setRole(newUser.getRole());
-        oldUser.setEnabled(newUser.isEnabled());
+    private void copyUserData(TrackerUser storedUser, TrackerUser newUser) {
+        if (Objects.nonNull(newUser.getUsername())) {storedUser.setUsername(newUser.getUsername()); }
+        if (Objects.nonNull(newUser.getPassword())) {storedUser.setPassword(newUser.getPassword()); }
+        if (Objects.nonNull(newUser.getEmail())) {storedUser.setEmail(newUser.getEmail()); }
+        if (Objects.nonNull(newUser.getRole())) {storedUser.setRole(newUser.getRole()); }
+        storedUser.setEnabled(newUser.isEnabled());
     }
 
     private void addTestUser() {

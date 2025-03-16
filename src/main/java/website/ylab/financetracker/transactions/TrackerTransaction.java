@@ -1,7 +1,5 @@
 package website.ylab.financetracker.transactions;
 
-import website.ylab.financetracker.auth.TrackerUser;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -16,7 +14,7 @@ public class TrackerTransaction {
     private String category;
     private Date date;
     private String description;
-    private TrackerUser user;
+    private long userId;
 
     public long getId() {
         return id;
@@ -66,12 +64,12 @@ public class TrackerTransaction {
         this.description = description;
     }
 
-    public TrackerUser getUser() {
-        return user;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setUser(TrackerUser user) {
-        this.user = user;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -81,9 +79,9 @@ public class TrackerTransaction {
                 ", type=" + type +
                 ", amount=" + amount +
                 ", category='" + category + '\'' +
-                ", date=" + dateFormat.format(date) +
+                ", date=" + date +
                 ", description='" + description + '\'' +
-                ", user=" + user.getId() + " " + user.getUsername() +
-                "}\n";
+                ", userId=" + userId +
+                '}';
     }
 }

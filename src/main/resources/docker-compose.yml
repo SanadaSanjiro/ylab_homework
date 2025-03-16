@@ -1,6 +1,6 @@
 services:
   postgres:
-    container_name: ylabft_pgcontainer
+    container_name: ft_pgcontainer
     image: postgres:latest
     command:
       - "postgres"
@@ -54,3 +54,29 @@ services:
         limits:
           cpus: '1'
           memory: 4G
+    networks:
+      - postgres
+
+  pgadmin:
+    container_name: ft_pgadmin_container
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "sanjiro@pisem.net"
+      PGADMIN_DEFAULT_PASSWORD: "Adm1nP@ss"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+    networks:
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge

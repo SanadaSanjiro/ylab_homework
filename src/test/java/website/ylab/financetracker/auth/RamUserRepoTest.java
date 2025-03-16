@@ -51,7 +51,8 @@ class RamUserRepoTest {
         String newUsername = "alice";
         TrackerUser oldUser = ramUserRepo.get(username).get();
         TrackerUser newUser = new TrackerUser(newUsername, email, password);
-        optional = ramUserRepo.update(oldUser, newUser);
+        newUser.setId(oldUser.getId());
+        optional = ramUserRepo.update(newUser);
         assertTrue(optional.isPresent());
         assertEquals(newUsername, optional.get().getUsername());
         assertEquals(email, optional.get().getEmail());
@@ -61,7 +62,8 @@ class RamUserRepoTest {
         String newEmail = "alice@gmail.com";
         oldUser = ramUserRepo.get(newUsername).get();
         newUser = new TrackerUser(newUsername, newEmail, password);
-        optional = ramUserRepo.update(oldUser, newUser);
+        newUser.setId(oldUser.getId());
+        optional = ramUserRepo.update(newUser);
         assertTrue(optional.isPresent());
         assertEquals(newUsername, optional.get().getUsername());
         assertEquals(newEmail, optional.get().getEmail());
@@ -71,15 +73,12 @@ class RamUserRepoTest {
         String newPass = "654321";
         oldUser = ramUserRepo.get(newUsername).get();
         newUser = new TrackerUser(newUsername, newEmail, newPass);
-        optional = ramUserRepo.update(oldUser, newUser);
+        newUser.setId(oldUser.getId());
+        optional = ramUserRepo.update(newUser);
         assertTrue(optional.isPresent());
         assertEquals(newUsername, optional.get().getUsername());
         assertEquals(newEmail, optional.get().getEmail());
         assertEquals(newPass, optional.get().getPassword());
-
-        // Если пользователь отсутствует
-        optional = ramUserRepo.update(new TrackerUser(), oldUser);
-        assertFalse(optional.isPresent());
     }
 
     @Test

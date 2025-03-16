@@ -16,10 +16,7 @@ public class UserAuthService {
     }
 
     public String login(String username, String password) {
-        Optional<TrackerUser> optional= trackerUserRepository.getAllUsers()
-                .stream()
-                .filter(trackerUser -> trackerUser.getUsername().equals(username.toLowerCase()))
-                .findFirst();
+        Optional<TrackerUser> optional= trackerUserRepository.get(username);
         if (optional.isEmpty()) {
             return "User not found";
         }

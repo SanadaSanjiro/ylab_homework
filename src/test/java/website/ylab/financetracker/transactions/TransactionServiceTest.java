@@ -26,6 +26,7 @@ class TransactionServiceTest {
     Date date = new Date();
     String description = "Test";
     TrackerUser user = new TrackerUser();
+    TrackerUser otherUser = new TrackerUser();
     TrackerTransaction transaction = getTransaction();
     TransactionService transactionService;
 
@@ -45,6 +46,7 @@ class TransactionServiceTest {
 
         Mockito.when(repository.create(Mockito.any())).thenReturn(Optional.empty());
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
+            authMock.when(UserAuthService::getCurrentUser).thenReturn(user);
             assertEquals("Transaction creation error", transactionService
                     .addNewTransaction(type, amount, category, date, description));
         }
@@ -62,7 +64,8 @@ class TransactionServiceTest {
 
         Mockito.when(repository.get(id)).thenReturn(Optional.of(transaction));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
-            authMock.when(UserAuthService::getCurrentUser).thenReturn(new TrackerUser());
+            otherUser.setId(100L);
+            authMock.when(UserAuthService::getCurrentUser).thenReturn(otherUser);
             assertEquals("You do not have permission to change this transaction", transactionService
                     .changeTransaction(id, newAmount, newCategory, newDescription));
         }
@@ -88,7 +91,8 @@ class TransactionServiceTest {
 
         Mockito.when(repository.get(id)).thenReturn(Optional.of(transaction));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
-            authMock.when(UserAuthService::getCurrentUser).thenReturn(new TrackerUser());
+            otherUser.setId(100L);
+            authMock.when(UserAuthService::getCurrentUser).thenReturn(otherUser);
             assertEquals("You do not have permission to delete this transaction", transactionService
                     .deleteTransaction(id));
         }
@@ -130,7 +134,7 @@ class TransactionServiceTest {
         transaction.setDescription(description);
         transaction.setDate(date);
         transaction.setCategory(category);
-        transaction.setUser(user);
+        transaction.setUserId(user.getId());
         return transaction;
     }
 }

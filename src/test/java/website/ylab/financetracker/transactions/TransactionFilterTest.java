@@ -57,7 +57,7 @@ class TransactionFilterTest {
             e.printStackTrace();
         }
         transaction.setCategory(category);
-        transaction.setUser(user);
+        transaction.setUserId(user.getId());
         return transaction;
     }
 }

@@ -34,13 +34,14 @@ public class ConfigReaderImplementation implements ConfigReader {
             List<String> lines = Files.readAllLines(Paths.get(path),
                     Charset.forName(CHARSET));
             map = lines.stream()
+                    .filter(line->!line.trim().isEmpty())
                     .filter(line->!line.startsWith(commentMarker))
                     .collect(Collectors.toMap(line->line.split(delimiter)[0].toLowerCase(),
                             line->line.split(delimiter)[1]));
-            System.out.println(map);
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
         }
+        System.out.println(map.toString());
         return map;
     }
 }

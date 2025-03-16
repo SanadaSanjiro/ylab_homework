@@ -31,7 +31,7 @@ public class TransactionService {
         transaction.setCategory(category);
         transaction.setDate(date);
         transaction.setDescription(description);
-        transaction.setUser(UserAuthService.getCurrentUser());
+        transaction.setUserId(UserAuthService.getCurrentUser().getId());
         Optional<TrackerTransaction> optional = repository.create(transaction);
         if (optional.isPresent()) {
             return "Transaction added successfully";
@@ -47,7 +47,7 @@ public class TransactionService {
             return "Transaction not found";
         }
         TrackerTransaction oldTransaction = optional.get();
-        if (!oldTransaction.getUser().equals(UserAuthService.getCurrentUser()) ) {
+        if (oldTransaction.getUserId()!=UserAuthService.getCurrentUser().getId()) {
             return "You do not have permission to change this transaction";
         }
         oldTransaction.setAmount(newAmount);
@@ -62,7 +62,7 @@ public class TransactionService {
             return "Transaction not found";
         }
         TrackerTransaction transaction = optional.get();
-        if (!transaction.getUser().equals(UserAuthService.getCurrentUser()) ) {
+        if (transaction.getUserId()!=UserAuthService.getCurrentUser().getId()) {
             return "You do not have permission to delete this transaction";
         }
         repository.delete(optional.get());
@@ -75,7 +75,7 @@ public class TransactionService {
      */
     public void deleteUserTransactions(TrackerUser user) {
         List<TrackerTransaction> transactions = repository.getAllTransactions()
-                .stream().filter(t->t.getUser().equals(user))
+                .stream().filter(t->t.getUserId()==user.getId())
                 .toList();
         transactions.forEach(repository::delete);
     }
@@ -87,7 +87,7 @@ public class TransactionService {
     public List<TrackerTransaction> getAllTransactions() {
         TrackerUser user = UserAuthService.getCurrentUser();
         List<TrackerTransaction> list = repository.getAllTransactions();
-        return list.stream().filter(t->t.getUser().equals(user)).toList();
+        return list.stream().filter(t->t.getUserId()==user.getId()).toList();
     }
 
     /**
@@ -96,6 +96,6 @@ public class TransactionService {
      */
     public List<TrackerTransaction> getUserTransaction(TrackerUser user) {
         List<TrackerTransaction> list = repository.getAllTransactions();
-        return list.stream().filter(t->t.getUser().equals(user)).toList();
+        return list.stream().filter(t->t.getUserId()==user.getId()).toList();
     }
 }

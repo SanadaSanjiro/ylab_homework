@@ -36,6 +36,7 @@ public class UserService {
         if (!oldUser.getPassword().equals(newUser.getPassword())) {
             oldUser.setPassword(newUser.getPassword());
         }
+        trackerUserRepository.update(oldUser);
         return "User data successfully changed";
     }
 
