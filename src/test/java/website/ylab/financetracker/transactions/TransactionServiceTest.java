@@ -107,7 +107,8 @@ class TransactionServiceTest {
 
     @Test
     void getAllTransactions() {
-        Mockito.when(repository.getAllTransactions()).thenReturn(List.of(transaction));
+        transaction = getTransaction();
+        Mockito.when(repository.getByUserId(Mockito.anyLong())).thenReturn(List.of(transaction));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
             authMock.when(UserAuthService::getCurrentUser).thenReturn(user);
             assertFalse(transactionService.getAllTransactions().isEmpty());

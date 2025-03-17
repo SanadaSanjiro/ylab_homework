@@ -52,6 +52,7 @@ public class UserService {
      */
     public String deleteCurrentUser() {
         TrackerUser user = UserAuthService.getCurrentUser();
+        UserAuthService.logout();
         return deleteUser(user);
     }
 
@@ -61,11 +62,13 @@ public class UserService {
      * @return String with a result.
      */
     public String deleteUser(TrackerUser user) {
-        ServiceProvider.getTransactionService().deleteUserTransactions(user);
-        ServiceProvider.getBudgetService().deleteBudget(user);
-        ServiceProvider.getTargetService().deleteTarget(user);
-        UserAuthService.logout();
-        Optional<TrackerUser> optional = trackerUserRepository.delete(user);
+        Optional<TrackerUser> optional = trackerUserRepository.getByName(user.getUsername());
+        if (optional.isEmpty()) return "Error deleting user " + user;
+        TrackerUser storedUser = optional.get();
+        ServiceProvider.getTransactionService().deleteUserTransactions(storedUser);
+        ServiceProvider.getBudgetService().deleteBudget(storedUser);
+        ServiceProvider.getTargetService().deleteTarget(storedUser);
+        optional = trackerUserRepository.delete(user);
         if (optional.isEmpty()) {
             return "Error deleting user";
         }

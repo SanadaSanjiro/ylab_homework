@@ -24,7 +24,7 @@ class PostgreBudgetRepositoryTest {
     String uuid = "c6aac47f-64b5-47d0-97bc-4974cbdd93f4";
     double limit = 100.0;
 
-    long userid = 1L;
+    long userid = 100L;
     String username = "Bob";
     String password = "123456";
     String email = "bob@gmail.com";
@@ -90,6 +90,7 @@ class PostgreBudgetRepositoryTest {
         Optional<Double> check = repository.getBudget(user);
         assertTrue(check.isPresent());
         assertEquals(limit, check.get());
+        repository.deleteBudget(user);
     }
 
     @Test
@@ -102,6 +103,7 @@ class PostgreBudgetRepositoryTest {
         Optional<Double> result = repository.getBudget(user);
         assertTrue(result.isPresent());
         assertEquals(limit, result.get());
+        repository.deleteBudget(user);
     }
 
     @Test
@@ -123,6 +125,7 @@ class PostgreBudgetRepositoryTest {
         repository.createBudget(budget);
         Optional<BudgetEntity> optional = repository.getByUUID(uuid);
         assertTrue(optional.isPresent());
+        repository.deleteBudget(optional.get());
     }
 
     @Test
@@ -147,6 +150,7 @@ class PostgreBudgetRepositoryTest {
         long id = optional.get().getId();
         optional=repository.getBudgetById(id);
         assertTrue(optional.isPresent());
+        repository.deleteBudget(optional.get());
     }
 
     @Test
@@ -156,6 +160,7 @@ class PostgreBudgetRepositoryTest {
         repository.createBudget(budget);
         List<BudgetEntity> list = repository.getBudgetByUserId(userid);
         assertFalse(list.isEmpty());
+        repository.deleteBudget(budget);
     }
 
     @Test
@@ -165,6 +170,7 @@ class PostgreBudgetRepositoryTest {
         repository.createBudget(budget);
         Optional<BudgetEntity> optional = repository.getByUUID(uuid);
         assertTrue(optional.isPresent());
+        repository.deleteBudget(optional.get());
     }
     private BudgetEntity getTestBudget() {
         BudgetEntity budget = new BudgetEntity();

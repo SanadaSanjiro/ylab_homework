@@ -5,6 +5,7 @@ import org.mockito.Mockito;
 import website.ylab.financetracker.out.persistence.TrackerUserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,21 +20,25 @@ class UserAuthServiceTest {
 
     @Test
     void login() {
-        Mockito.when(trackerUserRepository.getAllUsers()).thenReturn(List.of(user));
+        Mockito.when(trackerUserRepository.getByName(Mockito.any())).thenReturn(Optional.of(user));
         UserAuthService userAuthService = new UserAuthService(trackerUserRepository);
         String result = userAuthService.login(username, password);
+        System.out.println(result);
         assertEquals("User Bob logged in", result);
+        Mockito.when(trackerUserRepository.getByName(Mockito.any())).thenReturn(Optional.empty());
         result = userAuthService.login(badUsername, password);
         assertEquals("User not found", result);
+        Mockito.when(trackerUserRepository.getByName(Mockito.any())).thenReturn(Optional.of(user));
         result = userAuthService.login(username, wrongPassword);
         assertEquals("Wrong password", result);
     }
 
     @Test
     void getCurrentUser() {
-        Mockito.when(trackerUserRepository.getAllUsers()).thenReturn(List.of(user));
+        Mockito.when(trackerUserRepository.getByName(Mockito.any())).thenReturn(Optional.of(user));
         UserAuthService userAuthService = new UserAuthService(trackerUserRepository);
         userAuthService.login(username, password);
+        System.out.println(UserAuthService.getCurrentUser());
         assertEquals(user, UserAuthService.getCurrentUser());
     }
 

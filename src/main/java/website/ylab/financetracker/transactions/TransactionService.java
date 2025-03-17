@@ -50,6 +50,7 @@ public class TransactionService {
         oldTransaction.setAmount(newAmount);
         oldTransaction.setCategory(newCategory);
         oldTransaction.setDescription(newDescription);
+        repository.update(oldTransaction);
         return "Transaction data successfully changed";
     }
 

@@ -55,6 +55,7 @@ class UserServiceTest {
 
     @Test
     void deleteCurrentUser() {
+        Mockito.when(trackerUserRepository.getByName(Mockito.any())).thenReturn(Optional.of(user));
         Mockito.when(trackerUserRepository.delete(Mockito.any())).thenReturn(Optional.of(user));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
             authMock.when(UserAuthService::getCurrentUser).thenReturn(user);
