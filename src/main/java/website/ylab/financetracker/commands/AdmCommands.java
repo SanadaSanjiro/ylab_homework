@@ -31,6 +31,12 @@ public enum AdmCommands {
             return dataInput.blockUser();
         }
     },
+    UNBLOCK {
+        @Override
+        String execute(String[] args) {
+            return dataInput.unblockUser();
+        }
+    },
     DELETE {
         @Override
         String execute(String[] args) {

@@ -37,6 +37,14 @@ public class AdmService {
         return "User blocked";
     }
 
+    public String unblockUser(long userId) {
+        Optional<TrackerUser> optional = getUserById(userId);
+        if (optional.isEmpty()) return "User not found";
+        TrackerUser user = optional.get();
+        userService.unblockUser(user);
+        return "User unblocked";
+    }
+
     public String deleteUser(long userId) {
         Optional<TrackerUser> optional = getUserById(userId);
         if (optional.isEmpty()) return "User not found";
