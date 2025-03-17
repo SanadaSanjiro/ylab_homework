@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250317_010
+      author: Admin
+      runOnChange: true
+      changes:
+      -  addForeignKeyConstraint:
+           baseColumnNames:  userid
+           baseTableName:  budget
+           constraintName:  fk_budget
+           onDelete:  CASCADE
+           onUpdate:  RESTRICT
+           referencedColumnNames:  id
+           referencedTableName:  user
+           validate:  true
+  - changeSet:
+      id: 20250317_011
+      author: Admin
+      runOnChange: true
+      changes:
+        -  addForeignKeyConstraint:
+             baseColumnNames:  userid
+             baseTableName:  ft_transaction
+             constraintName:  fk_transac
+             onDelete:  CASCADE
+             onUpdate:  RESTRICT
+             referencedColumnNames:  id
+             referencedTableName:  user
+             validate:  true
+  - changeSet:
+      id: 20250317_012
+      author: Admin
+      runOnChange: true
+      changes:
+        -  addForeignKeyConstraint:
+             baseColumnNames:  userid
+             baseTableName:  target
+             constraintName:  fk_target
+             onDelete:  CASCADE
+             onUpdate:  RESTRICT
+             referencedColumnNames:  id
+             referencedTableName:  user
+             validate:  true
