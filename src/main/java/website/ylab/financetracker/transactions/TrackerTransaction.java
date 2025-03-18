@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Transaction
+ * Transaction model
  */
 public class TrackerTransaction {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -21,64 +21,72 @@ public class TrackerTransaction {
         return id;
     }
 
-    public void setId(long id) {
+    public TrackerTransaction setId(long id) {
         this.id = id;
+        return this;
     }
 
     public TransactionType getType() {
         return type;
     }
 
-    public void setType(TransactionType type) {
+    public TrackerTransaction setType(TransactionType type) {
         this.type = type;
+        return this;
     }
 
     public double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public TrackerTransaction setAmount(double amount) {
         this.amount = amount;
+        return this;
     }
 
     public String getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public TrackerTransaction setCategory(String category) {
         this.category = category;
+        return this;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public TrackerTransaction setDate(Date date) {
         this.date = date;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public TrackerTransaction setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public TrackerTransaction setUserId(long userId) {
         this.userId = userId;
+        return this;
     }
 
     public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public TrackerTransaction setUuid(String uuid) {
         this.uuid = uuid;
+        return this;
     }
 
     @Override
@@ -92,6 +100,6 @@ public class TrackerTransaction {
                 ", description='" + description + '\'' +
                 ", userId=" + userId +
                 ", uuid='" + uuid + '\'' +
-                '}';
+                "}\n";
     }
 }

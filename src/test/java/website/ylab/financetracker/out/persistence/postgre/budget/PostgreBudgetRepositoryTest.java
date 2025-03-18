@@ -21,13 +21,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PostgreBudgetRepositoryTest {
-    String uuid = "c6aac47f-64b5-47d0-97bc-4974cbdd93f4";
-    double limit = 100.0;
+    static String uuid = "c6aac47f-64b5-47d0-97bc-4974cbdd93f4";
+    static double limit = 100.0;
 
-    long userid = 100L;
-    String username = "Bob";
-    String password = "123456";
-    String email = "bob@gmail.com";
+    static String username = "Bob";
+    static String password = "123456";
+    static String email = "bob@gmail.com";
+    static TrackerUser user;
 
 
     static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
@@ -71,6 +71,10 @@ class PostgreBudgetRepositoryTest {
         liquibaseStarter = new LiquibaseStarter(connectionProvider);
         liquibaseStarter.applyMigrations();
         repository = new PostgreBudgetRepository(connectionProvider);
+        PostgreUserRepository userRepository = new PostgreUserRepository(connectionProvider);
+        Optional<TrackerUser> optional = userRepository.create(getTestUser());
+        assertTrue(optional.isPresent());
+        user = optional.get();
     }
 
     @AfterAll
@@ -81,7 +85,6 @@ class PostgreBudgetRepositoryTest {
 
     @Test
     void testSetBudget() {
-        TrackerUser user = getTestUser();
         BudgetEntity budget = getTestBudget();
         repository = new PostgreBudgetRepository(connectionProvider);
         Optional<Double> result = repository.setBudget(user, limit);
@@ -95,7 +98,6 @@ class PostgreBudgetRepositoryTest {
 
     @Test
     void testGetBudget() {
-        TrackerUser user = getTestUser();
         BudgetEntity budget = getTestBudget();
         repository = new PostgreBudgetRepository(connectionProvider);
         Optional<BudgetEntity> optional = repository.createBudget(budget);
@@ -108,7 +110,6 @@ class PostgreBudgetRepositoryTest {
 
     @Test
     void testDeleteBudgetByUser() {
-        TrackerUser user = getTestUser();
         BudgetEntity budget = getTestBudget();
         repository = new PostgreBudgetRepository(connectionProvider);
         Optional<BudgetEntity> optional = repository.createBudget(budget);
@@ -158,7 +159,7 @@ class PostgreBudgetRepositoryTest {
         repository = new PostgreBudgetRepository(connectionProvider);
         BudgetEntity budget = getTestBudget();
         repository.createBudget(budget);
-        List<BudgetEntity> list = repository.getBudgetByUserId(userid);
+        List<BudgetEntity> list = repository.getBudgetByUserId(user.getId());
         assertFalse(list.isEmpty());
         repository.deleteBudget(budget);
     }
@@ -176,15 +177,14 @@ class PostgreBudgetRepositoryTest {
         BudgetEntity budget = new BudgetEntity();
         budget.setUuid(uuid);
         budget.setLimit(limit);
-        budget.setUserId(userid);
+        budget.setUserId(user.getId());
         return budget;
     }
 
-    private TrackerUser getTestUser() {
+    private static TrackerUser getTestUser() {
         TrackerUser user = new TrackerUser(username, email, password);
         user.setRole(Role.USER);
         user.setEnabled(true);
-        user.setId(userid);
         return user;
     }
 }

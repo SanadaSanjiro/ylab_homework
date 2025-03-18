@@ -22,6 +22,8 @@ public class AdmDataInput {
      * does not have the administrator role
      */
     public String getUsers() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         if (!isAdmin()) {
             return "You do not have permission to perform such an operation.";
         }
@@ -34,6 +36,8 @@ public class AdmDataInput {
      *  does not have the administrator role
      */
     public String getUserTransactions() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         if (!isAdmin()) {
             return "You do not have permission to perform such an operation.";
         }
@@ -47,6 +51,8 @@ public class AdmDataInput {
      *  does not have the administrator role
      */
     public String blockUser() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         if (!isAdmin()) {
             return "You do not have permission to perform such an operation.";
         };
@@ -60,6 +66,8 @@ public class AdmDataInput {
      *  does not have the administrator role
      */
     public String unblockUser() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         if (!isAdmin()) {
             return "You do not have permission to perform such an operation.";
         };
@@ -74,6 +82,8 @@ public class AdmDataInput {
      *  does not have the administrator role
      */
     public String deleteUser() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         if (!isAdmin()) {
             return "You do not have permission to perform such an operation.";
         };
@@ -87,6 +97,8 @@ public class AdmDataInput {
      *  does not have the administrator role
      */
     public String changeUserRole() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         if (!isAdmin()) {
             return "You do not have permission to perform such an operation.";
         };

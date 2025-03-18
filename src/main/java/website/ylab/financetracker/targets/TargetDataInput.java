@@ -17,6 +17,7 @@ public class TargetDataInput {
 
     public String setTarget() {
         TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         double target=0;
         do {
             try {
@@ -31,6 +32,7 @@ public class TargetDataInput {
 
     public String getTarget() {
         TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         Double target = targetService.getTarget(user);
         if (Objects.isNull(target)) { return "No target found"; }
         double income = getIncome(user);

@@ -10,31 +10,35 @@ public class TargetEntity {
         return id;
     }
 
-    public void setId(long id) {
+    public TargetEntity setId(long id) {
         this.id = id;
+        return this;
     }
 
     public double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public TargetEntity setAmount(double amount) {
         this.amount = amount;
+        return this;
     }
 
     public long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public TargetEntity setUserId(long userId) {
         this.userId = userId;
+        return this;
     }
 
     public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public TargetEntity setUuid(String uuid) {
         this.uuid = uuid;
+        return this;
     }
 }

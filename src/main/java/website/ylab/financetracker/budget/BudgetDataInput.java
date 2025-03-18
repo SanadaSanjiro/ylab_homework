@@ -33,6 +33,7 @@ public class BudgetDataInput {
 
     public String setBudget() {
         TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         double limit=0;
         do {
             try {
@@ -47,6 +48,7 @@ public class BudgetDataInput {
 
     public String getBudget() {
         TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         Double limit = budgetService.getBudget(user);
         if (Objects.isNull(limit)) { return "No budget limits found"; }
         double expenses = getExpenses(user);

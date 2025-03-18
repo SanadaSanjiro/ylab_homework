@@ -1,5 +1,8 @@
 package website.ylab.financetracker.out.persistence.postgre.budget;
 
+/**
+ * A budget model used for data storage.
+ */
 public class BudgetEntity {
     private long id;
     private double limit;
@@ -10,32 +13,36 @@ public class BudgetEntity {
         return id;
     }
 
-    public void setId(long id) {
+    public BudgetEntity setId(long id) {
         this.id = id;
+        return this;
     }
 
     public double getLimit() {
         return limit;
     }
 
-    public void setLimit(double limit) {
+    public BudgetEntity setLimit(double limit) {
         this.limit = limit;
+        return this;
     }
 
     public long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public BudgetEntity setUserId(long userId) {
         this.userId = userId;
+        return this;
     }
 
     public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public BudgetEntity setUuid(String uuid) {
         this.uuid = uuid;
+        return this;
     }
 
     @Override
