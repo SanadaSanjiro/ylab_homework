@@ -1,6 +1,6 @@
 package website.ylab.financetracker.in.dto.target;
 
-public class TargetOutDto {
+public class TargetResponse {
     private double amount;
     private String uuid;
 
@@ -8,7 +8,7 @@ public class TargetOutDto {
         return amount;
     }
 
-    public TargetOutDto setAmount(double amount) {
+    public TargetResponse setAmount(double amount) {
         this.amount = amount;
         return this;
     }
@@ -17,7 +17,7 @@ public class TargetOutDto {
         return uuid;
     }
 
-    public TargetOutDto setUuid(String uuid) {
+    public TargetResponse setUuid(String uuid) {
         this.uuid = uuid;
         return this;
     }

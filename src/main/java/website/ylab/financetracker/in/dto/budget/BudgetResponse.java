@@ -1,6 +1,6 @@
 package website.ylab.financetracker.in.dto.budget;
 
-public class BudgetOutDto {
+public class BudgetResponse {
     private double limit;
     private String uuid;
 
@@ -8,7 +8,7 @@ public class BudgetOutDto {
         return limit;
     }
 
-    public BudgetOutDto setLimit(double limit) {
+    public BudgetResponse setLimit(double limit) {
         this.limit = limit;
         return this;
     }
@@ -17,7 +17,7 @@ public class BudgetOutDto {
         return uuid;
     }
 
-    public BudgetOutDto setUuid(String uuid) {
+    public BudgetResponse setUuid(String uuid) {
         this.uuid = uuid;
         return this;
     }

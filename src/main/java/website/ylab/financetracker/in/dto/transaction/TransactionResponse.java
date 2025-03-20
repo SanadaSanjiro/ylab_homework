@@ -4,18 +4,30 @@ import website.ylab.financetracker.transactions.TransactionType;
 
 import java.util.Date;
 
-public class TransactionInDto {
+public class TransactionResponse {
+    private long id;
     private TransactionType type;
     private double amount;
     private String category;
     private Date date;
     private String description;
+    private long userId;
+    private String uuid;
+
+    public long getId() {
+        return id;
+    }
+
+    public TransactionResponse setId(long id) {
+        this.id = id;
+        return this;
+    }
 
     public TransactionType getType() {
         return type;
     }
 
-    public TransactionInDto setType(TransactionType type) {
+    public TransactionResponse setType(TransactionType type) {
         this.type = type;
         return this;
     }
@@ -24,7 +36,7 @@ public class TransactionInDto {
         return amount;
     }
 
-    public TransactionInDto setAmount(double amount) {
+    public TransactionResponse setAmount(double amount) {
         this.amount = amount;
         return this;
     }
@@ -33,7 +45,7 @@ public class TransactionInDto {
         return category;
     }
 
-    public TransactionInDto setCategory(String category) {
+    public TransactionResponse setCategory(String category) {
         this.category = category;
         return this;
     }
@@ -42,7 +54,7 @@ public class TransactionInDto {
         return date;
     }
 
-    public TransactionInDto setDate(Date date) {
+    public TransactionResponse setDate(Date date) {
         this.date = date;
         return this;
     }
@@ -51,8 +63,26 @@ public class TransactionInDto {
         return description;
     }
 
-    public TransactionInDto setDescription(String description) {
+    public TransactionResponse setDescription(String description) {
         this.description = description;
+        return this;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public TransactionResponse setUserId(long userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public TransactionResponse setUuid(String uuid) {
+        this.uuid = uuid;
         return this;
     }
 }

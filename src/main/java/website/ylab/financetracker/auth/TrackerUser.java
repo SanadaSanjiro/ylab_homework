@@ -15,8 +15,8 @@ public class TrackerUser {
     }
 
     public TrackerUser(String username, String email, String password) {
-        this.username = username.toLowerCase();
-        this.email = email.toLowerCase();
+        this.username = username;
+        this.email = email;
         this.password = password;
     }
 

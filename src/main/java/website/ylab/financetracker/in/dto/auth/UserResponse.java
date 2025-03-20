@@ -2,7 +2,7 @@ package website.ylab.financetracker.in.dto.auth;
 
 import website.ylab.financetracker.auth.Role;
 
-public class UserOutDto {
+public class UserResponse {
     private long id;
     private String name;
     private String email;
@@ -13,7 +13,7 @@ public class UserOutDto {
         return id;
     }
 
-    public UserOutDto setId(long id) {
+    public UserResponse setId(long id) {
         this.id = id;
         return this;
     }
@@ -22,7 +22,7 @@ public class UserOutDto {
         return name;
     }
 
-    public UserOutDto setName(String name) {
+    public UserResponse setName(String name) {
         this.name = name;
         return this;
     }
@@ -31,7 +31,7 @@ public class UserOutDto {
         return email;
     }
 
-    public UserOutDto setEmail(String email) {
+    public UserResponse setEmail(String email) {
         this.email = email;
         return this;
     }
@@ -40,7 +40,7 @@ public class UserOutDto {
         return enabled;
     }
 
-    public UserOutDto setEnabled(boolean enabled) {
+    public UserResponse setEnabled(boolean enabled) {
         this.enabled = enabled;
         return this;
     }
@@ -49,7 +49,7 @@ public class UserOutDto {
         return role;
     }
 
-    public UserOutDto setRole(Role role) {
+    public UserResponse setRole(Role role) {
         this.role = role;
         return this;
     }
