@@ -35,7 +35,7 @@ public class TransactionDataInput {
         double amount = getAmount();
         String category = getCategory();
         String description = getDescription();
-        return transactionService.changeTransaction(id, amount, category,description);
+        return transactionService.changeTransaction(id, amount, category, description);
     }
 
     public String deleteTransaction() {
