@@ -1,7 +1,6 @@
 package website.ylab.financetracker.in.dto.auth;
 
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import website.ylab.financetracker.auth.TrackerUser;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +12,7 @@ class UserMapperTest {
 
     @Test
     void toUser() {
-        UserMapper mapper = Mappers.getMapper(UserMapper.class);
+        UserMapper mapper = UserMapper.INSTANCE;
         TrackerUser user = mapper.toUser(getRequest());
         assertEquals(username.toLowerCase(), user.getUsername());
         assertEquals(password, user.getPassword());
