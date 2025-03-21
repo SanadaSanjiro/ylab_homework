@@ -1,5 +1,7 @@
 package website.ylab.financetracker.auth;
 
+import website.ylab.financetracker.in.dto.auth.UserMapper;
+import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.out.persistence.TrackerUserRepository;
 
 import java.util.Optional;
@@ -10,25 +12,27 @@ import static website.ylab.financetracker.auth.UserDataVerificator.isUniqueName;
 public class UserRegistrationService {
     private final TrackerUserRepository trackerUserRepository;
     private static long userCounter=0L;
+    private final UserMapper mapper = UserMapper.INSTANCE;
 
     public UserRegistrationService(TrackerUserRepository trackerUserRepository) {
         this.trackerUserRepository = trackerUserRepository;
     }
 
-    public String addNewUser(String username, String email, String password) {
-        if (!isUniqueName(trackerUserRepository, username)) {
-            return "Username is already in use";
+    public UserResponse addNewUser(TrackerUser newUser) {
+        if (!isUniqueName(trackerUserRepository, newUser.getUsername())) {
+            return null;
         }
-        if (!isUniqueEmail(trackerUserRepository, email)) {
-            return "Email is already in use";
+        if (!isUniqueEmail(trackerUserRepository, newUser.getEmail())) {
+            return null;
         }
-        TrackerUser user = getTrackerUser(username, email, password);
-        Optional<TrackerUser> optional = trackerUserRepository.create(user);
+        newUser.setEnabled(true);
+        newUser.setRole(Role.USER);
+        Optional<TrackerUser> optional = trackerUserRepository.create(newUser);
         if (optional.isPresent()) {
             TrackerUser trackerUser = optional.get();
-            return "User " +  trackerUser.getUsername() + " created with ID " + trackerUser.getId();
+            return mapper.toResponse(trackerUser);
         } else {
-            return "User creation error for name " + username;
+            return null;
         }
     }
 

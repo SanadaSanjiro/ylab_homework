@@ -50,17 +50,14 @@ public class PostgreUserRepository implements TrackerUserRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<TrackerUser> users =  parseRS(resultSet);
             Optional<TrackerUser> optional = users.stream().findFirst();
-            if (optional.isPresent()) {
-                return optional;
-            } else {
-                return Optional.empty();
-            }
+            return optional;
         } catch (SQLException e) {
                 System.out.println("Got SQL Exception in transaction " + e.getMessage());
                 return Optional.empty();
         }
     }
 
+    @Override
     public Optional<TrackerUser> getById(long id) {
         String query = "select * from fin_tracker.user where id = ?;";
         try (Connection connection = connectionProvider.getConnection()) {

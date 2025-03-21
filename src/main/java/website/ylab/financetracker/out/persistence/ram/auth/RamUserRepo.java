@@ -32,6 +32,11 @@ public class RamUserRepo implements TrackerUserRepository {
     }
 
     @Override
+    public Optional<TrackerUser> getById(long id) {
+        return users.stream().filter(user -> user.getId() == id).findFirst();
+    }
+
+    @Override
     public Optional<TrackerUser> update(TrackerUser user) {
         long id = user.getId();
         Optional<TrackerUser> optional = users.stream()

@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface TrackerUserRepository {
     Optional<TrackerUser> create(TrackerUser user);
     Optional<TrackerUser> getByName(String username);
+    Optional<TrackerUser> getById(long id);
     Optional<TrackerUser> update(TrackerUser user);
     Optional<TrackerUser> delete(TrackerUser user);
     List<TrackerUser> getAllUsers();

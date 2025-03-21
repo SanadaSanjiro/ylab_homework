@@ -92,9 +92,10 @@ public class TransactionService {
 
     /**
      * Provides all transactions of the user.
-     * @return list of transactions of the user
+     * @param userId long user's id
+     * @return  List<TransactionResponse>
      */
-    public List<TrackerTransaction> getUserTransaction(TrackerUser user) {
-        return repository.getByUserId(user.getId());
+    public List<TrackerTransaction> getUserTransaction(long userId) {
+        return repository.getByUserId(userId);
     }
 }

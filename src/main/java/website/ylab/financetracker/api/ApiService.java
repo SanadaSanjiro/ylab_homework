@@ -4,10 +4,12 @@ import website.ylab.financetracker.ServiceProvider;
 import website.ylab.financetracker.auth.TrackerUser;
 import website.ylab.financetracker.budget.BudgetDataInput;
 import website.ylab.financetracker.budget.BudgetService;
+import website.ylab.financetracker.in.dto.auth.UserResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 /**
  * Provides methods for API.
  */

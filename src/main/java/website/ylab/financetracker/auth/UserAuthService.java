@@ -1,5 +1,7 @@
 package website.ylab.financetracker.auth;
 
+import website.ylab.financetracker.in.dto.auth.UserMapper;
+import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.out.persistence.TrackerUserRepository;
 
 import java.util.Optional;
@@ -10,25 +12,26 @@ import java.util.Optional;
 public class UserAuthService {
     private final TrackerUserRepository trackerUserRepository;
     private static TrackerUser currentUser = null;
+    private static UserMapper mapper = UserMapper.INSTANCE;
 
     public UserAuthService(TrackerUserRepository trackerUserRepository) {
         this.trackerUserRepository = trackerUserRepository;
     }
 
-    public String login(String username, String password) {
-        Optional<TrackerUser> optional= trackerUserRepository.getByName(username);
+    public UserResponse login(TrackerUser userData) {
+        Optional<TrackerUser> optional= trackerUserRepository.getByName(userData.getUsername());
         if (optional.isEmpty()) {
-            return "User not found";
+            return null;
         }
         TrackerUser user = optional.get();
-        if (!user.getPassword().equals(password)) {
-            return "Wrong password";
+        if (!user.getPassword().equals(userData.getPassword())) {
+            return null;
         }
         if (!user.isEnabled()) {
-            return "Your are blocked. Contact the administrator";
+            return null;
         }
         currentUser = user;
-        return "User " + username + " logged in";
+        return mapper.toResponse(currentUser);
     }
 
     public static void logout() {

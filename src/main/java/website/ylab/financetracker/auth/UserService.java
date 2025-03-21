@@ -1,10 +1,11 @@
 package website.ylab.financetracker.auth;
 
 import website.ylab.financetracker.ServiceProvider;
+import website.ylab.financetracker.in.dto.auth.UserMapper;
+import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.out.persistence.TrackerUserRepository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static website.ylab.financetracker.auth.UserDataVerificator.isUniqueEmail;
@@ -15,31 +16,35 @@ import static website.ylab.financetracker.auth.UserDataVerificator.isUniqueName;
  */
 public class UserService {
     private final TrackerUserRepository trackerUserRepository;
+    private final UserMapper mapper = UserMapper.INSTANCE;
 
     public UserService(TrackerUserRepository trackerUserRepository) {
         this.trackerUserRepository = trackerUserRepository;
     }
-    public String changeUser(TrackerUser newUser) {
+    public UserResponse changeUser(TrackerUser newUser) {
         TrackerUser oldUser = UserAuthService.getCurrentUser();
 
         if (!oldUser.getUsername().equals(newUser.getUsername())) {
             if (!isUniqueName(trackerUserRepository, newUser.getUsername())) {
-                return "Username is already in use";
+                return null;
             } else oldUser.setUsername(newUser.getUsername());
         }
 
         if (!oldUser.getEmail().equals(newUser.getEmail())) {
             if (!isUniqueEmail(trackerUserRepository, newUser.getEmail())) {
-                return "Email is already in use";
+                return null;
             } else oldUser.setEmail(newUser.getEmail());
         }
 
         if (!oldUser.getPassword().equals(newUser.getPassword())) {
             oldUser.setPassword(newUser.getPassword());
         }
+        Optional<TrackerUser> optional = trackerUserRepository.update(oldUser);
+        return optional.map(mapper::toResponse).orElse(null);
+    }
 
-        trackerUserRepository.update(oldUser);
-        return "User data successfully changed";
+    public List<UserResponse> getAllUsersResponse() {
+        return mapper.toUserResponseList(trackerUserRepository.getAllUsers());
     }
 
     public List<TrackerUser> getAllUsers() {
@@ -48,61 +53,81 @@ public class UserService {
 
     /**
      * Removes a user from the system. Also deletes all of their data.
-     * @return String with a result.
+     * @return UserResponse with a deleted user o null if failed.
      */
-    public String deleteCurrentUser() {
+    public UserResponse deleteCurrentUser() {
         TrackerUser user = UserAuthService.getCurrentUser();
         UserAuthService.logout();
-        return deleteUser(user);
+        return deleteUser(user.getId());
+    }
+
+
+    /**
+     * Get user by id
+     * @param id long id
+     * @return UserResponse or null if not found
+     */
+    public UserResponse getById(long id) {
+        Optional<TrackerUser> optional = trackerUserRepository.getById(id);
+        return optional.map(mapper::toResponse).orElse(null);
     }
 
     /**
      * Removes a user from the system. Also deletes all of their data.
-     * @param user TrackerUser
+     * @param id long user id to delete
      * @return String with a result.
      */
-    public String deleteUser(TrackerUser user) {
-        Optional<TrackerUser> optional = trackerUserRepository.getByName(user.getUsername());
-        if (optional.isEmpty()) return "Error deleting user " + user;
+    public UserResponse deleteUser(long id) {
+        Optional<TrackerUser> optional = trackerUserRepository.getById(id);
+        if (optional.isEmpty()) return null;
         TrackerUser storedUser = optional.get();
         ServiceProvider.getTransactionService().deleteUserTransactions(storedUser);
         ServiceProvider.getBudgetService().deleteBudget(storedUser);
         ServiceProvider.getTargetService().deleteTarget(storedUser);
-        optional = trackerUserRepository.delete(user);
-        if (optional.isEmpty()) {
-            return "Error deleting user";
-        }
-        return "User successfully deleted";
+        optional = trackerUserRepository.delete(storedUser);
+        return optional.map(mapper::toResponse).orElse(null);
     }
 
     /**
      * blocking user
-     * @param user TrackingUser to block
-     * @return String message with result
+     * @param id long user id to block
+     * @return  UserResponse if success, null if failed
      */
-    public String blockUser(TrackerUser user) {
+    public UserResponse blockUser(long id) {
+        Optional<TrackerUser> optional = trackerUserRepository.getById(id);
+        if (optional.isEmpty()) return null;
+        TrackerUser user = optional.get();
         user.setEnabled(false);
-        Optional<TrackerUser> optional = trackerUserRepository.update(user);
-        if (optional.isPresent()) {return "User " + optional.get() + " blocked"; }
-        return "User block failed";
+        optional = trackerUserRepository.update(user);
+        return optional.map(mapper::toResponse).orElse(null);
     }
 
     /**
      * unblocking user
-     * @param user TrackingUser to unblock
-     * @return String message with result
+     * @param id long user id to unblock
+     * @return  UserResponse if success, null if failed
      */
-    public String unblockUser(TrackerUser user) {
+    public UserResponse unblockUser(long id) {
+        Optional<TrackerUser> optional = trackerUserRepository.getById(id);
+        if (optional.isEmpty()) return null;
+        TrackerUser user = optional.get();
         user.setEnabled(true);
-        Optional<TrackerUser> optional = trackerUserRepository.update(user);
-        if (optional.isPresent()) {return "User " + optional.get() + " unblocked"; }
-        return "User unblock failed";
+        optional = trackerUserRepository.update(user);
+        return optional.map(mapper::toResponse).orElse(null);
     }
 
-    public String changeUserRole(TrackerUser user, Role role) {
+    /**
+     * changing user's role
+     * @param id long user id to change role
+     * @param role new Role values
+     * @return UserResponse if success, null if failed
+     */
+    public UserResponse changeUserRole(long id, Role role) {
+        Optional<TrackerUser> optional = trackerUserRepository.getById(id);
+        if (optional.isEmpty()) return null;
+        TrackerUser user = optional.get();
         user.setRole(role);
-        Optional<TrackerUser> optional = trackerUserRepository.update(user);
-        if (optional.isPresent()) {return "User's role changed"; }
-        return "User's role change failed";
+        optional = trackerUserRepository.update(user);
+        return optional.map(mapper::toResponse).orElse(null);
     }
 }

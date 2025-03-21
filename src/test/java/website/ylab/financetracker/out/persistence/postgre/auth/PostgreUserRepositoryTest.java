@@ -120,6 +120,7 @@ class PostgreUserRepositoryTest {
         assertEquals(Role.USER, returnedUser.getRole());
     }
 
+
     @Test
     void update() {
         String newName = "Alice";

@@ -13,7 +13,7 @@ public class LoginDataInput {
         String name = getName(scanner);
         String password = getPassword(scanner);
         UserAuthService authService = ServiceProvider.getUserAuthService();
-        return authService.login(name, password);
+        return authService.login(new TrackerUser().setUsername(name).setPassword(password)).toString();
     }
 
     public static String logout() {

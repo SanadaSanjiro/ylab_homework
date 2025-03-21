@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class TransactionResponse {
     private long id;
-    private TransactionType type;
+    private String type;
     private double amount;
     private String category;
     private Date date;
@@ -23,11 +23,11 @@ public class TransactionResponse {
         return this;
     }
 
-    public TransactionType getType() {
+    public String getType() {
         return type;
     }
 
-    public TransactionResponse setType(TransactionType type) {
+    public TransactionResponse setType(String type) {
         this.type = type;
         return this;
     }
@@ -84,5 +84,19 @@ public class TransactionResponse {
     public TransactionResponse setUuid(String uuid) {
         this.uuid = uuid;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "TransactionResponse{" +
+                "id=" + id +
+                ", type=" + type +
+                ", amount=" + amount +
+                ", category='" + category + '\'' +
+                ", date=" + date +
+                ", description='" + description + '\'' +
+                ", userId=" + userId +
+                ", uuid='" + uuid + '\'' +
+                "}\n";
     }
 }

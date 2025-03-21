@@ -7,7 +7,7 @@ public class UserResponse {
     private String name;
     private String email;
     private boolean enabled;
-    private Role role;
+    private String role;
 
     public long getId() {
         return id;
@@ -45,12 +45,23 @@ public class UserResponse {
         return this;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public UserResponse setRole(Role role) {
+    public UserResponse setRole(String role) {
         this.role = role;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "UserResponse{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", enabled=" + enabled +
+                ", role='" + role + '\'' +
+                "}\n";
     }
 }

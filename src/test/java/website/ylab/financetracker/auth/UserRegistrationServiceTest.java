@@ -22,7 +22,7 @@ class UserRegistrationServiceTest {
         Optional<TrackerUser> userOptional=Optional.of(user);
         Mockito.when(trackerUserRepository.create(Mockito.any())).thenReturn(userOptional);
         UserRegistrationService userRegistrationService = new UserRegistrationService(trackerUserRepository);
-        String result = userRegistrationService.addNewUser(username, email, password);
+        String result = userRegistrationService.addNewUser(new TrackerUser(username, email, password)).toString();
         assertEquals("User bob created with ID 1", result);
     }
 
@@ -31,7 +31,8 @@ class UserRegistrationServiceTest {
         Optional<TrackerUser> userOptional=Optional.empty();
         Mockito.when(trackerUserRepository.create(Mockito.any())).thenReturn(userOptional);
         UserRegistrationService userRegistrationService = new UserRegistrationService(trackerUserRepository);
-        String result = userRegistrationService.addNewUser("User", "user@user.com", "123");
+        String result = userRegistrationService.addNewUser(
+                new TrackerUser("User", "user@user.com", "123")).toString();
         assertEquals("User creation error for name User", result);
     }
 }

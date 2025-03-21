@@ -8,6 +8,7 @@ import website.ylab.financetracker.auth.TrackerUser;
 import website.ylab.financetracker.auth.UserService;
 import website.ylab.financetracker.budget.BudgetDataInput;
 import website.ylab.financetracker.budget.BudgetService;
+import website.ylab.financetracker.in.dto.auth.UserResponse;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ class ApiServiceTest {
     void getEmailNotifications() {
         UserService userService = Mockito.mock(UserService.class);
         BudgetService budgetService = Mockito.mock(BudgetService.class);
-        Mockito.when(userService.getAllUsers()).thenReturn(List.of(createUser()));
+        Mockito.when(userService.getAllUsersResponse()).thenReturn(List.of(createResponse()));
         Mockito.when(budgetService.getBudget(Mockito.any())).thenReturn(Double.valueOf(100));
         Mockito.when(budgetDataInput.isExceeded(Mockito.any())).thenReturn(true);
         try (MockedStatic<ServiceProvider> serviceProvider = Mockito.mockStatic(ServiceProvider.class)) {
@@ -44,5 +45,13 @@ class ApiServiceTest {
         String email = "bob@gmail.com";
         TrackerUser user=new TrackerUser(username, email, password);
         return user;
+    }
+
+    private UserResponse createResponse() {
+        String username = "Bob";
+        String password = "123456";
+        String email = "bob@gmail.com";
+        UserResponse response = new UserResponse().setName(username).setEmail(email);
+        return response;
     }
 }

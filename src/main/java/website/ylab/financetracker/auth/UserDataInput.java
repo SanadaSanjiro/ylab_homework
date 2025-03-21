@@ -22,7 +22,7 @@ public class UserDataInput {
         String password = getPassword(scanner, "Please enter your password. " +
                 "It must be between 1 and 20 characters");
         UserRegistrationService userRegService = ServiceProvider.getUserRegistrationService();
-        return userRegService.addNewUser(name, email, password);
+        return userRegService.addNewUser(new TrackerUser(name, email, password)).toString();
     }
 
     public static String changeUserData() {
@@ -40,7 +40,7 @@ public class UserDataInput {
                 It must be between 1 and 20 characters""");
         TrackerUser user = new TrackerUser(name, email, password);
         UserService userService = ServiceProvider.getUserService();
-        return userService.changeUser(user);
+        return userService.changeUser(user).toString();
     }
 
     public static String deleteUser() {
@@ -55,7 +55,7 @@ public class UserDataInput {
             String answer = scanner.nextLine();
             if (answer.equalsIgnoreCase("y")) {
                 UserService userService = ServiceProvider.getUserService();
-                return userService.deleteCurrentUser();
+                return userService.deleteCurrentUser().toString();
             }
             if (answer.equalsIgnoreCase("n")) {
                 return "Operation cancelled";

@@ -5,11 +5,29 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import website.ylab.financetracker.auth.TrackerUser;
 
+import java.util.List;
+
+/**
+ * Mapctruct interface to user objects mapping
+ */
+
 @Mapper()
 public interface UserMapper {
     //add instance to call mapper
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(source = "username", target = "username")
-    TrackerUser toUser(UserRequest request);
+    /**
+     * Maps TrackerUser into UserResponse
+     * @param user TrackerUser user to map
+     * @return UserResponse
+     */
+    @Mapping(source = "username", target = "name")
+    UserResponse toResponse(TrackerUser user);
+
+    /**
+     * Maps List of TrackerUser objects into List of UserResponse objects
+     * @param users List<TrackerUser>
+     * @return List<UserResponse>
+     */
+    List<UserResponse> toUserResponseList(List<TrackerUser> users);
 }

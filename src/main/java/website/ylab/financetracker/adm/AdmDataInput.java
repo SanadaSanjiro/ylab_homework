@@ -57,7 +57,7 @@ public class AdmDataInput {
             return "You do not have permission to perform such an operation.";
         };
         System.out.println("Enter the user ID to block");
-        return admService.blockUser(getUserId());
+        return admService.blockUser(getUserId()).toString();
     }
 
     /**
@@ -72,7 +72,7 @@ public class AdmDataInput {
             return "You do not have permission to perform such an operation.";
         };
         System.out.println("Enter the user ID to unblock");
-        return admService.unblockUser(getUserId());
+        return admService.unblockUser(getUserId()).toString();
     }
 
 
@@ -88,7 +88,7 @@ public class AdmDataInput {
             return "You do not have permission to perform such an operation.";
         };
         System.out.println("Enter the user ID to delete");
-        return admService.deleteUser(getUserId());
+        return admService.deleteUser(getUserId()).toString();
     }
 
     /**
@@ -105,13 +105,7 @@ public class AdmDataInput {
         System.out.println("Enter the user ID to change role");
         long id = getUserId();
         Role role = getRole();
-        return admService.changeUserRole(role, id);
-    }
-
-    private Optional<TrackerUser> getUserById(long id) {
-        return ServiceProvider.getUserService().getAllUsers().stream()
-                .filter(u->u.getId()==id)
-                .findFirst();
+        return admService.changeUserRole(role, id).toString();
     }
 
     private boolean isAdmin() {
