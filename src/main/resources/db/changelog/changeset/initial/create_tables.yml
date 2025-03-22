@@ -1,0 +1,158 @@
+databaseChangeLog:
+  -  changeSet:
+       id:  20250315_011
+       author:  admin
+       changes:
+         - createTable:
+             columns:
+               - column:
+                   valueSequenceNext: seq_user_id
+                   autoIncrement: true
+                   constraints:
+                     nullable: false
+                     primaryKey: true
+                     primaryKeyName: user_id
+                   name: id
+                   type: BIGINT
+               - column:
+                   constraints:
+                     nullable: false
+                   name: name
+                   type: VARCHAR(255)
+               - column:
+                   constraints:
+                     nullable: false
+                   name: email
+                   type: VARCHAR(255)
+               - column:
+                   constraints:
+                     nullable: false
+                   name: password
+                   type: VARCHAR(255)
+               - column:
+                   constraints:
+                     nullable: false
+                   name: role
+                   type: VARCHAR(255)
+               - column:
+                   constraints:
+                     nullable: false
+                   name: enabled
+                   type: BOOLEAN
+             tableName: user
+
+  -  changeSet:
+       id:  20250315_012
+       author:  admin
+       changes:
+         - createTable:
+             columns:
+               - column:
+                   valueSequenceNext: seq_trans_id
+                   autoIncrement: true
+                   constraints:
+                     nullable: false
+                     primaryKey: true
+                     primaryKeyName: trans_id
+                   name: id
+                   type: BIGINT
+               - column:
+                   constraints:
+                     nullable: false
+                   name: category
+                   type: VARCHAR(255)
+               - column:
+                   constraints:
+                     nullable: false
+                   name: description
+                   type: VARCHAR(255)
+               - column:
+                   constraints:
+                     nullable: false
+                   name: type
+                   type: VARCHAR(255)
+               - column:
+                   constraints:
+                     nullable: false
+                   name: amount
+                   type: DOUBLE
+               - column:
+                   constraints:
+                     nullable: false
+                   name: date
+                   type: TIMESTAMP
+               - column:
+                   constraints:
+                     nullable: false
+                   name: userid
+                   type: BIGINT
+               - column:
+                   constraints:
+                     nullable: false
+                   name: uuid
+                   type: VARCHAR(255)
+             tableName: ft_transaction
+
+  -  changeSet:
+       id:  20250315_013
+       author:  admin
+       changes:
+         - createTable:
+             columns:
+               - column:
+                   valueSequenceNext: seq_target_id
+                   autoIncrement: true
+                   constraints:
+                     nullable: false
+                     primaryKey: true
+                     primaryKeyName: target_id
+                   name: id
+                   type: BIGINT
+               - column:
+                   constraints:
+                     nullable: false
+                   name: amount
+                   type: DOUBLE
+               - column:
+                   constraints:
+                     nullable: false
+                   name: userid
+                   type: BIGINT
+               - column:
+                   constraints:
+                     nullable: false
+                   name: uuid
+                   type: VARCHAR(255)
+             tableName: target
+
+  -  changeSet:
+       id:  20250315_014
+       author:  admin
+       changes:
+         - createTable:
+             columns:
+               - column:
+                   valueSequenceNext: seq_budget_id
+                   autoIncrement: true
+                   constraints:
+                     nullable: false
+                     primaryKey: true
+                     primaryKeyName: id
+                   name: id
+                   type: BIGINT
+               - column:
+                   constraints:
+                     nullable: false
+                   name: bg_limit
+                   type: DOUBLE
+               - column:
+                   constraints:
+                     nullable: false
+                   name: userid
+                   type: BIGINT
+               - column:
+                   constraints:
+                     nullable: false
+                   name: uuid
+                   type: VARCHAR(255)
+             tableName: budget

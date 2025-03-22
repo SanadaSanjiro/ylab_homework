@@ -1,8 +1,10 @@
 package website.ylab.financetracker.auth;
 
 import website.ylab.financetracker.ServiceProvider;
+import website.ylab.financetracker.out.persistence.TrackerUserRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static website.ylab.financetracker.auth.UserDataVerificator.isUniqueEmail;
@@ -35,6 +37,8 @@ public class UserService {
         if (!oldUser.getPassword().equals(newUser.getPassword())) {
             oldUser.setPassword(newUser.getPassword());
         }
+
+        trackerUserRepository.update(oldUser);
         return "User data successfully changed";
     }
 
@@ -48,6 +52,7 @@ public class UserService {
      */
     public String deleteCurrentUser() {
         TrackerUser user = UserAuthService.getCurrentUser();
+        UserAuthService.logout();
         return deleteUser(user);
     }
 
@@ -57,14 +62,47 @@ public class UserService {
      * @return String with a result.
      */
     public String deleteUser(TrackerUser user) {
-        ServiceProvider.getTransactionService().deleteUserTransactions(user);
-        ServiceProvider.getBudgetService().deleteBudget(user);
-        ServiceProvider.getTargetService().deleteTarget(user);
-        UserAuthService.logout();
-        Optional<TrackerUser> optional = trackerUserRepository.delete(user);
+        Optional<TrackerUser> optional = trackerUserRepository.getByName(user.getUsername());
+        if (optional.isEmpty()) return "Error deleting user " + user;
+        TrackerUser storedUser = optional.get();
+        ServiceProvider.getTransactionService().deleteUserTransactions(storedUser);
+        ServiceProvider.getBudgetService().deleteBudget(storedUser);
+        ServiceProvider.getTargetService().deleteTarget(storedUser);
+        optional = trackerUserRepository.delete(user);
         if (optional.isEmpty()) {
             return "Error deleting user";
         }
         return "User successfully deleted";
+    }
+
+    /**
+     * blocking user
+     * @param user TrackingUser to block
+     * @return String message with result
+     */
+    public String blockUser(TrackerUser user) {
+        user.setEnabled(false);
+        Optional<TrackerUser> optional = trackerUserRepository.update(user);
+        if (optional.isPresent()) {return "User " + optional.get() + " blocked"; }
+        return "User block failed";
+    }
+
+    /**
+     * unblocking user
+     * @param user TrackingUser to unblock
+     * @return String message with result
+     */
+    public String unblockUser(TrackerUser user) {
+        user.setEnabled(true);
+        Optional<TrackerUser> optional = trackerUserRepository.update(user);
+        if (optional.isPresent()) {return "User " + optional.get() + " unblocked"; }
+        return "User unblock failed";
+    }
+
+    public String changeUserRole(TrackerUser user, Role role) {
+        user.setRole(role);
+        Optional<TrackerUser> optional = trackerUserRepository.update(user);
+        if (optional.isPresent()) {return "User's role changed"; }
+        return "User's role change failed";
     }
 }

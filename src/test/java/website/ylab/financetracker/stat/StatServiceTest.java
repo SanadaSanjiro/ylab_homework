@@ -39,10 +39,10 @@ class StatServiceTest {
         transaction2.setAmount(100);
         transaction3.setAmount(5);
         transaction4.setAmount(50);
-        transaction1.setUser(user);
-        transaction2.setUser(user);
-        transaction3.setUser(user);
-        transaction4.setUser(user);
+        transaction1.setUserId(user.getId());
+        transaction2.setUserId(user.getId());
+        transaction3.setUserId(user.getId());
+        transaction4.setUserId(user.getId());
         transaction1.setDate(date);
         transaction2.setDate(date);
         transaction3.setDate(date);

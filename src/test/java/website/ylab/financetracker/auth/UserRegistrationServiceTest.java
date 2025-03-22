@@ -2,6 +2,7 @@ package website.ylab.financetracker.auth;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import website.ylab.financetracker.out.persistence.TrackerUserRepository;
 
 
 import java.util.Optional;

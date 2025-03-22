@@ -1,15 +1,20 @@
-package website.ylab.financetracker.transactions;
+package website.ylab.financetracker.out.persistence.ram.transaction;
+
+import website.ylab.financetracker.out.persistence.TrackerTransactionRepository;
+import website.ylab.financetracker.transactions.TrackerTransaction;
 
 import java.util.*;
 
 /**
  * In-memory repository implementation
  */
-public class RamTransactionRepo implements TrackerTransactionRepository{
+public class RamTransactionRepo implements TrackerTransactionRepository {
     private final List<TrackerTransaction> storage = new ArrayList<>();
+    private static long transacCounter=1L;
     @Override
     public Optional<TrackerTransaction> create(TrackerTransaction transaction) {
             if (!storage.contains(transaction)) {
+                transaction.setId(transacCounter++);
                 storage.add(transaction);
                 return Optional.of(transaction);
             } else {
@@ -34,7 +39,7 @@ public class RamTransactionRepo implements TrackerTransactionRepository{
     }
 
     @Override
-    public Optional<TrackerTransaction> get(long id) {
+    public Optional<TrackerTransaction> getById(long id) {
         return getTransaction(id);
     }
 
@@ -48,6 +53,11 @@ public class RamTransactionRepo implements TrackerTransactionRepository{
                 .stream()
                 .filter(trackerTransaction -> trackerTransaction.getId() == id)
                 .findFirst();
+    }
+
+    @Override
+    public List<TrackerTransaction> getByUserId(long userid) {
+        return storage.stream().filter(t->t.getUserId()==userid).toList();
     }
 
     private void copyTransactionData(TrackerTransaction oldTransaction, TrackerTransaction newTransaction) {

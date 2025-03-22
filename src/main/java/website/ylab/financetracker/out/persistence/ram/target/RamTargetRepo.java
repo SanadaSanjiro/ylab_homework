@@ -1,6 +1,7 @@
-package website.ylab.financetracker.targets;
+package website.ylab.financetracker.out.persistence.ram.target;
 
 import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.out.persistence.TargetRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Optional;
  * In-memory repository implementation
  */
 
-public class RamTargetRepo implements TargetRepository{
+public class RamTargetRepo implements TargetRepository {
     private final Map<TrackerUser, Double> storage = new HashMap<>();
 
     @Override

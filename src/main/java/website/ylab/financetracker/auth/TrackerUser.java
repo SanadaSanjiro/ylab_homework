@@ -24,48 +24,54 @@ public class TrackerUser {
         return username;
     }
 
-    public void setUsername(String username) {
+    public TrackerUser setUsername(String username) {
         this.username = username.toLowerCase();
+        return this;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public TrackerUser setPassword(String password) {
         this.password = password;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public TrackerUser setEmail(String email) {
         this.email = email.toLowerCase();
+        return this;
     }
 
     public boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public TrackerUser setEnabled(boolean enabled) {
         this.enabled = enabled;
+        return this;
     }
 
     public Role getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public TrackerUser setRole(Role role) {
         this.role = role;
+        return this;
     }
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public TrackerUser setId(long id) {
         this.id = id;
+        return this;
     }
 
     @Override
@@ -77,6 +83,6 @@ public class TrackerUser {
                 ", email='" + email + '\'' +
                 ", enabled=" + enabled +
                 ", role=" + role +
-                '}';
+                "}\n";
     }
 }

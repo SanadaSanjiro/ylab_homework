@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250317_002
+      author: Admin
+      runOnChange: true
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: category
+                  name: category
+                  type: VARCHAR
+              - column:
+                  header: description
+                  name: description
+                  type: VARCHAR
+              - column:
+                  header: type
+                  name: type
+                  type: VARCHAR
+              - column:
+                  header: amount
+                  name: amount
+                  type: DOUBLE
+              - column:
+                  header: date
+                  name: date
+                  type: DATE
+              - column:
+                  header: userid
+                  name: userid
+                  type: BIGINT
+              - column:
+                  header: uuid
+                  name: uuid
+                  type: VARCHAR
+            commentLineStartsWith: '#'
+            encoding: UTF-8
+            file: testdata/transactions.csv
+            quotchar: '"'
+            separator: ';'
+            relativeToChangelogFile: true
+            tableName: ft_transaction

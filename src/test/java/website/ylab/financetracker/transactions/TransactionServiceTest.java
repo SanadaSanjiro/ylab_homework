@@ -6,6 +6,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import website.ylab.financetracker.auth.TrackerUser;
 import website.ylab.financetracker.auth.UserAuthService;
+import website.ylab.financetracker.out.persistence.TrackerTransactionRepository;
 
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,7 @@ class TransactionServiceTest {
     Date date = new Date();
     String description = "Test";
     TrackerUser user = new TrackerUser();
+    TrackerUser otherUser = new TrackerUser();
     TrackerTransaction transaction = getTransaction();
     TransactionService transactionService;
 
@@ -44,6 +46,7 @@ class TransactionServiceTest {
 
         Mockito.when(repository.create(Mockito.any())).thenReturn(Optional.empty());
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
+            authMock.when(UserAuthService::getCurrentUser).thenReturn(user);
             assertEquals("Transaction creation error", transactionService
                     .addNewTransaction(type, amount, category, date, description));
         }
@@ -55,13 +58,14 @@ class TransactionServiceTest {
         String newCategory = "new category";
         String newDescription = "new description";
 
-        Mockito.when(repository.get(id)).thenReturn(Optional.empty());
+        Mockito.when(repository.getById(id)).thenReturn(Optional.empty());
         assertEquals("Transaction not found", transactionService
                 .changeTransaction(id, newAmount, newCategory, newDescription));
 
-        Mockito.when(repository.get(id)).thenReturn(Optional.of(transaction));
+        Mockito.when(repository.getById(id)).thenReturn(Optional.of(transaction));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
-            authMock.when(UserAuthService::getCurrentUser).thenReturn(new TrackerUser());
+            otherUser.setId(100L);
+            authMock.when(UserAuthService::getCurrentUser).thenReturn(otherUser);
             assertEquals("You do not have permission to change this transaction", transactionService
                     .changeTransaction(id, newAmount, newCategory, newDescription));
         }
@@ -82,17 +86,18 @@ class TransactionServiceTest {
                     .addNewTransaction(type, amount, category, date, description);
         }
 
-        Mockito.when(repository.get(id)).thenReturn(Optional.empty());
+        Mockito.when(repository.getById(id)).thenReturn(Optional.empty());
         assertEquals("Transaction not found", transactionService.deleteTransaction(id));
 
-        Mockito.when(repository.get(id)).thenReturn(Optional.of(transaction));
+        Mockito.when(repository.getById(id)).thenReturn(Optional.of(transaction));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
-            authMock.when(UserAuthService::getCurrentUser).thenReturn(new TrackerUser());
+            otherUser.setId(100L);
+            authMock.when(UserAuthService::getCurrentUser).thenReturn(otherUser);
             assertEquals("You do not have permission to delete this transaction", transactionService
                     .deleteTransaction(id));
         }
 
-        Mockito.when(repository.get(id)).thenReturn(Optional.of(transaction));
+        Mockito.when(repository.getById(id)).thenReturn(Optional.of(transaction));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
             authMock.when(UserAuthService::getCurrentUser).thenReturn(user);
             assertEquals("Transaction successfully deleted", transactionService
@@ -102,7 +107,8 @@ class TransactionServiceTest {
 
     @Test
     void getAllTransactions() {
-        Mockito.when(repository.getAllTransactions()).thenReturn(List.of(transaction));
+        transaction = getTransaction();
+        Mockito.when(repository.getByUserId(Mockito.anyLong())).thenReturn(List.of(transaction));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
             authMock.when(UserAuthService::getCurrentUser).thenReturn(user);
             assertFalse(transactionService.getAllTransactions().isEmpty());
@@ -129,7 +135,7 @@ class TransactionServiceTest {
         transaction.setDescription(description);
         transaction.setDate(date);
         transaction.setCategory(category);
-        transaction.setUser(user);
+        transaction.setUserId(user.getId());
         return transaction;
     }
 }

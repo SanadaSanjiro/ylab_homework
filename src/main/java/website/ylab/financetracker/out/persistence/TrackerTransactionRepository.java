@@ -1,4 +1,6 @@
-package website.ylab.financetracker.transactions;
+package website.ylab.financetracker.out.persistence;
+
+import website.ylab.financetracker.transactions.TrackerTransaction;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +9,7 @@ public interface TrackerTransactionRepository {
     Optional<TrackerTransaction> create(TrackerTransaction transaction);
     Optional<TrackerTransaction> update(TrackerTransaction transaction);
     Optional<TrackerTransaction> delete(TrackerTransaction transaction);
-    Optional<TrackerTransaction> get(long id);
+    Optional<TrackerTransaction> getById(long id);
+    List<TrackerTransaction> getByUserId(long userid);
     List<TrackerTransaction> getAllTransactions();
 }

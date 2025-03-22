@@ -33,9 +33,9 @@ public class EmailNotification {
 
     @Override
     public String toString() {
-        return "EmailNotification{" +
-                "email='" + email + '\n' +
-                ", body='" + body +
-                '}';
+        return "\nEmail\n" +
+                "mailto='" + email + '\n' +
+                body +
+                "\n===================================";
     }
 }

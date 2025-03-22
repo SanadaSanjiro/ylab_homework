@@ -3,6 +3,7 @@ package website.ylab.financetracker.auth;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import website.ylab.financetracker.out.persistence.TrackerUserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +55,7 @@ class UserServiceTest {
 
     @Test
     void deleteCurrentUser() {
+        Mockito.when(trackerUserRepository.getByName(Mockito.any())).thenReturn(Optional.of(user));
         Mockito.when(trackerUserRepository.delete(Mockito.any())).thenReturn(Optional.of(user));
         try (MockedStatic<UserAuthService> authMock = Mockito.mockStatic(UserAuthService.class)) {
             authMock.when(UserAuthService::getCurrentUser).thenReturn(user);

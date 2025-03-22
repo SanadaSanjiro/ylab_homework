@@ -1,6 +1,7 @@
-package website.ylab.financetracker.budget;
+package website.ylab.financetracker.out.persistence.ram.budget;
 
 import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.out.persistence.BudgetRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,12 +11,12 @@ import java.util.Optional;
 /**
  * In-memory repository implementation
  */
-public class RamBudgetRepo implements BudgetRepository{
+public class RamBudgetRepo implements BudgetRepository {
     private final Map<TrackerUser, Double> storage = new HashMap<>();
     @Override
-    public Optional<Double> setBudget(TrackerUser user, double amount) {
-        storage.put(user, amount);
-        return Optional.of(amount);
+    public Optional<Double> setBudget(TrackerUser user, double limit) {
+        storage.put(user, limit);
+        return Optional.of(limit);
     }
 
     @Override

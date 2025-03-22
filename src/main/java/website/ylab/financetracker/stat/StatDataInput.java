@@ -1,10 +1,13 @@
 package website.ylab.financetracker.stat;
 
 import website.ylab.financetracker.ServiceProvider;
+import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.auth.UserAuthService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -16,20 +19,28 @@ public class StatDataInput {
 
 
     public String getBalance() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         return statService.getBalance();
     }
 
     public String getTurnover() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         System.out.println("Enter the starting date for calculating the turnover");
         Date date = getDate();
         return statService.getTurnover(date);
     }
 
     public String getCategory() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         return statService.expensesByCategory();
     }
 
     public String getReport() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         return statService.getReport();
     }
 

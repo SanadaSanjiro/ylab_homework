@@ -1,0 +1,35 @@
+databaseChangeLog:
+- changeSet:
+      id: 20250317_001
+      author: Admin
+      runOnChange: true
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: name
+                  name: name
+                  type: VARCHAR
+              - column:
+                  header: email
+                  name: email
+                  type: VARCHAR
+              - column:
+                  header: password
+                  name: password
+                  type: VARCHAR
+              - column:
+                  header: role
+                  name: role
+                  type: VARCHAR
+              - column:
+                  header: enabled
+                  name: enabled
+                  type: BOOLEAN
+            commentLineStartsWith: '#'
+            encoding: UTF-8
+            file: testdata/users.csv
+            quotchar: '"'
+            separator: ';'
+            relativeToChangelogFile: true
+            tableName: user

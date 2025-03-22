@@ -1,5 +1,7 @@
 package website.ylab.financetracker.commands;
 
+import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.auth.UserAuthService;
 import website.ylab.financetracker.budget.BudgetDataInput;
 
 import java.util.Map;
@@ -16,12 +18,16 @@ public enum ApiCommand {
     EXCEEDANCE {
         @Override
         String execute(String[] args) {
+            TrackerUser user = UserAuthService.getCurrentUser();
+            if (Objects.isNull(user)) return "You should log in first";
             return Boolean.valueOf(dataInput.isExceedBudget()).toString();
         }
     },
     EMAILS {
         @Override
         String execute(String[] args) {
+            TrackerUser user = UserAuthService.getCurrentUser();
+            if (Objects.isNull(user)) return "You should log in first";
             return dataInput.getEmailNotifications().toString();
         }
     };

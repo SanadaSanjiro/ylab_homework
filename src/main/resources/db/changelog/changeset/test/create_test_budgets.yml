@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250317_003
+      author: Admin
+      runOnChange: true
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  header: bg_limit
+                  name: bg_limit
+                  type: DOUBLE
+              - column:
+                  header: userid
+                  name: userid
+                  type: BIGINT
+              - column:
+                  header: uuid
+                  name: uuid
+                  type: VARCHAR
+            commentLineStartsWith: '#'
+            encoding: UTF-8
+            file: testdata/budgets.csv
+            quotchar: '"'
+            separator: ';'
+            relativeToChangelogFile: true
+            tableName: budget

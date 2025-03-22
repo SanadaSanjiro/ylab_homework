@@ -1,0 +1,56 @@
+databaseChangeLog:
+-  changeSet:
+    id:  20250315_001
+    author:  admin
+    changes:
+    - createSequence:
+        cacheSize:  1
+        cycle:  false
+        dataType:  bigint
+        incrementBy:  1
+        minValue:  1
+        schemaName:  fin_tracker
+        sequenceName:  seq_budget_id
+        startValue:  1
+
+-  changeSet:
+    id:  20250315_002
+    author:  admin
+    changes:
+    - createSequence:
+        cacheSize:  1
+        cycle:  false
+        dataType:  bigint
+        incrementBy:  1
+        minValue:  1
+        schemaName:  fin_tracker
+        sequenceName:  seq_target_id
+        startValue:  1
+
+-  changeSet:
+    id:  20250315_003
+    author:  admin
+    changes:
+    - createSequence:
+        cacheSize:  1
+        cycle:  false
+        dataType:  bigint
+        incrementBy:  1
+        minValue:  1
+        schemaName:  fin_tracker
+        sequenceName:  seq_trans_id
+        startValue:  1
+
+-  changeSet:
+    id:  20250315_004
+    author:  admin
+    changes:
+    - createSequence:
+        cacheSize:  1
+        cycle:  false
+        dataType:  bigint
+        incrementBy:  1
+        minValue:  1
+        schemaName:  fin_tracker
+        sequenceName:  seq_user_id
+        startValue:  1

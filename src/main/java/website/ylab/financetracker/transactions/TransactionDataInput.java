@@ -1,13 +1,12 @@
 package website.ylab.financetracker.transactions;
 
 import website.ylab.financetracker.ServiceProvider;
+import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.auth.UserAuthService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Prompts the user for information required for transaction operations
@@ -17,6 +16,8 @@ public class TransactionDataInput {
     private final Scanner scanner = new Scanner(System.in);
 
     public String createNewTransaction() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         System.out.println("Enter new transaction data");
         TransactionType type = getType();
         double amount = getAmount();
@@ -27,6 +28,8 @@ public class TransactionDataInput {
     }
 
     public String updateTransaction() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         System.out.println("Please enter new details to update the transaction.");
         long id = getId();
         double amount = getAmount();
@@ -36,12 +39,16 @@ public class TransactionDataInput {
     }
 
     public String deleteTransaction() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         System.out.println("Please enter transaction id to delete.");
         long id = getId();
         return transactionService.deleteTransaction(id);
     }
 
     public String getTransactions() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         System.out.println("Please enter filters to transaction list. Press ENTER to skip filter");
         Date dateFilter = getDateFilter();
         String categoryFilter = getCategoryFilter();

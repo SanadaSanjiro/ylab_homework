@@ -16,14 +16,28 @@ public class AdmDataInput {
     private final AdmService admService = ServiceProvider.getAdmService();
     private final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Returns a list of users requested by the administrator
+     * @return String with all registered users, or refusal if the user making the request
+     * does not have the administrator role
+     */
     public String getUsers() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         if (!isAdmin()) {
             return "You do not have permission to perform such an operation.";
         }
         return admService.getUsers().toString();
     }
 
+    /**
+     * Returns a list of user's transactions requested by the administrator
+     * @return String with all transactions of the user, or refusal if the user making the request
+     *  does not have the administrator role
+     */
     public String getUserTransactions() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         if (!isAdmin()) {
             return "You do not have permission to perform such an operation.";
         }
@@ -31,7 +45,14 @@ public class AdmDataInput {
         return admService.getUserTransactions(getUserId()).toString();
     }
 
+    /**
+     * Blocks the user from logging in, but without deleting user data.
+     * @return id of blocked user, or refusal if the user making the request
+     *  does not have the administrator role
+     */
     public String blockUser() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         if (!isAdmin()) {
             return "You do not have permission to perform such an operation.";
         };
@@ -39,7 +60,30 @@ public class AdmDataInput {
         return admService.blockUser(getUserId());
     }
 
+    /**
+     * Blocks the user from logging in, but without deleting user data.
+     * @return id of blocked user, or refusal if the user making the request
+     *  does not have the administrator role
+     */
+    public String unblockUser() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
+        if (!isAdmin()) {
+            return "You do not have permission to perform such an operation.";
+        };
+        System.out.println("Enter the user ID to unblock");
+        return admService.unblockUser(getUserId());
+    }
+
+
+    /**
+     * Delete the user from the system, also deleting all data of this user.
+     * @return id of deleted user,  or refusal if the user making the request
+     *  does not have the administrator role
+     */
     public String deleteUser() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         if (!isAdmin()) {
             return "You do not have permission to perform such an operation.";
         };
@@ -47,7 +91,14 @@ public class AdmDataInput {
         return admService.deleteUser(getUserId());
     }
 
+    /**
+     * Changing user's role
+     * @return id of processed user, or refusal if the user making the request
+     *  does not have the administrator role
+     */
     public String changeUserRole() {
+        TrackerUser user = UserAuthService.getCurrentUser();
+        if (Objects.isNull(user)) return "You should log in first";
         if (!isAdmin()) {
             return "You do not have permission to perform such an operation.";
         };

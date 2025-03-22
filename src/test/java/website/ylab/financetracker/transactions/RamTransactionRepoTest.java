@@ -1,8 +1,8 @@
 package website.ylab.financetracker.transactions;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.out.persistence.TrackerTransactionRepository;
+import website.ylab.financetracker.out.persistence.ram.transaction.RamTransactionRepo;
 
 import java.util.Date;
 import java.util.Optional;
@@ -10,25 +10,21 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RamTransactionRepoTest {
-    long id = 1L;
+    long id = 100L;
     TransactionType type = TransactionType.INCOME;
     double amount = 100.0;
     String category = "Travel";
     Date date = new Date();
     String description = "Test";
-    TrackerTransaction transaction = createTestTransaction();
-    TrackerTransactionRepository repository = new RamTransactionRepo();
-    Optional<TrackerTransaction> optional;
-
-    @BeforeEach
-    void setUp() {
-        optional =repository.create(transaction);
-    }
+    TrackerTransaction transaction;
+    TrackerTransactionRepository repository;
 
     @Test
     void create() {
+        repository = new RamTransactionRepo();
+        transaction = createTestTransaction();
+        Optional<TrackerTransaction> optional = repository.create(transaction);
         assertTrue(optional.isPresent());
-        assertEquals(id, optional.get().getId());
         assertEquals(type, optional.get().getType());
         assertEquals(amount, optional.get().getAmount());
         assertEquals(category, optional.get().getCategory());
@@ -38,11 +34,15 @@ class RamTransactionRepoTest {
 
     @Test
     void update() {
+        repository = new RamTransactionRepo();
+        transaction = createTestTransaction();
         double newAmount = 500.0;
         String newCategory = "Food";
         String newDescription = "New Description";
-        TrackerTransaction transaction = createTestTransaction();
-        transaction.setId(id);
+        Optional<TrackerTransaction> optional = repository.create(transaction);
+        assertTrue(optional.isPresent());
+        transaction = new TrackerTransaction();
+        transaction.setId(optional.get().getId());
         transaction.setType(type);
         transaction.setDate(date);
         transaction.setAmount(newAmount);
@@ -50,7 +50,6 @@ class RamTransactionRepoTest {
         transaction.setDescription(newDescription);
         optional = repository.update(transaction);
         assertTrue(optional.isPresent());
-        assertEquals(id, optional.get().getId());
         assertEquals(type, optional.get().getType());
         assertEquals(newAmount, optional.get().getAmount());
         assertEquals(newCategory, optional.get().getCategory());
@@ -60,14 +59,16 @@ class RamTransactionRepoTest {
 
     @Test
     void delete() {
+        transaction = createTestTransaction();
+        repository = new RamTransactionRepo();
         // Если транзакция отсутствует
-        optional = repository.delete(new TrackerTransaction());
+        Optional<TrackerTransaction> optional = repository.delete(new TrackerTransaction());
         assertFalse(optional.isPresent());
 
         // Если транзакция найдена и была успешно удалена
+        repository.create(transaction);
         optional = repository.delete(transaction);
         assertTrue(optional.isPresent());
-        assertEquals(id, optional.get().getId());
         assertEquals(type, optional.get().getType());
         assertEquals(amount, optional.get().getAmount());
         assertEquals(category, optional.get().getCategory());
@@ -76,11 +77,15 @@ class RamTransactionRepoTest {
     }
 
     @Test
-    void get() {
-        // Если транзакция существует
-        optional = repository.get(id);
+    void getById() {
+        transaction = createTestTransaction();
+        repository = new RamTransactionRepo();
+        Optional<TrackerTransaction> optional = repository.create(transaction);
         assertTrue(optional.isPresent());
-        assertEquals(id, optional.get().getId());
+        long id = optional.get().getId();
+        // Если транзакция существует
+        optional = repository.getById(id);
+        assertTrue(optional.isPresent());
         assertEquals(type, optional.get().getType());
         assertEquals(amount, optional.get().getAmount());
         assertEquals(category, optional.get().getCategory());
@@ -88,16 +93,18 @@ class RamTransactionRepoTest {
         assertEquals(date, optional.get().getDate());
 
         // Если транзакция отсутствует
-        optional = repository.get(100L);
+        optional = repository.getById(500L);
         assertFalse(optional.isPresent());
     }
 
     @Test
-    void getAllTransactions() {
-        assertFalse(repository.getAllTransactions().isEmpty());
+    void getByIdAllTransactions() {
+        repository = new RamTransactionRepo();
+        assertTrue(repository.getAllTransactions().isEmpty());
     }
 
     private TrackerTransaction createTestTransaction() {
+        repository = new RamTransactionRepo();
         TrackerTransaction transaction = new TrackerTransaction();
         transaction.setId(id);
         transaction.setType(type);
