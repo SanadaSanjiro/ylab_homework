@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import website.ylab.financetracker.annotations.Loggable;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.UserService;
@@ -14,6 +15,7 @@ import website.ylab.financetracker.service.auth.UserService;
 import java.io.IOException;
 import java.util.List;
 
+@Loggable
 @WebServlet(name = "getUsers", value ="/adm/users")
 public class GetUsersServlet extends HttpServlet {
     private final UserService userService;

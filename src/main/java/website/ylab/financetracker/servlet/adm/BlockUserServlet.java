@@ -1,4 +1,4 @@
-package website.ylab.financetracker.servlet.transaction;
+package website.ylab.financetracker.servlet.adm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
