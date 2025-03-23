@@ -8,6 +8,9 @@ import website.ylab.financetracker.util.ConnectionProviderImplementation;
 import website.ylab.financetracker.util.DbSchemaCreator;
 import website.ylab.financetracker.util.LiquibaseStarter;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 
 /**
  * Initialize web-application before run. Creates DB-schema, applies Liquibase migrations
@@ -35,6 +38,12 @@ public class ApplicationListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        // Close DB connection to avoid memory leaks
+        try {
+            DriverManager.deregisterDriver(DriverManager.getDrivers().nextElement());
+        } catch (SQLException|SecurityException e) {
+            e.printStackTrace();
+        }
         this.sc = null;
         System.out.println("Application Stopped");
     }

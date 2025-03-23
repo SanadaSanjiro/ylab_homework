@@ -71,8 +71,8 @@ public class TransactionService {
     }
 
     /**
-     * Provides all transactions for the current user.
-     * @return list of transactions for the current user
+     * Provides all transactions from storage
+     * @return list of transactions
      */
     public List<TransactionResponse> getAllTransactions() {
         return mapper.toTransactionResponseList(repository.getAllTransactions());
@@ -85,5 +85,15 @@ public class TransactionService {
      */
     public List<TransactionResponse> getUserTransaction(long userId) {
         return mapper.toTransactionResponseList(repository.getByUserId(userId));
+    }
+
+    /**
+     * Get a transactions by id.
+     * @param id long transaction's id
+     * @return TransactionResponse
+     */
+    public TransactionResponse getById(long id) {
+        Optional<TrackerTransaction> optional = repository.getById(id);
+        return optional.map(mapper::toResponse).orElse(null);
     }
 }

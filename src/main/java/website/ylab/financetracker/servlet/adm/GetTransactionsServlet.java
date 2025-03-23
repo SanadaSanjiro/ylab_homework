@@ -1,4 +1,4 @@
-package website.ylab.financetracker.servlet;
+package website.ylab.financetracker.servlet.adm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -7,19 +7,20 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import website.ylab.financetracker.in.dto.auth.UserResponse;
+import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.ServiceProvider;
-import website.ylab.financetracker.service.auth.UserService;
+import website.ylab.financetracker.service.transactions.TransactionService;
 
 import java.io.IOException;
+import java.util.List;
 
-@WebServlet("/user")
-public class GetUserServlet extends HttpServlet {
-    private final UserService userService;
+@WebServlet(name = "getTransactions", value ="/adm/transactions")
+public class GetTransactionsServlet extends HttpServlet {
+    private final TransactionService transactionService;
     private final ObjectMapper objectMapper;
 
-    public GetUserServlet() {
-        this.userService = ServiceProvider.getUserService();
+    public GetTransactionsServlet() {
+        this.transactionService = ServiceProvider.getTransactionService();
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
@@ -31,12 +32,8 @@ public class GetUserServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.setBufferSize(4096);
 
-        System.out.println(userService.getById(1));
-        UserResponse response = userService.getResponseById(1);
+        List<TransactionResponse> response = transactionService.getAllTransactions();
         byte[] bytes =  objectMapper.writeValueAsBytes(response);
         resp.getOutputStream().write(bytes);
-        //long id = Long.parseLong(req.getParameter("id"));
-        //System.out.println(id);
-
     }
 }
