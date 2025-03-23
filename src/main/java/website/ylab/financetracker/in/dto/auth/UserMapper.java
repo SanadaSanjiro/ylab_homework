@@ -3,7 +3,7 @@ package website.ylab.financetracker.in.dto.auth;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.service.auth.TrackerUser;
 
 import java.util.List;
 

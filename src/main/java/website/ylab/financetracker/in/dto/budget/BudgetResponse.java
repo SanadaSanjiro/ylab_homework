@@ -1,24 +1,13 @@
 package website.ylab.financetracker.in.dto.budget;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+@Accessors(chain = true)
+@Data
 public class BudgetResponse {
+    private long id;
     private double limit;
+    private long userId;
     private String uuid;
-
-    public double getLimit() {
-        return limit;
-    }
-
-    public BudgetResponse setLimit(double limit) {
-        this.limit = limit;
-        return this;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public BudgetResponse setUuid(String uuid) {
-        this.uuid = uuid;
-        return this;
-    }
 }

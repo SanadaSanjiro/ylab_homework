@@ -1,8 +1,8 @@
 package website.ylab.financetracker.in.dto.auth;
 
 import org.junit.jupiter.api.Test;
-import website.ylab.financetracker.auth.Role;
-import website.ylab.financetracker.auth.TrackerUser;
+import website.ylab.financetracker.service.auth.Role;
+import website.ylab.financetracker.service.auth.TrackerUser;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ class UserMapperTest {
         List<TrackerUser> users = List.of(getUser());
         List<UserResponse> responses = mapper.toUserResponseList(users);
         assertFalse(responses.isEmpty());
-        UserResponse response = responses.get(1);
+        UserResponse response = responses.get(0);
         assertEquals(id, response.getId());
         assertEquals(username.toLowerCase(), response.getName().toLowerCase());
         assertEquals(email, response.getEmail());
@@ -43,6 +43,12 @@ class UserMapperTest {
     }
 
     private TrackerUser getUser() {
-        return new TrackerUser(username, email, password).setEnabled(true).setId(id).setRole(role);
+        return new TrackerUser()
+                .setUsername(username)
+                .setEmail(email)
+                .setPassword(password)
+                .setEnabled(true)
+                .setId(id)
+                .setRole(role);
     }
 }

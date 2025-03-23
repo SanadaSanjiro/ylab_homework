@@ -1,8 +1,8 @@
 package website.ylab.financetracker.in.dto.transaction;
 
 import org.junit.jupiter.api.Test;
-import website.ylab.financetracker.transactions.TrackerTransaction;
-import website.ylab.financetracker.transactions.TransactionType;
+import website.ylab.financetracker.service.transactions.TrackerTransaction;
+import website.ylab.financetracker.service.transactions.TransactionType;
 
 import java.util.Date;
 import java.util.List;
@@ -40,14 +40,14 @@ class TransactionMapperTest {
         List<TrackerTransaction> list = List.of(transaction);
         List<TransactionResponse> responses = mapper.toTransactionResponseList(list);
         assertFalse(responses.isEmpty());
-/*        TransactionResponse response = responses.get(1);
+        TransactionResponse response = responses.get(0);
         assertEquals(id, response.getId());
         assertEquals(type.toString(), response.getType());
         assertEquals(amount,response.getAmount());
         assertEquals(category, response.getCategory());
         assertEquals(date, response.getDate());
         assertEquals(description,response.getDescription());
-        assertEquals(uuid, response.getUuid());*/
+        assertEquals(uuid, response.getUuid());
     }
 
     private TrackerTransaction getTransaction() {
