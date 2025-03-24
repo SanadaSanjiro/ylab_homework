@@ -13,6 +13,7 @@ import website.ylab.financetracker.service.targets.TargetService;
 import website.ylab.financetracker.service.targets.TrackerTarget;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebServlet(name = "setTarget", value ="/target/set")
 public class SetTargetServlet extends HttpServlet {
@@ -26,22 +27,31 @@ public class SetTargetServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // collect user id parameter
-        String id = req.getParameter("id");
-        // the string value is parse as integer to id
-        long userId = Integer.parseInt(id);
-        String targetString = req.getParameter("amount");
-        double amount = Double.parseDouble(targetString);
-        TrackerTarget target = new TrackerTarget().setUserId(userId).setAmount(amount);
-
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
 
-        TargetResponse response = targetService.setTarget(target);
-        byte[] bytes =  objectMapper.writeValueAsBytes(response);
-        resp.getOutputStream().write(bytes);
+        try {
+            TrackerTarget target = getTarget(req);
+            TargetResponse response = targetService.setTarget(target);
+            if (Objects.nonNull(response)) {
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                byte[] bytes = objectMapper.writeValueAsBytes(response);
+                resp.getOutputStream().write(bytes);
+            }
+        } catch (NumberFormatException | NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private TrackerTarget getTarget(HttpServletRequest req) throws NullPointerException, NumberFormatException {
+        String id = req.getParameter("id");
+        long userId = Long.parseLong(id);
+        String targetString = req.getParameter("amount");
+        double amount = Double.parseDouble(targetString);
+        targetService.deleteByUserId(userId);
+        return new TrackerTarget().setUserId(userId).setAmount(amount);
     }
 }

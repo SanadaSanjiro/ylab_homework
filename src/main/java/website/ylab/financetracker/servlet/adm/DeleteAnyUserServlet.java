@@ -12,6 +12,7 @@ import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.UserService;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebServlet(name = "deleteAny", value ="/adm/delete")
 public class DeleteAnyUserServlet extends HttpServlet {
@@ -25,19 +26,22 @@ public class DeleteAnyUserServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // collect user id parameter
-        String userId = req.getParameter("id");
-        // the string value is parse as integer to id
-        long id = Long.parseLong(userId);
-
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
-
-        UserResponse response = userService.deleteUser(id);
-        byte[] bytes =  objectMapper.writeValueAsBytes(response);
-        resp.getOutputStream().write(bytes);
+        try {
+            String userId = req.getParameter("id");
+            long id = Long.parseLong(userId);
+            UserResponse response = userService.deleteUser(id);
+            if (Objects.nonNull(response)) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                byte[] bytes = objectMapper.writeValueAsBytes(response);
+                resp.getOutputStream().write(bytes);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

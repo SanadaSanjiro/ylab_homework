@@ -2,7 +2,6 @@ package website.ylab.financetracker.servlet.transaction;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,23 +30,26 @@ public class AddTransactionServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        resp.setBufferSize(4096);
+
         TrackerTransaction transaction = null;
+        TransactionResponse response;
         try {
             transaction = createTransaction(req);
-        } catch (ParseException | IllegalArgumentException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
         if (Objects.nonNull(transaction)) {
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.setBufferSize(4096);
-
-            TransactionResponse response = transactionService.addNewTransaction(transaction);
-            byte[] bytes = objectMapper.writeValueAsBytes(response);
-            resp.getOutputStream().write(bytes);
+            response = transactionService.addNewTransaction(transaction);
+            if (Objects.nonNull(response)) {
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                byte[] bytes = objectMapper.writeValueAsBytes(response);
+                resp.getOutputStream().write(bytes);
+            }
         }
     }
 
@@ -58,7 +60,7 @@ public class AddTransactionServlet extends HttpServlet {
         String category = req.getParameter("category");
         String dateString = req.getParameter("date");
         String description = req.getParameter("description");
-        String userIdString = req.getParameter("userId");
+        String userIdString = req.getParameter("userid");
         TransactionType type=TransactionType.valueOf(typeString);
         double amount = Double.parseDouble(amountString);
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");

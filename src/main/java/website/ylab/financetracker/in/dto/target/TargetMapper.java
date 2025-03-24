@@ -26,5 +26,6 @@ public interface TargetMapper {
      * @param response TargetResponse response
      * @return TrackerTarget
      */
+    @Mapping(source = "id", target = "id")
     TrackerTarget toTarget(TargetResponse response);
 }

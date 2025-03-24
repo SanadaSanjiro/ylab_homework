@@ -14,14 +14,15 @@ import website.ylab.financetracker.service.transactions.TransactionService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @Loggable
 @WebServlet(name = "getTransactions", value ="/adm/transactions")
-public class GetTransactionsServlet extends HttpServlet {
+public class GetUserTransactionsServlet extends HttpServlet {
     private final TransactionService transactionService;
     private final ObjectMapper objectMapper;
 
-    public GetTransactionsServlet() {
+    public GetUserTransactionsServlet() {
         this.transactionService = ServiceProvider.getTransactionService();
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -29,18 +30,21 @@ public class GetTransactionsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // collect user id parameter
-        String userId = req.getParameter("id");
-        // the string value is parse as integer to id
-        long id = Long.parseLong(userId);
-
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
-
-        List<TransactionResponse> response = transactionService.getUserTransaction(id);
-        byte[] bytes =  objectMapper.writeValueAsBytes(response);
-        resp.getOutputStream().write(bytes);
+        try {
+            String userId = req.getParameter("id");
+            long id = Long.parseLong(userId);
+            List<TransactionResponse> response = transactionService.getUserTransaction(id);
+            if (Objects.nonNull(response)) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                byte[] bytes = objectMapper.writeValueAsBytes(response);
+                resp.getOutputStream().write(bytes);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

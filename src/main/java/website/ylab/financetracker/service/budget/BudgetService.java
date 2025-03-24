@@ -24,7 +24,9 @@ public class BudgetService {
     }
 
     public BudgetResponse setBudget(TrackerBudget budget) {
-        Optional<TrackerUser> optional = userService.getById(budget.getUserId());
+        long userId =budget.getUserId();
+        System.out.println("BudgetService. UserID = " + userId);
+        Optional<TrackerUser> optional = userService.getById(userId);
         if (optional.isEmpty()) return null;
         budget.setUuid(UUID.randomUUID().toString());
         Optional<TrackerBudget> optionalBudget = budgetRepository.setBudget(budget);

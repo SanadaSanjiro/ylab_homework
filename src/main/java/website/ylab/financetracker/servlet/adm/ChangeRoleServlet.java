@@ -13,6 +13,7 @@ import website.ylab.financetracker.service.auth.Role;
 import website.ylab.financetracker.service.auth.UserService;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 
 @WebServlet(name = "changeRole", value ="/adm/role")
@@ -27,24 +28,28 @@ public class ChangeRoleServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userId = req.getParameter("id");
-        // the string value is parse as integer to id
-        long id = Long.parseLong(userId);
-        String roleString = req.getParameter("role");
-        Optional<Role> optional = Role.fromString(roleString);
-        if (optional.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-        } else {
-            Role role = optional.get();
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.setBufferSize(4096);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        resp.setBufferSize(4096);
 
-            UserResponse response = userService.changeUserRole(id, role);
-            byte[] bytes = objectMapper.writeValueAsBytes(response);
-            resp.getOutputStream().write(bytes);
+        try {
+            String userId = req.getParameter("id");
+            long id = Long.parseLong(userId);
+            String roleString = req.getParameter("role");
+            Optional<Role> optional = Role.fromString(roleString);
+            if (optional.isPresent()) {
+                Role role = optional.get();
+                UserResponse response = userService.changeUserRole(id, role);
+                if (Objects.nonNull(response)) {
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    byte[] bytes = objectMapper.writeValueAsBytes(response);
+                    resp.getOutputStream().write(bytes);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

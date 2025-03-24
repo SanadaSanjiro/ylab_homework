@@ -12,6 +12,7 @@ import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.budget.BudgetService;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebServlet(name = "getBudget", value ="/budget/get")
 public class GetBudgetServlet extends HttpServlet {
@@ -26,18 +27,21 @@ public class GetBudgetServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // collect user id parameter
-        String id = req.getParameter("id");
-        // the string value is parse as integer to id
-        long userId = Integer.parseInt(id);
-
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
-
-        BudgetResponse response = budgetService.getByUserId(userId);
-        byte[] bytes =  objectMapper.writeValueAsBytes(response);
-        resp.getOutputStream().write(bytes);
+        try {
+            String id = req.getParameter("id");
+            long userId = Integer.parseInt(id);
+            BudgetResponse response = budgetService.getByUserId(userId);
+            if (Objects.nonNull(response)) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                byte[] bytes =  objectMapper.writeValueAsBytes(response);
+                resp.getOutputStream().write(bytes);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

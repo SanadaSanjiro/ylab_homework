@@ -12,6 +12,7 @@ import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.UserService;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebServlet(name = "block", value ="/adm/block")
 public class BlockUserServlet extends HttpServlet {
@@ -25,18 +26,22 @@ public class BlockUserServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userId = req.getParameter("id");
-        // the string value is parse as integer to id
-        long id = Long.parseLong(userId);
-
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
-
-        UserResponse response = userService.blockUser(id);
-        byte[] bytes = objectMapper.writeValueAsBytes(response);
-        resp.getOutputStream().write(bytes);
+        try {
+            String userId = req.getParameter("id");
+            long id = Long.parseLong(userId);
+            UserResponse response = userService.blockUser(id);
+            if (Objects.nonNull(response)) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                byte[] bytes = objectMapper.writeValueAsBytes(response);
+                resp.getOutputStream().write(bytes);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

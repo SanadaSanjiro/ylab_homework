@@ -13,6 +13,7 @@ import website.ylab.financetracker.service.budget.BudgetService;
 import website.ylab.financetracker.service.budget.TrackerBudget;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebServlet(name = "setBudget", value ="/budget/set")
 public class SetBudgetServlet extends HttpServlet {
@@ -25,23 +26,34 @@ public class SetBudgetServlet extends HttpServlet {
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
 
+    // TODO: check budget update
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // collect user id parameter
-        String id = req.getParameter("id");
-        // the string value is parse as integer to id
-        long userId = Integer.parseInt(id);
-        String limitString = req.getParameter("limit");
-        double limit = Double.parseDouble(limitString);
-        TrackerBudget budget = new TrackerBudget().setUserId(userId).setLimit(limit);
-
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
 
-        BudgetResponse response = budgetService.setBudget(budget);
-        byte[] bytes =  objectMapper.writeValueAsBytes(response);
-        resp.getOutputStream().write(bytes);
+        try {
+            TrackerBudget budget = getBudget(req);
+            BudgetResponse response = budgetService.setBudget(budget);
+            if (Objects.nonNull(response)) {
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                byte[] bytes =  objectMapper.writeValueAsBytes(response);
+                resp.getOutputStream().write(bytes);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private TrackerBudget getBudget(HttpServletRequest req) throws NullPointerException, NumberFormatException {
+        String id = req.getParameter("id");
+        long userId = Long.parseLong(id);
+        String limitString = req.getParameter("limit");
+        double limit = Double.parseDouble(limitString);
+        budgetService.deleteByUserId(userId);
+        System.out.println("Budget Servlet. UserID = " + userId);
+        return new TrackerBudget().setUserId(userId).setLimit(limit);
     }
 }

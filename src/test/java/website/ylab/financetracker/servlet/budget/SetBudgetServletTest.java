@@ -1,0 +1,38 @@
+package website.ylab.financetracker.servlet.budget;
+
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import website.ylab.financetracker.in.dto.budget.BudgetResponse;
+import website.ylab.financetracker.service.ServiceProvider;
+import website.ylab.financetracker.service.budget.BudgetService;
+
+class SetBudgetServletTest {
+    double limit = 100.0;
+    long id =1;
+
+    @Test
+    void doPost() {
+        BudgetService service = Mockito.mock(BudgetService.class);
+        Mockito.when(service.setBudget(Mockito.any())).thenReturn(
+                new BudgetResponse().setId(id).setLimit(limit).setUserId(id));
+        try (MockedStatic<ServiceProvider> mock = Mockito.mockStatic(ServiceProvider.class)) {
+            mock.when(ServiceProvider::getBudgetService).thenReturn(service);
+            HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+            HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
+            Mockito.when(req.getParameter("id")).thenReturn("1");
+            Mockito.when(req.getParameter("limit")).thenReturn("100.0");
+            ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
+            Mockito.when(resp.getOutputStream()).thenReturn(out);
+            new SetBudgetServlet().doPost(req, resp);
+            Mockito.verify(req, Mockito.atLeast(1)).getParameter("id");
+            Mockito.verify(service, Mockito.times(1))
+                    .setBudget(Mockito.any());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

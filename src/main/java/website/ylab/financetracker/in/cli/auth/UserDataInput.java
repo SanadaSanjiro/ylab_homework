@@ -2,6 +2,7 @@ package website.ylab.financetracker.in.cli.auth;
 
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.TrackerUser;
+import website.ylab.financetracker.service.auth.UserDataVerificator;
 import website.ylab.financetracker.service.auth.UserService;
 
 import java.util.Scanner;
@@ -84,7 +85,7 @@ public class UserDataInput {
         boolean checkOk;
         do {
             name = scanner.nextLine();
-            checkOk= UserDataVerificator.isValidName(name, userService);
+            checkOk= UserDataVerificator.isValidName(name);
             if (!checkOk) {
                 System.out.println("Please enter a valid name.");
             }
@@ -98,7 +99,7 @@ public class UserDataInput {
         boolean checkOk;
         do {
             email = scanner.nextLine();
-            checkOk=UserDataVerificator.isValidEmail(email, userService);
+            checkOk=UserDataVerificator.isValidEmail(email);
             if (!checkOk) {
                 System.out.println("Please enter a valid e-mail.");
             }

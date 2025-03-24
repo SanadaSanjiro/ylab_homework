@@ -1,6 +1,7 @@
 package website.ylab.financetracker.out.repository.postgre.budget;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import website.ylab.financetracker.service.budget.TrackerBudget;
 
@@ -17,6 +18,7 @@ public interface BudgetEntityMapper {
      * @param budget TrackerBudget budget
      * @return BudgetEntity
      */
+    @Mapping(source = "id", target = "id")
     BudgetEntity toEntity(TrackerBudget budget);
 
     /**
@@ -24,5 +26,6 @@ public interface BudgetEntityMapper {
      * @param entity BudgetEntity entity
      * @return TrackerBudget
      */
+    @Mapping(source = "id", target = "id")
     TrackerBudget toBudget(BudgetEntity entity);
 }

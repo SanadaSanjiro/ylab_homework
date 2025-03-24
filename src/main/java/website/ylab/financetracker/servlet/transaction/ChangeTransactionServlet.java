@@ -2,7 +2,6 @@ package website.ylab.financetracker.servlet.transaction;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,23 +27,26 @@ public class ChangeTransactionServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        resp.setBufferSize(4096);
+
         TrackerTransaction transaction = null;
+        TransactionResponse response = null;
         try {
             transaction = createTransaction(req);
         } catch (ParseException | IllegalArgumentException e) {
             e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
         if (Objects.nonNull(transaction)) {
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.setBufferSize(4096);
-
-            TransactionResponse response = transactionService.changeTransaction(transaction);
-            byte[] bytes = objectMapper.writeValueAsBytes(response);
-            resp.getOutputStream().write(bytes);
+            response = transactionService.changeTransaction(transaction);
+            if (Objects.nonNull(response)) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                byte[] bytes = objectMapper.writeValueAsBytes(response);
+                resp.getOutputStream().write(bytes);
+            }
         }
     }
 

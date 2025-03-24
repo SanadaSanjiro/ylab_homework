@@ -12,6 +12,7 @@ import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.transactions.TransactionService;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebServlet(name = "deleteTransaction", value ="/transaction/delete")
 public class DeleteTransactionServlet extends HttpServlet {
@@ -25,19 +26,23 @@ public class DeleteTransactionServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // collect transaction id parameter
-        String transactionId = req.getParameter("id");
-        // the string value is parse as integer to id
-        long id = Long.parseLong(transactionId);
-
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
-
-        TransactionResponse response = transactionService.deleteTransaction(id);
-        byte[] bytes =  objectMapper.writeValueAsBytes(response);
-        resp.getOutputStream().write(bytes);
+        try {
+            TransactionResponse response = null;
+            String transactionId = req.getParameter("id");
+            long id = Long.parseLong(transactionId);
+            response = transactionService.deleteTransaction(id);
+            if (Objects.nonNull(response)) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                byte[] bytes =  objectMapper.writeValueAsBytes(response);
+                resp.getOutputStream().write(bytes);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

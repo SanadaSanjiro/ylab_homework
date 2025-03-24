@@ -2,7 +2,6 @@ package website.ylab.financetracker.servlet.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,9 +9,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.TrackerUser;
+import website.ylab.financetracker.service.auth.UserDataVerificator;
 import website.ylab.financetracker.service.auth.UserService;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebServlet(name = "changeUser", value = "/user/change")
 public class ChangeUserServlet extends HttpServlet {
@@ -26,22 +27,44 @@ public class ChangeUserServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userId = req.getParameter("id");
-        // the string value is parse as integer to id
-        long id = Long.parseLong(userId);
-        String username = req.getParameter("username");
-        String email = req.getParameter("email");
-        String password = req.getParameter("password");
-        TrackerUser user = new TrackerUser().setId(id).setUsername(username).setEmail(email).setPassword(password);
-
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
 
-        UserResponse response = userService.changeUser(user);
-        byte[] bytes =  objectMapper.writeValueAsBytes(response);
-        resp.getOutputStream().write(bytes);
+        try {
+            TrackerUser user = getTrackerUser(req);
+            UserResponse response = null;
+            if (Objects.nonNull(user)) {
+
+                response = userService.changeUser(user);
+                if (Objects.nonNull(response)) {
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    byte[] bytes = objectMapper.writeValueAsBytes(response);
+                    resp.getOutputStream().write(bytes);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private TrackerUser getTrackerUser(HttpServletRequest req) {
+        String username = req.getParameter("username");
+        if (!UserDataVerificator.isValidName(username) || !userService.isUniqueName(username)) {
+            return null;
+        }
+        String email = req.getParameter("email");
+        if (!UserDataVerificator.isValidEmail(email) || !userService.isUniqueEmail(email)) {
+            return null;
+        }
+        String password = req.getParameter("password");
+        if (!UserDataVerificator.isValidPassword(password)) {
+            return null;
+        }
+        String userId = req.getParameter("id");
+        long id = Long.parseLong(userId);
+        return new TrackerUser().setUsername(username).setEmail(email).setPassword(password).setId(id);
     }
 }

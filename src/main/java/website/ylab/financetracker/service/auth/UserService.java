@@ -26,13 +26,7 @@ public class UserService {
      * @return UserResponse if success or null if failed
      */
     public UserResponse changeUser(TrackerUser newUserData) {
-        Optional<TrackerUser> optional = trackerUserRepository.getById(newUserData.getId());
-        if (optional.isEmpty()) { return null; }
-        TrackerUser oldUser = optional.get();
-        oldUser.setUsername(newUserData.getUsername());
-        oldUser.setEmail(newUserData.getUsername());
-        oldUser.setPassword(newUserData.getPassword());
-        optional = trackerUserRepository.update(oldUser);
+        Optional<TrackerUser> optional = trackerUserRepository.update(newUserData);
         return optional.map(mapper::toResponse).orElse(null);
     }
 
