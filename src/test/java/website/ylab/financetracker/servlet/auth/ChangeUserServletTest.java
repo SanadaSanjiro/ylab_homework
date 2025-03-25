@@ -1,5 +1,6 @@
 package website.ylab.financetracker.servlet.auth;
 
+import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,10 +28,8 @@ class ChangeUserServletTest {
             mock.when(ServiceProvider::getUserService).thenReturn(userService);
             HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
             HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
-            Mockito.when(req.getParameter("username")).thenReturn(name);
-            Mockito.when(req.getParameter("password")).thenReturn(pass);
-            Mockito.when(req.getParameter("email")).thenReturn(email);
-            Mockito.when(req.getParameter("id")).thenReturn("1");
+            ServletInputStream is = Mockito.mock(ServletInputStream.class);
+            Mockito.when(req.getInputStream()).thenReturn(is);
             ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
             Mockito.when(resp.getOutputStream()).thenReturn(out);
             new ChangeUserServlet().doPut(req, resp);

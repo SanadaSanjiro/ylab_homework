@@ -1,5 +1,6 @@
 package website.ylab.financetracker.servlet.auth;
 
+import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,13 +10,6 @@ import org.mockito.Mockito;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.UserService;
-
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AddUserServletTest {
     long id =1;
@@ -34,9 +28,8 @@ class AddUserServletTest {
             mock.when(ServiceProvider::getUserService).thenReturn(userService);
             HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
             HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
-            Mockito.when(req.getParameter("username")).thenReturn(name);
-            Mockito.when(req.getParameter("password")).thenReturn(pass);
-            Mockito.when(req.getParameter("email")).thenReturn(email);
+            ServletInputStream is = Mockito.mock(ServletInputStream.class);
+            Mockito.when(req.getInputStream()).thenReturn(is);
             ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
             Mockito.when(resp.getOutputStream()).thenReturn(out);
             new AddUserServlet().doPost(req, resp);

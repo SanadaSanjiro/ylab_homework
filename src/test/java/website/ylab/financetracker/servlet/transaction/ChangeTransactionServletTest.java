@@ -1,5 +1,6 @@
 package website.ylab.financetracker.servlet.transaction;
 
+import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,10 +33,8 @@ class ChangeTransactionServletTest {
             HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
             HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
             ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
-            Mockito.when(req.getParameter("id")).thenReturn("1");
-            Mockito.when(req.getParameter("amount")).thenReturn(amount);
-            Mockito.when(req.getParameter( "category")).thenReturn(category);
-            Mockito.when(req.getParameter("description")).thenReturn(description);
+            ServletInputStream is = Mockito.mock(ServletInputStream.class);
+            Mockito.when(req.getInputStream()).thenReturn(is);
             Mockito.when(resp.getOutputStream()).thenReturn(out);
             new ChangeTransactionServlet().doPut(req, resp);
             Mockito.verify(req, Mockito.atLeast(1)).getParameter("id");

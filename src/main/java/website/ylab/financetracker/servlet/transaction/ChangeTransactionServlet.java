@@ -1,5 +1,6 @@
 package website.ylab.financetracker.servlet.transaction;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,8 +13,8 @@ import website.ylab.financetracker.service.transactions.TrackerTransaction;
 import website.ylab.financetracker.service.transactions.TransactionService;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Objects;
+import java.util.Scanner;
 
 @WebServlet(name = "changeTransaction", value ="/transaction/change")
 public class ChangeTransactionServlet extends HttpServlet {
@@ -34,35 +35,23 @@ public class ChangeTransactionServlet extends HttpServlet {
         resp.setBufferSize(4096);
 
         TrackerTransaction transaction = null;
-        TransactionResponse response = null;
-        try {
-            transaction = createTransaction(req);
-        } catch (ParseException | IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        if (Objects.nonNull(transaction)) {
-            response = transactionService.changeTransaction(transaction);
-            if (Objects.nonNull(response)) {
-                resp.setStatus(HttpServletResponse.SC_OK);
-                byte[] bytes = objectMapper.writeValueAsBytes(response);
-                resp.getOutputStream().write(bytes);
+        TransactionResponse response;
+
+        try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+            String jsonData = scanner.useDelimiter("\\A").next();
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                transaction = objectMapper.readValue(jsonData, TrackerTransaction.class);
+                System.out.println(transaction);
+                response = transactionService.changeTransaction(transaction);
+                if (Objects.nonNull(response)) {
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    byte[] bytes = objectMapper.writeValueAsBytes(response);
+                    resp.getOutputStream().write(bytes);
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
             }
         }
-    }
-
-    private TrackerTransaction createTransaction(HttpServletRequest req) throws ParseException
-            , IllegalArgumentException {
-        // collect transaction id parameter
-        String transactionId = req.getParameter("id");
-        // the string value is parse as integer to id
-        long id = Long.parseLong(transactionId);
-        String amountString = req.getParameter("amount");
-        String category = req.getParameter("category");
-        String description = req.getParameter("description");
-        double amount = Double.parseDouble(amountString);
-        return new TrackerTransaction().setId(id)
-                .setAmount(amount)
-                .setCategory(category)
-                .setDescription(description);
     }
 }

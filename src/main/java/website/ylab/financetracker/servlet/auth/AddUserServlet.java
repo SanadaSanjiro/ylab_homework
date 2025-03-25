@@ -1,5 +1,6 @@
 package website.ylab.financetracker.servlet.auth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ import website.ylab.financetracker.service.auth.UserService;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Scanner;
 
 @WebServlet(name = "addUser", value = "/user/add")
 public class AddUserServlet extends HttpServlet {
@@ -34,30 +36,37 @@ public class AddUserServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
         UserResponse response = null;
-        TrackerUser user = getTrackerUser(req);
-        if (Objects.nonNull(user)) {
-            response = userService.addNewUser(user);
-            if (Objects.nonNull(response)) {
-                resp.setStatus(HttpServletResponse.SC_CREATED);
-                byte[] bytes =  objectMapper.writeValueAsBytes(response);
-                resp.getOutputStream().write(bytes);
+        try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+            String jsonData = scanner.useDelimiter("\\A").next();
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                TrackerUser user = objectMapper.readValue(jsonData, TrackerUser.class);
+                System.out.println(user);
+                if (isValidUser(user)) {
+                    response = userService.addNewUser(user);
+                    if (Objects.nonNull(response)) {
+                        resp.setStatus(HttpServletResponse.SC_OK);
+                        byte[] bytes = objectMapper.writeValueAsBytes(response);
+                        resp.getOutputStream().write(bytes);
+                    }
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-
-    private TrackerUser getTrackerUser(HttpServletRequest req) {
-        String username = req.getParameter("username");
+    private boolean isValidUser(TrackerUser user) {
+        String username = user.getUsername();
         if (!UserDataVerificator.isValidName(username) || !userService.isUniqueName(username)) {
-            return null;
+            return false;
         }
-        String email = req.getParameter("email");
+        String email = user.getEmail();
         if (!UserDataVerificator.isValidEmail(email) || !userService.isUniqueEmail(email)) {
-            return null;
+            return false;
         }
-        String password = req.getParameter("password");
-        if (!UserDataVerificator.isValidPassword(password)) {
-            return null;
-        }
-        return new TrackerUser().setUsername(username).setEmail(email).setPassword(password);
+        String password = user.getPassword();
+        return UserDataVerificator.isValidPassword(password);
     }
 }
