@@ -1,5 +1,9 @@
 package website.ylab.financetracker.service.stat;
 
+import website.ylab.financetracker.in.dto.stat.BalanceResponse;
+import website.ylab.financetracker.in.dto.stat.CategoryExpensesResponse;
+import website.ylab.financetracker.in.dto.stat.ReportResponse;
+import website.ylab.financetracker.in.dto.stat.TurnoverResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.transactions.TransactionService;
@@ -11,23 +15,33 @@ import java.util.stream.Collectors;
 public class StatService {
     private final TransactionService transactionService = ServiceProvider.getTransactionService();
 
-    public String getBalance(long userId) {
+    /**
+     * Gets overall balance by user ID
+     * @param userId user's ID
+     * @return BalanceResponse with income, outcome and balance = income-outcome fields
+     */
+    public BalanceResponse getBalance(long userId) {
         List<TransactionResponse> transactions = transactionService.getUserTransaction(userId);
         double income = transactions.stream()
                 .filter(t -> t.getType().equals(TransactionType.INCOME.toString()))
                 .mapToDouble(TransactionResponse::getAmount)
                 .boxed()
                 .reduce(0.0, Double::sum);
-        double expenses = transactions.stream()
+        double outcome = transactions.stream()
                 .filter(t -> t.getType().equals(TransactionType.EXPENSE.toString()))
                 .mapToDouble(TransactionResponse::getAmount)
                 .boxed()
                 .reduce(0.0, Double::sum);
-        return "Your balance: " + (income-expenses) + ". Your income: " + income
-                + ". Your expenses: " + expenses;
+        return new BalanceResponse().setIncome(income).setOutcome(outcome).setBalance(income-outcome);
     }
 
-    public String getTurnover(long userId, Date startDate) {
+    /**
+     * Get turnover from selected date
+     * @param userId user's ID
+     * @param startDate start date to count turnover
+     * @return TurnoverResponse with double income and outcome fields
+     */
+    public TurnoverResponse getTurnover(long userId, Date startDate) {
         List<TransactionResponse> transactions = transactionService.getUserTransaction(userId);
         double income = transactions.stream()
                 .filter(t->t.getDate().after(startDate))
@@ -35,28 +49,41 @@ public class StatService {
                 .mapToDouble(TransactionResponse::getAmount)
                 .boxed()
                 .reduce(0.0, Double::sum);
-        double expenses = transactions.stream()
+        double outcome = transactions.stream()
                 .filter(t->t.getDate().after(startDate))
                 .filter(t -> t.getType().equals(TransactionType.EXPENSE.toString()))
                 .mapToDouble(TransactionResponse::getAmount)
                 .boxed()
                 .reduce(0.0, Double::sum);
-        return "Your income for the period:" + income + ". Your expenses for the period by categories: " + expenses;
+        return new TurnoverResponse().setIncome(income).setOutcome(outcome);
     }
 
-    public String expensesByCategory(long userId) {
+    /**
+     * Get expenses grouped by categories
+     * @param userId user's ID
+     * @return CategoryExpensesResponse containing a Map<String, Double> where String is the name of the category
+     * and Double is the total expenses in that category.
+     */
+    public CategoryExpensesResponse expensesByCategory(long userId) {
         List<TransactionResponse> transactions = transactionService.getUserTransaction(userId);
         Map<String, Double> expenses = transactions.stream()
                 .filter(t->t.getType().equals(TransactionType.EXPENSE.toString()))
                 .collect(Collectors.groupingBy(TransactionResponse::getCategory,
                         Collectors.summingDouble(TransactionResponse::getAmount)));
-        return expenses.toString();
+        return new CategoryExpensesResponse().setExpenses(expenses);
     }
 
-    public String getReport(long userId) {
-        return getBalance(userId) + " " +
-                getTurnover(userId, setStartDate()) + " " +
-                expensesByCategory(userId);
+    /**
+     * Get overall report with all three previous objects. Turnover counts for last month
+     * @param userId user's ID
+     * @return ReportResponse containing CategoryExpensesResponse, TurnoverResponse formed for last month,
+     * and BalanceResponse
+     */
+    public ReportResponse getReport(long userId) {
+        return new ReportResponse()
+                .setBalance(getBalance(userId))
+                .setTurnover(getTurnover(userId, setStartDate()))
+                .setCategory(expensesByCategory(userId));
     }
 
     private Date setStartDate() {

@@ -13,7 +13,7 @@ import website.ylab.financetracker.service.auth.UserService;
 class DeleteAnyUserServletTest {
     long id =1;
     @Test
-    void doPost() {
+    void doDelete() {
         UserService service = Mockito.mock(UserService.class);
         Mockito.when(service.deleteUser(Mockito.anyLong())).thenReturn(
                 new UserResponse().setId(id));
@@ -24,7 +24,7 @@ class DeleteAnyUserServletTest {
             Mockito.when(req.getParameter("id")).thenReturn("1");
             ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
             Mockito.when(resp.getOutputStream()).thenReturn(out);
-            new DeleteAnyUserServlet().doPost(req, resp);
+            new DeleteAnyUserServlet().doDelete(req, resp);
             Mockito.verify(req, Mockito.atLeast(1)).getParameter("id");
             Mockito.verify(service, Mockito.times(1))
                     .deleteUser(Mockito.anyLong());

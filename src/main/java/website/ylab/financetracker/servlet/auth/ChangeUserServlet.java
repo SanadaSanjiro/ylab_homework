@@ -12,7 +12,6 @@ import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserDataVerificator;
 import website.ylab.financetracker.service.auth.UserService;
 
-import java.io.IOException;
 import java.util.Objects;
 
 @WebServlet(name = "changeUser", value = "/user/change")
@@ -27,7 +26,7 @@ public class ChangeUserServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -10,7 +10,6 @@ import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.UserService;
 
-import java.io.IOException;
 import java.util.Objects;
 
 @WebServlet(name = "deleteUser", value ="/user/delete")
@@ -25,7 +24,7 @@ public class DeleteUserServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

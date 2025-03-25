@@ -14,7 +14,7 @@ class UnblockUserServletTest {
     long id =1;
 
     @Test
-    void doPost() {
+    void doPut() {
         UserService service = Mockito.mock(UserService.class);
         Mockito.when(service.unblockUser(Mockito.anyLong())).thenReturn(
                 new UserResponse().setId(id));
@@ -25,7 +25,7 @@ class UnblockUserServletTest {
             Mockito.when(req.getParameter("id")).thenReturn("1");
             ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
             Mockito.when(resp.getOutputStream()).thenReturn(out);
-            new UnblockUserServlet().doPost(req, resp);
+            new UnblockUserServlet().doPut(req, resp);
             Mockito.verify(req, Mockito.atLeast(1)).getParameter("id");
             Mockito.verify(service, Mockito.times(1))
                     .unblockUser(Mockito.anyLong());

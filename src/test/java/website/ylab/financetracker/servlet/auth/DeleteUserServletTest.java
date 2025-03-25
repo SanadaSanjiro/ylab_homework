@@ -10,14 +10,12 @@ import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.UserService;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class DeleteUserServletTest {
     long id =1;
     String name = "Bob";
 
     @Test
-    void doPost() {
+    void doDelete() {
         UserService userService = Mockito.mock(UserService.class);
         Mockito.when(userService.deleteUser(Mockito.anyLong())).thenReturn(
                 new UserResponse().setId(id).setName(name));
@@ -28,7 +26,7 @@ class DeleteUserServletTest {
             Mockito.when(req.getParameter("id")).thenReturn("1");
             ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
             Mockito.when(resp.getOutputStream()).thenReturn(out);
-            new DeleteUserServlet().doPost(req, resp);
+            new DeleteUserServlet().doDelete(req, resp);
             Mockito.verify(req, Mockito.atLeast(1)).getParameter("id");
             Mockito.verify(userService, Mockito.times(1)).deleteUser(Mockito.anyLong());
         } catch (Exception e) {

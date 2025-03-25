@@ -24,7 +24,7 @@ class ChangeTransactionServletTest {
     SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
 
     @Test
-    void doPost() {
+    void doPut() {
         TransactionService service = Mockito.mock(TransactionService.class);
         try (MockedStatic<ServiceProvider> mock = Mockito.mockStatic(ServiceProvider.class)) {
             mock.when(ServiceProvider::getTransactionService).thenReturn(service);
@@ -37,7 +37,7 @@ class ChangeTransactionServletTest {
             Mockito.when(req.getParameter( "category")).thenReturn(category);
             Mockito.when(req.getParameter("description")).thenReturn(description);
             Mockito.when(resp.getOutputStream()).thenReturn(out);
-            new ChangeTransactionServlet().doPost(req, resp);
+            new ChangeTransactionServlet().doPut(req, resp);
             Mockito.verify(req, Mockito.atLeast(1)).getParameter("id");
             Mockito.verify(service, Mockito.times(1)).changeTransaction(Mockito.any());
         } catch (Exception e) {

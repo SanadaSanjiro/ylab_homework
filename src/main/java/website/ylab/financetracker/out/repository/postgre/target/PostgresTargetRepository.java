@@ -57,7 +57,7 @@ public class PostgresTargetRepository implements TargetRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<TargetEntity> entities = parseRS(resultSet);
             if (entities.isEmpty()) return Optional.empty();
-            return (Optional.of(mapper.toTarget(entities.get(1))));
+            return (Optional.of(mapper.toTarget(entities.get(0))));
         } catch (SQLException e) {
             return Optional.empty();
         }

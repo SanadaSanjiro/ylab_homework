@@ -35,7 +35,7 @@ public class GetUserTransactionsServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
         try {
-            String userId = req.getParameter("id");
+            String userId = req.getParameter("userid");
             long id = Long.parseLong(userId);
             List<TransactionResponse> response = transactionService.getUserTransaction(id);
             if (Objects.nonNull(response)) {

@@ -17,7 +17,7 @@ class ChangeUserServletTest {
     String pass = "password";
 
     @Test
-    void doPost() {
+    void doPut() {
         UserService userService = Mockito.mock(UserService.class);
         Mockito.when(userService.changeUser(Mockito.any())).thenReturn(
                 new UserResponse().setId(id).setName(name));
@@ -33,7 +33,7 @@ class ChangeUserServletTest {
             Mockito.when(req.getParameter("id")).thenReturn("1");
             ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
             Mockito.when(resp.getOutputStream()).thenReturn(out);
-            new ChangeUserServlet().doPost(req, resp);
+            new ChangeUserServlet().doPut(req, resp);
             Mockito.verify(req, Mockito.atLeast(1)).getParameter("username");
             Mockito.verify(userService, Mockito.times(1)).changeUser(Mockito.any());
         } catch (Exception e) {

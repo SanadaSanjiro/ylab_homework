@@ -14,7 +14,7 @@ class ChangeRoleServletTest {
     long id =1;
 
     @Test
-    void doPost() {
+    void doPut() {
         UserService service = Mockito.mock(UserService.class);
         Mockito.when(service.changeUserRole(Mockito.anyLong(), Mockito.any())).thenReturn(
                 new UserResponse().setId(id));
@@ -26,7 +26,7 @@ class ChangeRoleServletTest {
             Mockito.when(req.getParameter("role")).thenReturn("USER");
             ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
             Mockito.when(resp.getOutputStream()).thenReturn(out);
-            new ChangeRoleServlet().doPost(req, resp);
+            new ChangeRoleServlet().doPut(req, resp);
             Mockito.verify(req, Mockito.atLeast(1)).getParameter("id");
             Mockito.verify(service, Mockito.times(1))
                     .changeUserRole(Mockito.anyLong(), Mockito.any());

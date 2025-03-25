@@ -24,7 +24,7 @@ class DeleteTransactionServletTest {
     SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
 
     @Test
-    void doPost() {
+    void doDelete() {
         TransactionService service = Mockito.mock(TransactionService.class);
         try (MockedStatic<ServiceProvider> mock = Mockito.mockStatic(ServiceProvider.class)) {
             mock.when(ServiceProvider::getTransactionService).thenReturn(service);
@@ -34,7 +34,7 @@ class DeleteTransactionServletTest {
             ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
             Mockito.when(req.getParameter("id")).thenReturn("1");
             Mockito.when(resp.getOutputStream()).thenReturn(out);
-            new DeleteTransactionServlet().doPost(req, resp);
+            new DeleteTransactionServlet().doDelete(req, resp);
             Mockito.verify(req, Mockito.atLeast(1)).getParameter("id");
             Mockito.verify(service, Mockito.times(1)).deleteTransaction(Mockito.anyLong());
         } catch (Exception e) {
