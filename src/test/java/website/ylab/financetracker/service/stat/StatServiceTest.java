@@ -4,17 +4,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import website.ylab.financetracker.in.dto.stat.BalanceResponse;
+import website.ylab.financetracker.in.dto.stat.CategoryExpensesResponse;
+import website.ylab.financetracker.in.dto.stat.ReportResponse;
+import website.ylab.financetracker.in.dto.stat.TurnoverResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
-import website.ylab.financetracker.service.stat.StatService;
 import website.ylab.financetracker.service.transactions.TransactionService;
 import website.ylab.financetracker.service.transactions.TransactionType;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -64,8 +64,10 @@ class StatServiceTest {
             Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
             mock.when(ServiceProvider::getTransactionService).thenReturn(transactionService);
             statService = new StatService();
-            assertEquals("Your balance: 55.0. Your income: 110.0. Your expenses: 55.0",
-                    statService.getBalance(user.getId()));
+            BalanceResponse response = statService.getBalance(user.getId());
+            assertEquals(110.0, response.getIncome());
+            assertEquals(55.0, response.getOutcome());
+            assertEquals(55.0, response.getBalance());
         }
     }
 
@@ -75,8 +77,9 @@ class StatServiceTest {
             Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
             mock.when(ServiceProvider::getTransactionService).thenReturn(transactionService);
             statService = new StatService();
-            assertEquals("Your income for the period:110.0. Your expenses for the period by categories: 55.0",
-                    statService.getTurnover(user.getId(), getStartDate()));
+            TurnoverResponse response = statService.getTurnover(user.getId(), getStartDate());
+            assertEquals(110.0, response.getIncome());
+            assertEquals(55.0, response.getOutcome());
         }
     }
 
@@ -86,7 +89,10 @@ class StatServiceTest {
             Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
             mock.when(ServiceProvider::getTransactionService).thenReturn(transactionService);
             statService = new StatService();
-            assertEquals("{taxi=50.0, food=5.0}", statService.expensesByCategory(user.getId()));
+            CategoryExpensesResponse response = statService.expensesByCategory(user.getId());
+            Map<String, Double> expenses = response.getExpenses();
+            assertEquals(50.0, expenses.get("taxi"));
+            assertEquals(5.0, expenses.get("food"));
         }
     }
 
@@ -96,10 +102,16 @@ class StatServiceTest {
             Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
             mock.when(ServiceProvider::getTransactionService).thenReturn(transactionService);
             statService = new StatService();
-            String expected = "Your balance: 55.0. Your income: 110.0. Your expenses: 55.0 " +
-                    "Your income for the period:110.0. " +
-                    "Your expenses for the period by categories: 55.0 {taxi=50.0, food=5.0}";
-            assertEquals(expected, statService.getReport(user.getId()));
+            ReportResponse response = statService.getReport(user.getId());
+
+            BalanceResponse balance = response.getBalance();
+            assertEquals(110.0, balance.getIncome());
+
+            TurnoverResponse turnover = response.getTurnover();
+            assertEquals(110.0, turnover.getIncome());
+
+            CategoryExpensesResponse category = response.getCategory();
+            assertEquals(50.0, category.getExpenses().get("taxi"));
         }
     }
 

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
+import website.ylab.financetracker.in.servlet.adm.GetUserTransactionsServlet;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.transactions.TransactionService;
 import website.ylab.financetracker.service.transactions.TransactionType;
@@ -33,10 +34,10 @@ class GetTransactionsServletTest {
             HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
             HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
             ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
-            Mockito.when(req.getParameter("id")).thenReturn("1");
+            Mockito.when(req.getParameter("userid")).thenReturn("1");
             Mockito.when(resp.getOutputStream()).thenReturn(out);
             new GetUserTransactionsServlet().doGet(req, resp);
-            Mockito.verify(req, Mockito.atLeast(1)).getParameter("id");
+            Mockito.verify(req, Mockito.atLeast(1)).getParameter("userid");
             Mockito.verify(service, Mockito.times(1)).getUserTransaction(Mockito.anyLong());
         } catch (Exception e) {
             e.printStackTrace();
