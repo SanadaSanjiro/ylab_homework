@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import website.ylab.financetracker.in.dto.target.TargetResponse;
-import website.ylab.financetracker.in.servlet.target.GetTargetServlet;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.targets.TargetService;
 

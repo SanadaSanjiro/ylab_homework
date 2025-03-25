@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import website.ylab.financetracker.in.servlet.api.GetBudgetExceedanceServlet;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.api.ApiService;
 
