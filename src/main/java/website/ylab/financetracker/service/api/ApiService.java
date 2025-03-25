@@ -1,5 +1,6 @@
 package website.ylab.financetracker.service.api;
 
+import website.ylab.financetracker.in.dto.api.EmailNotification;
 import website.ylab.financetracker.in.dto.budget.BudgetResponse;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.auth.TrackerUser;
@@ -24,11 +25,11 @@ public class ApiService {
         this.userService = userService;
     }
 
-    public boolean isExceeded(TrackerUser user) {
-        BudgetResponse response = budgetService.getByUserId(user.getId());
+    public boolean isExceeded(long userId) {
+        BudgetResponse response = budgetService.getByUserId(userId);
         if (Objects.isNull(response)) { return  false; }
         double limit = response.getLimit();
-        double expenses = getExpenses(user);
+        double expenses = getExpenses(userId);
         return limit < expenses;
     }
 
@@ -37,7 +38,7 @@ public class ApiService {
         List<EmailNotification> notifications = new ArrayList<>();
         for (TrackerUser user: users) {
             BudgetResponse response = budgetService.getByUserId(user.getId());
-            if (Objects.nonNull(response)&&isExceeded(user)) {
+            if (Objects.nonNull(response)&&isExceeded(user.getId())) {
                 EmailNotification notification = createNotification(user);
                 notifications.add(notification);
             }
@@ -46,17 +47,17 @@ public class ApiService {
     }
 
     private EmailNotification createNotification(TrackerUser user) {
-        String text = "Dear " + user.getUsername() + "\nWe notify you when your budget is exceeded.\n" +
+        String text = "Dear " + user.getUsername() + ". We notify you when your budget is exceeded." +
                 "With best regards, your TrackingService";
         return new EmailNotification(user.getEmail(), text);
     }
 
-    private double getExpenses(TrackerUser user) {
+    private double getExpenses(long userId) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -1);
         Date startDate = calendar.getTime();
 
-        List<TransactionResponse> transactions = transactionService.getUserTransaction(user.getId());
+        List<TransactionResponse> transactions = transactionService.getUserTransaction(userId);
         return transactions.stream()
                 .filter(t->t.getDate().after(startDate))
                 .filter(t -> t.getType().equals(TransactionType.EXPENSE.toString()))

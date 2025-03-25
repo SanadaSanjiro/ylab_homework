@@ -7,7 +7,6 @@ import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserService;
 import website.ylab.financetracker.service.budget.BudgetService;
-import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.transactions.TransactionService;
 import website.ylab.financetracker.service.transactions.TransactionType;
 
@@ -25,15 +24,13 @@ class ApiServiceTest {
     TransactionService transactionService = Mockito.mock(TransactionService.class);
     UserService userService = Mockito.mock(UserService.class);
 
-    TrackerUser user = getUser();
-
     @Test
     void isExceeded() {
         Mockito.when(budgetService.getByUserId(Mockito.anyLong())).thenReturn(getBudgetResponse());
         Mockito.when(transactionService.getUserTransaction(Mockito.anyLong()))
                 .thenReturn(List.of(getTransactionResponse()));
         ApiService apiService = new ApiService(budgetService, transactionService, userService);
-        assertTrue(apiService.isExceeded(user));
+        assertTrue(apiService.isExceeded(userId));
     }
 
     @Test
@@ -49,11 +46,6 @@ class ApiServiceTest {
 
     private TrackerUser getUser() {
         return new TrackerUser().setUsername(username).setPassword(password).setId(userId);
-    }
-
-    private UserResponse getUserResponse() {
-        UserResponse response = new UserResponse().setName(username).setId(userId);
-        return response;
     }
 
     private BudgetResponse getBudgetResponse() {
@@ -80,7 +72,7 @@ class ApiServiceTest {
         transaction.setDescription(description);
         transaction.setDate(date);
         transaction.setCategory(category);
-        transaction.setUserId(user.getId());
+        transaction.setUserId(userId);
         return transaction;
     }
 }

@@ -3,6 +3,7 @@ package website.ylab.financetracker.service;
 import lombok.Getter;
 import website.ylab.financetracker.service.adm.AdmService;
 import website.ylab.financetracker.out.repository.UserRepositoryProvider;
+import website.ylab.financetracker.service.api.ApiService;
 import website.ylab.financetracker.service.auth.UserService;
 import website.ylab.financetracker.out.repository.BudgetRepositoryProvider;
 import website.ylab.financetracker.service.budget.BudgetService;
@@ -32,4 +33,6 @@ public class ServiceProvider {
     private static final StatService statService = new StatService();
     @Getter
     private static final AdmService admService = new AdmService();
+    @Getter
+    private static final ApiService apiService = new ApiService(budgetService, transactionService, userService);
 }
