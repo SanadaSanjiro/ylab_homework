@@ -43,7 +43,6 @@ public class GetTransactionFilteredServlet extends HttpServlet {
         if (Objects.nonNull(transaction)) {
             response = transactionService.getFiltered(transaction);
             if (Objects.nonNull(response)) {
-                System.out.println("Servlet got response = " + response);
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 byte[] bytes = objectMapper.writeValueAsBytes(response);
                 resp.getOutputStream().write(bytes);

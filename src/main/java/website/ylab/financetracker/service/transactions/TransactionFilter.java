@@ -2,6 +2,7 @@ package website.ylab.financetracker.service.transactions;
 
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,22 +19,8 @@ public class TransactionFilter {
      * @return filtered transaction list
      */
     public static List<TransactionResponse> filter(List<TransactionResponse> list, Date dateFilter) {
-        System.out.println("Date filter value = " + dateFilter);
         if (Objects.isNull(dateFilter)) { return list; }
-        List<TransactionResponse> result = new ArrayList<>();
-        for (TransactionResponse response : list) {
-            System.out.println("Transaction processing: " + response);
-            Date transactionDate = response.getDate();
-            System.out.println("Transaction date = " + transactionDate);
-            if (dateFilter.equals(transactionDate)) {
-                System.out.println("Dates equals: filter = " + dateFilter + "; tr.date = " + transactionDate);
-                result.add(response);
-            } else {
-                System.out.println("Dates not equals: filter = " + dateFilter + "; tr.date = " + transactionDate);
-            }
-        }
-        return result;
-        //return list.stream().filter(t->t.getDate().compareTo(dateFilter)==0).toList();
+        return list.stream().filter(t->t.getDate().compareTo(dateFilter)==0).toList();
     }
 
     /**
