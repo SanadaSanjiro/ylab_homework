@@ -46,7 +46,8 @@ public class BudgetService {
     public BudgetResponse deleteByUserId(long userId) {
         Optional<TrackerBudget> optional = budgetRepository.getByUserId(userId);
         if (optional.isEmpty()) return null;
-        optional = budgetRepository.deleteBudget(optional.get().getId());
+        long id = optional.get().getId();
+        optional = budgetRepository.deleteBudget(id);
         return optional.map(mapper::toResponse).orElse(null);
     }
 

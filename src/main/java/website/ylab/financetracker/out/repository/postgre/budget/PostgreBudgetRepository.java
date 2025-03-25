@@ -56,7 +56,7 @@ public class PostgreBudgetRepository implements BudgetRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<BudgetEntity> entities = parseRS(resultSet);
             if (entities.isEmpty()) return Optional.empty();
-            return (Optional.of(mapper.toBudget(entities.get(1))));
+            return (Optional.of(mapper.toBudget(entities.get(0))));
         } catch (SQLException e) {
             return Optional.empty();
         }
