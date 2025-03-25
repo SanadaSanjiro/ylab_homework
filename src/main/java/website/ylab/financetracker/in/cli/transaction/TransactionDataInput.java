@@ -4,6 +4,7 @@ import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.in.cli.auth.UserAuthService;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.transactions.TrackerTransaction;
+import website.ylab.financetracker.service.transactions.TransactionFilter;
 import website.ylab.financetracker.service.transactions.TransactionService;
 import website.ylab.financetracker.service.transactions.TransactionType;
 

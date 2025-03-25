@@ -22,6 +22,7 @@ public interface TransactionMapper {
      * @return TransactionResponse
      */
     @Mapping(source = "id", target = "id")
+    @Mapping(source = "date", target = "date", dateFormat = "dd/MM/YYYY)")
     TransactionResponse toResponse(TrackerTransaction transaction);
 
     /**

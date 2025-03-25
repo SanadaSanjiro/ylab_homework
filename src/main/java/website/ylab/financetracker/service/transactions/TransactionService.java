@@ -96,4 +96,17 @@ public class TransactionService {
         Optional<TrackerTransaction> optional = repository.getById(id);
         return optional.map(mapper::toResponse).orElse(null);
     }
+
+    public List<TransactionResponse> getFiltered(TrackerTransaction transaction) {
+        System.out.println("T-service got filters: " + transaction);
+        Date dateFilter = transaction.getDate();
+        String categoryFilter = transaction.getCategory();
+        TransactionType typeFilter = transaction.getType();
+        List<TransactionResponse> result = getUserTransaction(transaction.getUserId());
+        result = TransactionFilter.filter(result, dateFilter);
+        System.out.println("T-service applied date filter: " + result);
+        result = TransactionFilter.filter(result, typeFilter);
+        result = TransactionFilter.filter(result, categoryFilter);
+        return result;
+    }
 }

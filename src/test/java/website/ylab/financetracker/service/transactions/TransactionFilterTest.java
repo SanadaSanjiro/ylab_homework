@@ -2,9 +2,7 @@ package website.ylab.financetracker.service.transactions;
 
 import org.junit.jupiter.api.Test;
 import website.ylab.financetracker.service.auth.TrackerUser;
-import website.ylab.financetracker.in.cli.transaction.TransactionFilter;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
-import website.ylab.financetracker.service.transactions.TransactionType;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
