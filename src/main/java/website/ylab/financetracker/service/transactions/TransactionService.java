@@ -65,9 +65,14 @@ public class TransactionService {
      * Deletes all transactions of the selected user.
      * @param userId long
      */
-    public void deleteUserTransactions(long userId) {
+    public List<TransactionResponse> deleteUserTransactions(long userId) {
         List<TrackerTransaction> transactions = repository.getByUserId(userId);
-        transactions.forEach(repository::delete);
+        List<TransactionResponse> result = new ArrayList<>();
+        for (TrackerTransaction transaction: transactions) {
+            Optional<TrackerTransaction> optional = repository.delete(transaction);
+            optional.ifPresent(trackerTransaction -> result.add(mapper.toResponse(trackerTransaction)));
+        }
+        return result;
     }
 
     /**

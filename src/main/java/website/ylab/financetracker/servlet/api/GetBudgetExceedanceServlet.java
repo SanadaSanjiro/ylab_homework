@@ -7,11 +7,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.annotations.Loggable;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.api.ApiService;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Loggable
 @WebServlet(name = "getBudgetExceedance", value ="/api/exceedance")
@@ -32,15 +34,20 @@ public class GetBudgetExceedanceServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
 
-        try {
-            String userId = req.getParameter("id");
-            long id = Long.parseLong(userId);
-            boolean response = apiService.isExceeded(id);
-            resp.setStatus(HttpServletResponse.SC_OK);
-            byte[] bytes = objectMapper.writeValueAsBytes(response);
-            resp.getOutputStream().write(bytes);
-        } catch (Exception e) {
-            e.printStackTrace();
+        HttpSession session = req.getSession();
+        Object useridObj = session.getAttribute("userid");
+        if (Objects.isNull(useridObj)) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            try {
+                Long userId = Long.parseLong(useridObj.toString());
+                boolean response = apiService.isExceeded(userId);
+                resp.setStatus(HttpServletResponse.SC_OK);
+                byte[] bytes = objectMapper.writeValueAsBytes(response);
+                resp.getOutputStream().write(bytes);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -6,11 +6,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.ServiceProvider;
+import website.ylab.financetracker.service.transactions.TrackerTransaction;
 import website.ylab.financetracker.service.transactions.TransactionService;
 
 import java.util.Objects;
+import java.util.Scanner;
 
 @WebServlet(name = "deleteTransaction", value ="/transaction/delete")
 public class DeleteTransactionServlet extends HttpServlet {
@@ -29,18 +32,31 @@ public class DeleteTransactionServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
-        try {
-            TransactionResponse response = null;
-            String transactionId = req.getParameter("id");
-            long id = Long.parseLong(transactionId);
-            response = transactionService.deleteTransaction(id);
-            if (Objects.nonNull(response)) {
-                resp.setStatus(HttpServletResponse.SC_OK);
-                byte[] bytes =  objectMapper.writeValueAsBytes(response);
-                resp.getOutputStream().write(bytes);
+
+        TrackerTransaction transaction;
+        TransactionResponse response;
+        HttpSession session = req.getSession();
+        Object useridObj = session.getAttribute("userid");
+        if (Objects.isNull(useridObj)) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+                String jsonData = scanner.useDelimiter("\\A").next();
+                transaction = objectMapper.readValue(jsonData, TrackerTransaction.class);
+                response =transactionService.getById(transaction.getId());
+                if (Objects.isNull(response) || response.getUserId()!=Long.parseLong(useridObj.toString())) {
+                    resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                } else {
+                    response = transactionService.deleteTransaction(transaction.getId());
+                    if (Objects.nonNull(response)) {
+                        resp.setStatus(HttpServletResponse.SC_OK);
+                        byte[] bytes = objectMapper.writeValueAsBytes(response);
+                        resp.getOutputStream().write(bytes);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

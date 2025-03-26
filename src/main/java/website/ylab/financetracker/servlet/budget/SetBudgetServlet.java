@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.budget.BudgetResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.budget.BudgetService;
@@ -14,6 +15,7 @@ import website.ylab.financetracker.service.budget.TrackerBudget;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Scanner;
 
 @WebServlet(name = "setBudget", value ="/budget/set")
 public class SetBudgetServlet extends HttpServlet {
@@ -33,26 +35,26 @@ public class SetBudgetServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
 
-        try {
-            TrackerBudget budget = getBudget(req);
-            BudgetResponse response = budgetService.setBudget(budget);
-            if (Objects.nonNull(response)) {
-                resp.setStatus(HttpServletResponse.SC_CREATED);
-                byte[] bytes =  objectMapper.writeValueAsBytes(response);
-                resp.getOutputStream().write(bytes);
+        HttpSession session = req.getSession();
+        Object useridObj = session.getAttribute("userid");
+        if (Objects.isNull(useridObj)) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+                String jsonData = scanner.useDelimiter("\\A").next();
+                try {
+                    TrackerBudget budget = objectMapper.readValue(jsonData, TrackerBudget.class);
+                    budget.setUserId(Long.parseLong(useridObj.toString()));
+                    BudgetResponse response = budgetService.setBudget(budget);
+                    if (Objects.nonNull(response)) {
+                        resp.setStatus(HttpServletResponse.SC_CREATED);
+                        byte[] bytes = objectMapper.writeValueAsBytes(response);
+                        resp.getOutputStream().write(bytes);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-    }
-
-    private TrackerBudget getBudget(HttpServletRequest req) throws NullPointerException, NumberFormatException {
-        String id = req.getParameter("id");
-        long userId = Long.parseLong(id);
-        String limitString = req.getParameter("limit");
-        double limit = Double.parseDouble(limitString);
-        budgetService.deleteByUserId(userId);
-        System.out.println("Budget Servlet. UserID = " + userId);
-        return new TrackerBudget().setUserId(userId).setLimit(limit);
     }
 }

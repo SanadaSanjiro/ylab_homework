@@ -7,17 +7,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.transactions.TrackerTransaction;
 import website.ylab.financetracker.service.transactions.TransactionService;
-import website.ylab.financetracker.service.transactions.TransactionType;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Scanner;
 
 @WebServlet(name = "getTransactionFiltered", value ="/transaction/filtered")
 public class GetTransactionFilteredServlet extends HttpServlet {
@@ -37,55 +37,32 @@ public class GetTransactionFilteredServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
 
-        TrackerTransaction transaction = null;
-        List<TransactionResponse> response;
-        transaction = createTransaction(req);
-        if (Objects.nonNull(transaction)) {
-            response = transactionService.getFiltered(transaction);
-            if (Objects.nonNull(response)) {
-                resp.setStatus(HttpServletResponse.SC_CREATED);
-                byte[] bytes = objectMapper.writeValueAsBytes(response);
-                resp.getOutputStream().write(bytes);
+        HttpSession session = req.getSession();
+        Object useridObj = session.getAttribute("userid");
+        if (Objects.isNull(useridObj)) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            TrackerTransaction transaction;
+            List<TransactionResponse> response;
+            try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+                String jsonData = scanner.useDelimiter("\\A").next();
+                System.out.println(jsonData);
+                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                objectMapper.setDateFormat(df);
+                transaction = objectMapper.readValue(jsonData, TrackerTransaction.class);
+                System.out.println(transaction);
+                transaction.setUserId(Long.parseLong(useridObj.toString()));
+                if (Objects.nonNull(transaction)) {
+                    response = transactionService.getFiltered(transaction);
+                    if (Objects.nonNull(response)) {
+                        resp.setStatus(HttpServletResponse.SC_CREATED);
+                        byte[] bytes = objectMapper.writeValueAsBytes(response);
+                        resp.getOutputStream().write(bytes);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-    }
-
-    private TrackerTransaction createTransaction(HttpServletRequest req) {
-        long id;
-        try {
-            String transactionId = req.getParameter("userid");
-            id = Long.parseLong(transactionId);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        String dateString = req.getParameter("date");
-        TrackerTransaction transaction = new TrackerTransaction();
-        try {
-            String typeString = req.getParameter("type");
-            TransactionType type = TransactionType.valueOf(typeString);
-            transaction.setType(type);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-            Date date = formatter.parse(dateString);
-            transaction.setDate(date);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        try {
-            String category = req.getParameter("category");
-            transaction.setCategory(category);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return transaction.setUserId(id);
     }
 }

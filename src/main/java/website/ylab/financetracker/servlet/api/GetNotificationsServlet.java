@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.annotations.Loggable;
 import website.ylab.financetracker.in.dto.api.EmailNotification;
 import website.ylab.financetracker.service.ServiceProvider;
@@ -34,11 +35,18 @@ public class GetNotificationsServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
-        List<EmailNotification> response = apiService.getEmailNotifications();
-        if (Objects.nonNull(response)) {
-            resp.setStatus(HttpServletResponse.SC_OK);
-            byte[] bytes =  objectMapper.writeValueAsBytes(response);
-            resp.getOutputStream().write(bytes);
+
+        HttpSession session = req.getSession();
+        String username = session.getAttribute("username").toString();
+        if (username.isEmpty()) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            List<EmailNotification> response = apiService.getEmailNotifications();
+            if (Objects.nonNull(response)) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                byte[] bytes = objectMapper.writeValueAsBytes(response);
+                resp.getOutputStream().write(bytes);
+            }
         }
     }
 }

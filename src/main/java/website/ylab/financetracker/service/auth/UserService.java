@@ -182,4 +182,15 @@ public class UserService {
         optional = trackerUserRepository.update(user);
         return optional.map(mapper::toResponse).orElse(null);
     }
+
+    /**
+     * Checks users credentials
+     * @param user TrackingUser with username and password
+     * @return boolean true if user with such name exists and provided password is equals stored password
+     */
+    public boolean checkPassword(TrackerUser user) {
+        Optional <TrackerUser> optional = trackerUserRepository.getByName(user.getUsername());
+        if (optional.isEmpty()) { return false; } ;
+        return user.getPassword().equals(optional.get().getPassword());
+    }
 }

@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.UserService;
@@ -29,17 +30,24 @@ public class DeleteUserServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
-        try {
-            String userId = req.getParameter("id");
-            long id = Long.parseLong(userId);
-            UserResponse response = userService.deleteUser(id);
-            if (Objects.nonNull(response)) {
-                resp.setStatus(HttpServletResponse.SC_OK);
-                byte[] bytes = objectMapper.writeValueAsBytes(response);
-                resp.getOutputStream().write(bytes);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        HttpSession session = req.getSession();
+        Object usernameObj = session.getAttribute("username");
+        if (Objects.isNull(usernameObj)) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            try {
+                UserResponse response = userService.getByName(usernameObj.toString());;
+                if (Objects.nonNull(response)) {
+                    response = userService.deleteUser(response.getId());
+                    byte[] bytes = objectMapper.writeValueAsBytes(response);
+                    resp.getOutputStream().write(bytes);
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    session.invalidate();
+                } else {
+                        resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    }
+            } catch(Exception e) { e.printStackTrace(); }
         }
     }
 }

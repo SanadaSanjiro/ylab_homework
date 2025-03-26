@@ -1,12 +1,12 @@
 package website.ylab.financetracker.servlet.transaction;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.transactions.TrackerTransaction;
@@ -34,22 +34,24 @@ public class ChangeTransactionServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
 
-        TrackerTransaction transaction = null;
+        TrackerTransaction transaction;
         TransactionResponse response;
-
-        try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
-            String jsonData = scanner.useDelimiter("\\A").next();
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
+        HttpSession session = req.getSession();
+        Object useridObj = session.getAttribute("userid");
+        if (Objects.isNull(useridObj)) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+                String jsonData = scanner.useDelimiter("\\A").next();
                 transaction = objectMapper.readValue(jsonData, TrackerTransaction.class);
-                System.out.println(transaction);
+                transaction.setUserId(Long.parseLong(useridObj.toString()));
                 response = transactionService.changeTransaction(transaction);
                 if (Objects.nonNull(response)) {
                     resp.setStatus(HttpServletResponse.SC_OK);
                     byte[] bytes = objectMapper.writeValueAsBytes(response);
                     resp.getOutputStream().write(bytes);
                 }
-            } catch (JsonProcessingException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

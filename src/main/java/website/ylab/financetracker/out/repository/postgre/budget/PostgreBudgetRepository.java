@@ -22,6 +22,12 @@ public class PostgreBudgetRepository implements BudgetRepository {
 
     @Override
     public Optional<TrackerBudget> setBudget(TrackerBudget budget) {
+        long userId = budget.getUserId();
+        List<BudgetEntity> budgets = getBudgetByUserId(userId);
+        for (BudgetEntity entity : budgets) {
+            long id = entity.getId();
+            deleteBudget(id);
+        }
         BudgetEntity entity = new BudgetEntity();
         entity.setUserId(budget.getUserId());
         entity.setLimit(budget.getLimit());

@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.stat.CategoryExpensesResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.stat.StatService;
@@ -31,17 +32,23 @@ public class GetExpensesServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
-        try {
-            String userId = req.getParameter("userid");
-            long id = Long.parseLong(userId);
-            CategoryExpensesResponse response = statService.expensesByCategory(id);
-            if (Objects.nonNull(response)) {
-                resp.setStatus(HttpServletResponse.SC_OK);
-                byte[] bytes = objectMapper.writeValueAsBytes(response);
-                resp.getOutputStream().write(bytes);
+
+        HttpSession session = req.getSession();
+        Object useridObj = session.getAttribute("userid");
+        if (Objects.isNull(useridObj)) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            try {
+                long id = Long.parseLong(useridObj.toString());
+                CategoryExpensesResponse response = statService.expensesByCategory(id);
+                if (Objects.nonNull(response)) {
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    byte[] bytes = objectMapper.writeValueAsBytes(response);
+                    resp.getOutputStream().write(bytes);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

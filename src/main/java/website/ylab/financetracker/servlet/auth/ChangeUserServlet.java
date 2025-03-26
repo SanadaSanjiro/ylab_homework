@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.TrackerUser;
@@ -35,26 +36,31 @@ public class ChangeUserServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
 
-        UserResponse response = null;
-        try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
-            String jsonData = scanner.useDelimiter("\\A").next();
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
-                TrackerUser user = objectMapper.readValue(jsonData, TrackerUser.class);
-                System.out.println(user);
-                if (isValidUser(user)) {
-                    response = userService.changeUser(user);
-                    if (Objects.nonNull(response)) {
-                        resp.setStatus(HttpServletResponse.SC_OK);
-                        byte[] bytes = objectMapper.writeValueAsBytes(response);
-                        resp.getOutputStream().write(bytes);
+        HttpSession session = req.getSession();
+        Object usernameObj = session.getAttribute("username");
+        if (Objects.isNull(usernameObj)) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            UserResponse response = userService.getByName(usernameObj.toString());
+            try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+                String jsonData = scanner.useDelimiter("\\A").next();
+                try {
+                    TrackerUser user = objectMapper.readValue(jsonData, TrackerUser.class);
+                    user.setId(response.getId());
+                    if (isValidUser(user)) {
+                        response = userService.changeUser(user);
+                        if (Objects.nonNull(response)) {
+                            resp.setStatus(HttpServletResponse.SC_OK);
+                            byte[] bytes = objectMapper.writeValueAsBytes(response);
+                            resp.getOutputStream().write(bytes);
+                        }
                     }
-                }
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                    } catch(JsonProcessingException e){
+                        e.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

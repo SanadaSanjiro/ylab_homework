@@ -25,7 +25,6 @@ public class BudgetService {
 
     public BudgetResponse setBudget(TrackerBudget budget) {
         long userId =budget.getUserId();
-        System.out.println("BudgetService. UserID = " + userId);
         Optional<TrackerUser> optional = userService.getById(userId);
         if (optional.isEmpty()) return null;
         budget.setUuid(UUID.randomUUID().toString());
@@ -52,7 +51,7 @@ public class BudgetService {
     }
 
     public BudgetResponse getByUserId(long userId) {
-        Optional<TrackerBudget> optional = budgetRepository.getById(userId);
+        Optional<TrackerBudget> optional = budgetRepository.getByUserId(userId);
         return optional.map(mapper::toResponse).orElse(null);
     }
 }

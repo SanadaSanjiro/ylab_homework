@@ -1,4 +1,4 @@
-package website.ylab.financetracker.servlet.auth;
+package website.ylab.financetracker.servlet.login;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.TrackerUser;
@@ -14,15 +15,14 @@ import website.ylab.financetracker.service.auth.UserDataVerificator;
 import website.ylab.financetracker.service.auth.UserService;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Scanner;
 
-@WebServlet(name = "addUser", value = "/user/add")
-public class AddUserServlet extends HttpServlet {
+@WebServlet(name = "login", value = "/auth/login")
+public class LoginServlet extends HttpServlet {
     private final UserService userService;
     private final ObjectMapper objectMapper;
 
-    public AddUserServlet() {
+    public LoginServlet() {
         this.userService = ServiceProvider.getUserService();
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -40,12 +40,15 @@ public class AddUserServlet extends HttpServlet {
             String jsonData = scanner.useDelimiter("\\A").next();
             try {
                 TrackerUser user = objectMapper.readValue(jsonData, TrackerUser.class);
-                if (isValidUser(user)) {
-                    response = userService.addNewUser(user);
-                    if (Objects.nonNull(response)) {
+                if (isValidInput(user)) {
+                    boolean isValid = userService.checkPassword(user);
+                    if (isValid) {
+                        response = userService.getByName(user.getUsername());
                         resp.setStatus(HttpServletResponse.SC_OK);
-                        byte[] bytes = objectMapper.writeValueAsBytes(response);
-                        resp.getOutputStream().write(bytes);
+                        HttpSession session = req.getSession();
+                        session.setAttribute("userid", response.getId());
+                        session.setAttribute("username", response.getName());
+                        session.setAttribute("role", response.getRole());
                     }
                 }
             } catch (JsonProcessingException e) {
@@ -55,13 +58,10 @@ public class AddUserServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
-    private boolean isValidUser(TrackerUser user) {
+
+    private boolean isValidInput(TrackerUser user) {
         String username = user.getUsername();
-        if (!UserDataVerificator.isValidName(username) || !userService.isUniqueName(username)) {
-            return false;
-        }
-        String email = user.getEmail();
-        if (!UserDataVerificator.isValidEmail(email) || !userService.isUniqueEmail(email)) {
+        if (!UserDataVerificator.isValidName(username)) {
             return false;
         }
         String password = user.getPassword();

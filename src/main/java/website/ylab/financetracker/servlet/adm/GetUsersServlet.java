@@ -7,9 +7,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.annotations.Loggable;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.ServiceProvider;
+import website.ylab.financetracker.service.auth.Role;
 import website.ylab.financetracker.service.auth.UserService;
 
 import java.io.IOException;
@@ -35,11 +37,17 @@ public class GetUsersServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.setBufferSize(4096);
 
-        List<UserResponse> response = userService.getAllUsersResponse();
-        if (Objects.nonNull(response)) {
-            resp.setStatus(HttpServletResponse.SC_OK);
-            byte[] bytes = objectMapper.writeValueAsBytes(response);
-            resp.getOutputStream().write(bytes);
+        HttpSession session = req.getSession();
+        Object roleObj = session.getAttribute("role");
+        if (Objects.isNull(roleObj) || !roleObj.toString().equalsIgnoreCase(Role.ADMIN.toString())) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            List<UserResponse> response = userService.getAllUsersResponse();
+            if (Objects.nonNull(response)) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                byte[] bytes = objectMapper.writeValueAsBytes(response);
+                resp.getOutputStream().write(bytes);
+            }
         }
     }
 }

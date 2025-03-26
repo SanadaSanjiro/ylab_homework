@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.UserService;
@@ -31,17 +32,22 @@ public class GetUserServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         resp.setBufferSize(4096);
-        try {
-            String userId = req.getParameter("id");
-            long id = Long.parseLong(userId);
-            UserResponse response = userService.getResponseById(id);
-            if (Objects.nonNull(response)) {
-                resp.setStatus(HttpServletResponse.SC_OK);
-                byte[] bytes =  objectMapper.writeValueAsBytes(response);
-                resp.getOutputStream().write(bytes);
+
+        HttpSession session = req.getSession();
+        Object useridObj = session.getAttribute("userid");
+        if (Objects.isNull(useridObj)) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            try {
+                UserResponse response = userService.getResponseById(Long.parseLong(useridObj.toString()));
+                if (Objects.nonNull(response)) {
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    byte[] bytes = objectMapper.writeValueAsBytes(response);
+                    resp.getOutputStream().write(bytes);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

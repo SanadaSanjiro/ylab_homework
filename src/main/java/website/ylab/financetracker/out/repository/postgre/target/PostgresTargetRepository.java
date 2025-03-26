@@ -1,6 +1,7 @@
 package website.ylab.financetracker.out.repository.postgre.target;
 
 import website.ylab.financetracker.out.repository.TargetRepository;
+import website.ylab.financetracker.out.repository.postgre.budget.BudgetEntity;
 import website.ylab.financetracker.util.ConnectionProvider;
 import website.ylab.financetracker.service.targets.TrackerTarget;
 
@@ -22,13 +23,15 @@ public class PostgresTargetRepository implements TargetRepository {
 
     @Override
     public Optional<TrackerTarget> setTarget(TrackerTarget target) {
-        deleteTarget(target.getId());
+        long userId = target.getUserId();
+        Optional<TrackerTarget> optional = getByUserId(userId);
+        optional.ifPresent(trackerTarget -> deleteTarget(trackerTarget.getId()));
         TargetEntity entity = new TargetEntity();
         entity.setUserId(target.getUserId());
         entity.setAmount(target.getAmount());
         entity.setUuid(target.getUuid());
-        Optional<TargetEntity> optional = createTarget(entity);
-        return optional.map(mapper::toTarget);
+        Optional<TargetEntity> optionalEntity = createTarget(entity);
+        return optionalEntity.map(mapper::toTarget);
     }
 
     @Override
