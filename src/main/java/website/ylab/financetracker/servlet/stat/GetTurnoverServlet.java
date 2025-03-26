@@ -11,11 +11,10 @@ import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.stat.TurnoverResponse;
 import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.stat.StatService;
-import website.ylab.financetracker.service.transactions.TrackerTransaction;
+import website.ylab.financetracker.service.stat.TurnoverRequest;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -44,10 +43,11 @@ public class GetTurnoverServlet extends HttpServlet {
         } else {
             try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
                 String jsonData = scanner.useDelimiter("\\A").next();
-                // Todo: rework date parsing
-                Date date = objectMapper.readValue(jsonData, Date.class);
-                long id = Long.parseLong(useridObj.toString());
-                TurnoverResponse response = statService.getTurnover(id, date);
+                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                objectMapper.setDateFormat(df);
+                TurnoverRequest request = objectMapper.readValue(jsonData, TurnoverRequest.class);
+                request.setUserid(Long.parseLong(useridObj.toString()));
+                TurnoverResponse response = statService.getTurnover(request);
                 if (Objects.nonNull(response)) {
                     resp.setStatus(HttpServletResponse.SC_OK);
                     byte[] bytes = objectMapper.writeValueAsBytes(response);

@@ -15,20 +15,18 @@ class GetTurnoverServletTest {
     @Test
     void doGet() {
         StatService service = Mockito.mock(StatService.class);
-        Mockito.when(service.getTurnover(Mockito.anyLong(), Mockito.any())).thenReturn(
+        Mockito.when(service.getTurnover(Mockito.any())).thenReturn(
                 new TurnoverResponse());
         try (MockedStatic<ServiceProvider> mock = Mockito.mockStatic(ServiceProvider.class)) {
             mock.when(ServiceProvider::getStatService).thenReturn(service);
             HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
             HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
-            Mockito.when(req.getParameter("userid")).thenReturn("1");
-            Mockito.when(req.getParameter("startdate")).thenReturn(date);
             ServletOutputStream out = Mockito.mock(ServletOutputStream.class);
             Mockito.when(resp.getOutputStream()).thenReturn(out);
             new GetTurnoverServlet().doGet(req, resp);
             Mockito.verify(req, Mockito.atLeast(1)).getParameter("userid");
             Mockito.verify(service, Mockito.times(1))
-                    .getTurnover(Mockito.anyLong(), Mockito.any());
+                    .getTurnover(Mockito.any());
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -37,20 +37,19 @@ public class StatService {
 
     /**
      * Get turnover from selected date
-     * @param userId user's ID
-     * @param startDate start date to count turnover
+     * @param request TurnoverRequestwith user's id and start date to count turnover
      * @return TurnoverResponse with double income and outcome fields
      */
-    public TurnoverResponse getTurnover(long userId, Date startDate) {
-        List<TransactionResponse> transactions = transactionService.getUserTransaction(userId);
+    public TurnoverResponse getTurnover(TurnoverRequest request) {
+        List<TransactionResponse> transactions = transactionService.getUserTransaction(request.getUserid());
         double income = transactions.stream()
-                .filter(t->t.getDate().after(startDate))
+                .filter(t->t.getDate().after(request.getStartDate()))
                 .filter(t -> t.getType().equals(TransactionType.INCOME.toString()))
                 .mapToDouble(TransactionResponse::getAmount)
                 .boxed()
                 .reduce(0.0, Double::sum);
         double outcome = transactions.stream()
-                .filter(t->t.getDate().after(startDate))
+                .filter(t->t.getDate().after(request.getStartDate()))
                 .filter(t -> t.getType().equals(TransactionType.EXPENSE.toString()))
                 .mapToDouble(TransactionResponse::getAmount)
                 .boxed()
@@ -82,11 +81,18 @@ public class StatService {
     public ReportResponse getReport(long userId) {
         return new ReportResponse()
                 .setBalance(getBalance(userId))
-                .setTurnover(getTurnover(userId, setStartDate()))
+                .setTurnover(getTurnover(getTurnoverRequest(userId)))
                 .setCategory(expensesByCategory(userId));
     }
 
-    private Date setStartDate() {
+    private TurnoverRequest getTurnoverRequest(long userId) {
+        TurnoverRequest turnoverRequest = new TurnoverRequest();
+        turnoverRequest.setUserid(userId);
+        turnoverRequest.setStartDate(getStartDate());
+        return turnoverRequest;
+    }
+
+    private Date getStartDate() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.YEAR, -1000);
         return calendar.getTime();

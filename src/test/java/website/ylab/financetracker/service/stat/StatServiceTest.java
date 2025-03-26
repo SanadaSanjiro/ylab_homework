@@ -77,7 +77,10 @@ class StatServiceTest {
             Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
             mock.when(ServiceProvider::getTransactionService).thenReturn(transactionService);
             statService = new StatService();
-            TurnoverResponse response = statService.getTurnover(user.getId(), getStartDate());
+            TurnoverRequest request = new TurnoverRequest();
+            request.setStartDate(getStartDate());
+            request.setUserid(user.getId());
+            TurnoverResponse response = statService.getTurnover(request);
             assertEquals(110.0, response.getIncome());
             assertEquals(55.0, response.getOutcome());
         }
