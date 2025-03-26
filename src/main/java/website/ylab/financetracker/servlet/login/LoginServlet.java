@@ -42,7 +42,8 @@ public class LoginServlet extends HttpServlet {
                 TrackerUser user = objectMapper.readValue(jsonData, TrackerUser.class);
                 if (isValidInput(user)) {
                     boolean isValid = userService.checkPassword(user);
-                    if (isValid) {
+                    boolean isEnabled = userService.isEnabled(user.getUsername());
+                    if (isValid&&isEnabled) {
                         response = userService.getByName(user.getUsername());
                         resp.setStatus(HttpServletResponse.SC_OK);
                         HttpSession session = req.getSession();

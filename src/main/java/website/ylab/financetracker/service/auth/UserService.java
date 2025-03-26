@@ -78,6 +78,15 @@ public class UserService {
         return optional.filter(user -> newUser.getPassword().equals(user.getPassword())).isPresent();
     }
 
+    /**
+     * Checks if user is enabled.
+     * @param username String user name
+     * @return boolean false if user not exist or blocked
+     */
+    public boolean isEnabled(String username) {
+        Optional<TrackerUser> optional = trackerUserRepository.getByName(username);
+        return optional.map(TrackerUser::isEnabled).orElse(false);
+    }
 
     /**
      * Get all users response list
