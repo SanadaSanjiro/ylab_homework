@@ -7,23 +7,26 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserDataVerificator;
 import website.ylab.financetracker.service.auth.UserService;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Scanner;
 
-@WebServlet(name = "addUser", value = "/user/add")
+//@WebServlet(name = "addUser", value = "/user/add")
 public class AddUserServlet extends HttpServlet {
     private final UserService userService;
     private final ObjectMapper objectMapper;
+    UserDataVerificator userDataVerificator;
 
-    public AddUserServlet() {
-        this.userService = ServiceProvider.getUserService();
+    public AddUserServlet(UserService userService, UserDataVerificator userDataVerificator) {
+        this.userService = userService;
+        this.userDataVerificator = userDataVerificator;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
@@ -36,7 +39,7 @@ public class AddUserServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
         UserResponse response;
-        try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+        try (Scanner scanner = new Scanner(req.getInputStream(), StandardCharsets.UTF_8)) {
             String jsonData = scanner.useDelimiter("\\A").next();
             try {
                 TrackerUser user = objectMapper.readValue(jsonData, TrackerUser.class);
@@ -57,14 +60,14 @@ public class AddUserServlet extends HttpServlet {
     }
     private boolean isValidUser(TrackerUser user) {
         String username = user.getUsername();
-        if (!UserDataVerificator.isValidName(username) || !userService.isUniqueName(username)) {
+        if (!userDataVerificator.isValidName(username) || !userService.isUniqueName(username)) {
             return false;
         }
         String email = user.getEmail();
-        if (!UserDataVerificator.isValidEmail(email) || !userService.isUniqueEmail(email)) {
+        if (!userDataVerificator.isValidEmail(email) || !userService.isUniqueEmail(email)) {
             return false;
         }
         String password = user.getPassword();
-        return UserDataVerificator.isValidPassword(password);
+        return userDataVerificator.isValidPassword(password);
     }
 }

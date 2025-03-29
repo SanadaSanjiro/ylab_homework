@@ -7,22 +7,24 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.Role;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserService;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Scanner;
 
-@WebServlet(name = "block", value ="/adm/block")
+//@WebServlet(name = "block", value ="/adm/block")
 public class BlockUserServlet extends HttpServlet {
     private final UserService userService;
     private final ObjectMapper objectMapper;
 
-    public BlockUserServlet() {
-        this.userService = ServiceProvider.getUserService();
+    @Autowired
+    public BlockUserServlet(UserService userService) {
+        this.userService = userService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
@@ -39,7 +41,7 @@ public class BlockUserServlet extends HttpServlet {
         if (Objects.isNull(roleObj) || !roleObj.toString().equalsIgnoreCase(Role.ADMIN.toString())) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
-            try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+            try (Scanner scanner = new Scanner(req.getInputStream(), StandardCharsets.UTF_8)) {
                 String jsonData = scanner.useDelimiter("\\A").next();
                 TrackerUser user = objectMapper.readValue(jsonData, TrackerUser.class);
                 UserResponse response = userService.blockUser(user.getId());

@@ -7,8 +7,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.Role;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserService;
@@ -16,13 +16,14 @@ import website.ylab.financetracker.service.auth.UserService;
 import java.util.Objects;
 import java.util.Scanner;
 
-@WebServlet(name = "unblock", value ="/adm/unblock")
+//@WebServlet(name = "unblock", value ="/adm/unblock")
 public class UnblockUserServlet extends HttpServlet {
     private final UserService userService;
     private final ObjectMapper objectMapper;
 
-    public UnblockUserServlet() {
-        this.userService = ServiceProvider.getUserService();
+    @Autowired
+    public UnblockUserServlet(UserService userService) {
+        this.userService = userService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }

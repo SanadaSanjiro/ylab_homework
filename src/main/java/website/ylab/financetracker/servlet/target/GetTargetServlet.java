@@ -8,21 +8,19 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import website.ylab.financetracker.in.dto.budget.BudgetResponse;
 import website.ylab.financetracker.in.dto.target.TargetResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.targets.TargetService;
 
 import java.io.IOException;
 import java.util.Objects;
 
-@WebServlet(name = "getTarget", value ="/target/get")
+//@WebServlet(name = "getTarget", value ="/target/get")
 public class GetTargetServlet extends HttpServlet {
     private final TargetService targetService;
     private final ObjectMapper objectMapper;
 
-    public GetTargetServlet() {
-        this.targetService = ServiceProvider.getTargetService();
+    public GetTargetServlet(TargetService targetService) {
+        this.targetService = targetService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }

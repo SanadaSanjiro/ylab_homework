@@ -9,19 +9,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.UserService;
 
 import java.io.IOException;
 import java.util.Objects;
 
-@WebServlet(name = "getUser", value ="/user/get")
+//@WebServlet(name = "getUser", value ="/user/get")
 public class GetUserServlet extends HttpServlet {
     private final UserService userService;
     private final ObjectMapper objectMapper;
 
-    public GetUserServlet() {
-        this.userService = ServiceProvider.getUserService();
+    public GetUserServlet(UserService userService) {
+        this.userService = userService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }

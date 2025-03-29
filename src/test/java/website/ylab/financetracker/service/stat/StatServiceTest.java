@@ -2,13 +2,11 @@ package website.ylab.financetracker.service.stat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import website.ylab.financetracker.in.dto.stat.BalanceResponse;
 import website.ylab.financetracker.in.dto.stat.CategoryExpensesResponse;
 import website.ylab.financetracker.in.dto.stat.ReportResponse;
 import website.ylab.financetracker.in.dto.stat.TurnoverResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.transactions.TransactionService;
@@ -60,62 +58,50 @@ class StatServiceTest {
 
     @Test
     void getBalance() {
-        try (MockedStatic<ServiceProvider> mock = Mockito.mockStatic(ServiceProvider.class)) {
-            Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
-            mock.when(ServiceProvider::getTransactionService).thenReturn(transactionService);
-            statService = new StatService();
-            BalanceResponse response = statService.getBalance(user.getId());
-            assertEquals(110.0, response.getIncome());
-            assertEquals(55.0, response.getOutcome());
-            assertEquals(55.0, response.getBalance());
-        }
+        Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
+        statService = new StatService(transactionService);
+        BalanceResponse response = statService.getBalance(user.getId());
+        assertEquals(110.0, response.getIncome());
+        assertEquals(55.0, response.getOutcome());
+        assertEquals(55.0, response.getBalance());
     }
 
     @Test
     void getTurnover() {
-        try (MockedStatic<ServiceProvider> mock = Mockito.mockStatic(ServiceProvider.class)) {
-            Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
-            mock.when(ServiceProvider::getTransactionService).thenReturn(transactionService);
-            statService = new StatService();
-            TurnoverRequest request = new TurnoverRequest();
-            request.setStartDate(getStartDate());
-            request.setUserid(user.getId());
-            TurnoverResponse response = statService.getTurnover(request);
-            assertEquals(110.0, response.getIncome());
-            assertEquals(55.0, response.getOutcome());
-        }
+        Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
+        statService = new StatService(transactionService);
+        TurnoverRequest request = new TurnoverRequest();
+        request.setStartDate(getStartDate());
+        request.setUserid(user.getId());
+        TurnoverResponse response = statService.getTurnover(request);
+        assertEquals(110.0, response.getIncome());
+        assertEquals(55.0, response.getOutcome());
     }
 
     @Test
     void expensesByCategory() {
-        try (MockedStatic<ServiceProvider> mock = Mockito.mockStatic(ServiceProvider.class)) {
-            Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
-            mock.when(ServiceProvider::getTransactionService).thenReturn(transactionService);
-            statService = new StatService();
-            CategoryExpensesResponse response = statService.expensesByCategory(user.getId());
-            Map<String, Double> expenses = response.getExpenses();
-            assertEquals(50.0, expenses.get("taxi"));
-            assertEquals(5.0, expenses.get("food"));
-        }
+        Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
+        statService = new StatService(transactionService);
+        CategoryExpensesResponse response = statService.expensesByCategory(user.getId());
+        Map<String, Double> expenses = response.getExpenses();
+        assertEquals(50.0, expenses.get("taxi"));
+        assertEquals(5.0, expenses.get("food"));
     }
 
     @Test
     void getReport() {
-        try (MockedStatic<ServiceProvider> mock = Mockito.mockStatic(ServiceProvider.class)) {
-            Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
-            mock.when(ServiceProvider::getTransactionService).thenReturn(transactionService);
-            statService = new StatService();
-            ReportResponse response = statService.getReport(user.getId());
+        Mockito.when(transactionService.getUserTransaction(user.getId())).thenReturn(list);
+        statService = new StatService(transactionService);
+        ReportResponse response = statService.getReport(user.getId());
 
-            BalanceResponse balance = response.getBalance();
-            assertEquals(110.0, balance.getIncome());
+        BalanceResponse balance = response.getBalance();
+        assertEquals(110.0, balance.getIncome());
 
-            TurnoverResponse turnover = response.getTurnover();
-            assertEquals(110.0, turnover.getIncome());
+        TurnoverResponse turnover = response.getTurnover();
+        assertEquals(110.0, turnover.getIncome());
 
-            CategoryExpensesResponse category = response.getCategory();
-            assertEquals(50.0, category.getExpenses().get("taxi"));
-        }
+        CategoryExpensesResponse category = response.getCategory();
+        assertEquals(50.0, category.getExpenses().get("taxi"));
     }
 
     private Date getStartDate() {

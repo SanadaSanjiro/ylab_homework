@@ -9,19 +9,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.stat.ReportResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.stat.StatService;
 
 import java.io.IOException;
 import java.util.Objects;
 
-@WebServlet(name = "getreport", value ="/stat/report")
+//@WebServlet(name = "getreport", value ="/stat/report")
 public class GetReportServlet extends HttpServlet {
     private final StatService statService;
     private final ObjectMapper objectMapper;
 
-    public GetReportServlet() {
-        this.statService = ServiceProvider.getStatService();
+    public GetReportServlet(StatService statService) {
+        this.statService = statService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }

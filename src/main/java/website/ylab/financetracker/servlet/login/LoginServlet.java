@@ -9,21 +9,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserDataVerificator;
 import website.ylab.financetracker.service.auth.UserService;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-@WebServlet(name = "login", value = "/auth/login")
+//@WebServlet(name = "login", value = "/auth/login")
 public class LoginServlet extends HttpServlet {
     private final UserService userService;
     private final ObjectMapper objectMapper;
+    private final UserDataVerificator userDataVerificator;
 
-    public LoginServlet() {
-        this.userService = ServiceProvider.getUserService();
+    public LoginServlet(UserService userService, UserDataVerificator userDataVerificator) {
+        this.userService = userService;
+        this.userDataVerificator = userDataVerificator;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
@@ -36,7 +38,7 @@ public class LoginServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
         UserResponse response;
-        try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+        try (Scanner scanner = new Scanner(req.getInputStream(), StandardCharsets.UTF_8)) {
             String jsonData = scanner.useDelimiter("\\A").next();
             try {
                 TrackerUser user = objectMapper.readValue(jsonData, TrackerUser.class);
@@ -62,10 +64,10 @@ public class LoginServlet extends HttpServlet {
 
     private boolean isValidInput(TrackerUser user) {
         String username = user.getUsername();
-        if (!UserDataVerificator.isValidName(username)) {
+        if (!userDataVerificator.isValidName(username)) {
             return false;
         }
         String password = user.getPassword();
-        return UserDataVerificator.isValidPassword(password);
+        return userDataVerificator.isValidPassword(password);
     }
 }

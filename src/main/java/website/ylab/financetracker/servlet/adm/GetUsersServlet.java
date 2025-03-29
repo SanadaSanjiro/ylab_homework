@@ -8,9 +8,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import website.ylab.financetracker.annotations.Loggable;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.Role;
 import website.ylab.financetracker.service.auth.UserService;
 
@@ -19,13 +19,14 @@ import java.util.List;
 import java.util.Objects;
 
 @Loggable
-@WebServlet(name = "getUsers", value ="/adm/users")
+//@WebServlet(name = "getUsers", value ="/adm/users")
 public class GetUsersServlet extends HttpServlet {
     private final UserService userService;
     private final ObjectMapper objectMapper;
 
-    public GetUsersServlet() {
-        this.userService = ServiceProvider.getUserService();
+    @Autowired
+    public GetUsersServlet(UserService userService) {
+        this.userService = userService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }

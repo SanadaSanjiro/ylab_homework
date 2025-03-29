@@ -1,38 +1,39 @@
 package website.ylab.financetracker.out.repository.postgre.transacion;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import website.ylab.financetracker.out.repository.TrackerTransactionRepository;
-import website.ylab.financetracker.util.ConnectionProvider;
+import website.ylab.financetracker.service.ConnectionProvider;
 import website.ylab.financetracker.service.transactions.TrackerTransaction;
 import website.ylab.financetracker.service.transactions.TransactionType;
 import website.ylab.financetracker.util.DateConvertor;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
+@Repository
 public class PostgreTransactionRepository implements TrackerTransactionRepository {
     // The sole purpose of this array is to give names to the values while parsing the values
     // retrieved from the database, making the code more understandable.
     private final String[] dbFields = {"id", "category", "description", "type", "amount", "date", "userid", "uuid"};
     private final ConnectionProvider connectionProvider;
+    Logger logger = LogManager.getLogger(PostgreTransactionRepository.class);
 
-
+    @Autowired
     public PostgreTransactionRepository(ConnectionProvider connectionProvider) {
         this.connectionProvider = connectionProvider;
     }
 
     @Override
     public Optional<TrackerTransaction> create(TrackerTransaction transaction) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String querry = "insert into fin_tracker.ft_transaction " +
                 "(category, description, type, amount, date, userid, uuid) " +
                 "values (?,?,?,?,?,?,?);";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(querry, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(querry, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, transaction.getCategory().toLowerCase());
             preparedStatement.setString(2, transaction.getDescription());
             preparedStatement.setString(3, transaction.getType().toString());
@@ -43,7 +44,7 @@ public class PostgreTransactionRepository implements TrackerTransactionRepositor
             preparedStatement.executeUpdate();
             return getByUUID(transaction.getUuid());
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while creating transaction " + e.getMessage());
+            logger.error("Error creating transaction: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -53,12 +54,12 @@ public class PostgreTransactionRepository implements TrackerTransactionRepositor
         String query = "select * from fin_tracker.ft_transaction where userid = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setLong(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             return parseRS(resultSet);
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while getting transaction by user id " + e.getMessage());
+            logger.error("Error getting transaction by user id: {}", e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -73,7 +74,7 @@ public class PostgreTransactionRepository implements TrackerTransactionRepositor
         copyTransactionData(storedTransaction, transaction);
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, storedTransaction.getCategory().toLowerCase());
             preparedStatement.setString(2, storedTransaction.getDescription());
             preparedStatement.setString(3, storedTransaction.getType().toString());
@@ -83,7 +84,7 @@ public class PostgreTransactionRepository implements TrackerTransactionRepositor
             preparedStatement.setLong(7, storedTransaction.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while updating transaction " + e.getMessage());
+            logger.error("Error updating transaction: {}", e.getMessage());
             return Optional.empty();
         }
         return getByUUID(storedTransaction.getUuid());
@@ -96,12 +97,12 @@ public class PostgreTransactionRepository implements TrackerTransactionRepositor
         String query = "delete from fin_tracker.ft_transaction where id = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setLong(1, optional.get().getId());
             preparedStatement.executeUpdate();
             return optional;
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while deleting transaction " + e.getMessage());
+            logger.error("Error deleting transaction {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -111,13 +112,13 @@ public class PostgreTransactionRepository implements TrackerTransactionRepositor
         String query = "select * from fin_tracker.ft_transaction where id = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<TrackerTransaction> transactions =  parseRS(resultSet);
             return transactions.stream().findFirst();
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while getting transaction by id " + e.getMessage());
+            logger.error("Error getting transaction by id: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -127,11 +128,11 @@ public class PostgreTransactionRepository implements TrackerTransactionRepositor
         String query = "select * from fin_tracker.ft_transaction;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             return parseRS(resultSet);
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while getting all transactions " + e.getMessage());
+            logger.error("Error while getting list of transactions: {}", e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -140,20 +141,20 @@ public class PostgreTransactionRepository implements TrackerTransactionRepositor
         String query = "select * from fin_tracker.ft_transaction where uuid = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, uuid);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<TrackerTransaction> transactions =  parseRS(resultSet);
             return transactions.stream().findFirst();
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while getting transaction by uuid " + e.getMessage() + " "
-                    + e.getStackTrace());
+            logger.error("Error getting transaction by uuid: {}", e.getMessage() + " "
+                    + Arrays.toString(e.getStackTrace()));
             return Optional.empty();
         }
     }
 
     private void copyTransactionData(TrackerTransaction storedTransaction, TrackerTransaction newTransaction) {
-        if (Objects.nonNull(newTransaction.getAmount())) {
+        if (newTransaction.getAmount()!=0.0) {
             storedTransaction.setAmount(newTransaction.getAmount());
         }
         if (Objects.nonNull(newTransaction.getType())) {
@@ -168,7 +169,7 @@ public class PostgreTransactionRepository implements TrackerTransactionRepositor
         if (Objects.nonNull(newTransaction.getDate())) {
             storedTransaction.setDate(newTransaction.getDate());
         }
-        if (Objects.nonNull(newTransaction.getUserId())) {
+        if (newTransaction.getUserId()!=0L) {
             storedTransaction.setUserId(newTransaction.getUserId());
         }
     }

@@ -1,8 +1,9 @@
 package website.ylab.financetracker.service.budget;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import website.ylab.financetracker.in.dto.budget.BudgetMapper;
 import website.ylab.financetracker.in.dto.budget.BudgetResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.out.repository.BudgetRepository;
 import website.ylab.financetracker.service.auth.UserService;
@@ -13,14 +14,16 @@ import java.util.UUID;
 /**
  * Provides methods for changing budget data.
  */
+@Service
 public class BudgetService {
     private final BudgetRepository budgetRepository;
-    private final UserService userService = ServiceProvider.getUserService();
+    private final UserService userService;
     private final BudgetMapper mapper = BudgetMapper.INSTANCE;
 
-
-    public BudgetService(BudgetRepository budgetRepository) {
+    @Autowired
+    public BudgetService(BudgetRepository budgetRepository, UserService userService) {
         this.budgetRepository = budgetRepository;
+        this.userService = userService;
     }
 
     public BudgetResponse setBudget(TrackerBudget budget) {

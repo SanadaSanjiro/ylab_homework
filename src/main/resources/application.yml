@@ -1,0 +1,12 @@
+server:
+  port: 8089
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ylabft_db
+    username: ft_admin
+    password: MyP@ss4DB
+    schema: fin_tracker
+
+liquibase:
+  changelog: db/changelog/db.changelog-master.yml

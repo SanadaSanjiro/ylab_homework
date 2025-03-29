@@ -8,21 +8,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.target.TargetResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.targets.TargetService;
 import website.ylab.financetracker.service.targets.TrackerTarget;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Scanner;
 
-@WebServlet(name = "setTarget", value ="/target/set")
+//@WebServlet(name = "setTarget", value ="/target/set")
 public class SetTargetServlet extends HttpServlet {
     private final TargetService targetService;
     private final ObjectMapper objectMapper;
 
-    public SetTargetServlet() {
-        this.targetService = ServiceProvider.getTargetService();
+    public SetTargetServlet(TargetService targetService) {
+        this.targetService = targetService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
@@ -39,7 +39,7 @@ public class SetTargetServlet extends HttpServlet {
         if (Objects.isNull(useridObj)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
-            try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+            try (Scanner scanner = new Scanner(req.getInputStream(), StandardCharsets.UTF_8)) {
                 String jsonData = scanner.useDelimiter("\\A").next();
                 TrackerTarget target = objectMapper.readValue(jsonData, TrackerTarget.class);
                 target.setUserId(Long.parseLong(useridObj.toString()));

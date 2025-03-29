@@ -8,18 +8,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.UserService;
 
 import java.util.Objects;
 
-@WebServlet(name = "deleteUser", value ="/user/delete")
+//@WebServlet(name = "deleteUser", value ="/user/delete")
 public class DeleteUserServlet extends HttpServlet {
     private final UserService userService;
     private final ObjectMapper objectMapper;
 
-    public DeleteUserServlet() {
-        this.userService = ServiceProvider.getUserService();
+    public DeleteUserServlet(UserService userService) {
+        this.userService = userService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }

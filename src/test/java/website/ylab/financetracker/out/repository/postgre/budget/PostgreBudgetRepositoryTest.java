@@ -5,10 +5,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 import website.ylab.financetracker.service.auth.TrackerUser;
-import website.ylab.financetracker.util.ConnectionProvider;
-import website.ylab.financetracker.util.DbSchemaCreator;
+import website.ylab.financetracker.service.ConnectionProvider;
+import website.ylab.financetracker.service.DbSchemaCreator;
 import website.ylab.financetracker.service.budget.TrackerBudget;
-import website.ylab.financetracker.util.LiquibaseStarter;
+import website.ylab.financetracker.service.LiquibaseStarter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

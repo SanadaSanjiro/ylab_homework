@@ -1,24 +1,26 @@
 package website.ylab.financetracker.service.targets;
 
-import website.ylab.financetracker.in.dto.budget.BudgetResponse;
-import website.ylab.financetracker.service.ServiceProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserService;
 import website.ylab.financetracker.in.dto.target.TargetMapper;
 import website.ylab.financetracker.in.dto.target.TargetResponse;
 import website.ylab.financetracker.out.repository.TargetRepository;
-import website.ylab.financetracker.service.budget.TrackerBudget;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class TargetService {
     private final TargetRepository targetRepository;
-    private final UserService userService = ServiceProvider.getUserService();
+    private final UserService userService;
     private final TargetMapper mapper = TargetMapper.INSTANCE;
 
-    public TargetService(TargetRepository targetRepository) {
+    @Autowired
+    public TargetService(TargetRepository targetRepository, UserService userService) {
         this.targetRepository = targetRepository;
+        this.userService = userService;
     }
 
     public TargetResponse setTarget(TrackerTarget request) {

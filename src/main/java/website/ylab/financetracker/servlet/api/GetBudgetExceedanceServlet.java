@@ -9,20 +9,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.annotations.Loggable;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.api.ApiService;
 
 import java.io.IOException;
 import java.util.Objects;
 
 @Loggable
-@WebServlet(name = "getBudgetExceedance", value ="/api/exceedance")
+//@WebServlet(name = "getBudgetExceedance", value ="/api/exceedance")
 public class GetBudgetExceedanceServlet extends HttpServlet {
     private final ApiService apiService;
     private final ObjectMapper objectMapper;
 
-    public GetBudgetExceedanceServlet() {
-        this.apiService = ServiceProvider.getApiService();
+    public GetBudgetExceedanceServlet(ApiService apiService) {
+        this.apiService = apiService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
@@ -40,7 +39,7 @@ public class GetBudgetExceedanceServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
             try {
-                Long userId = Long.parseLong(useridObj.toString());
+                long userId = Long.parseLong(useridObj.toString());
                 boolean response = apiService.isExceeded(userId);
                 resp.setStatus(HttpServletResponse.SC_OK);
                 byte[] bytes = objectMapper.writeValueAsBytes(response);

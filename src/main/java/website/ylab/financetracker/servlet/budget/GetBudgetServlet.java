@@ -9,19 +9,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.budget.BudgetResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.budget.BudgetService;
 
 import java.io.IOException;
 import java.util.Objects;
 
-@WebServlet(name = "getBudget", value ="/budget/get")
+//@WebServlet(name = "getBudget", value ="/budget/get")
 public class GetBudgetServlet extends HttpServlet {
     private final BudgetService budgetService;
     private final ObjectMapper objectMapper;
 
-    public GetBudgetServlet() {
-        this.budgetService = ServiceProvider.getBudgetService();
+    public GetBudgetServlet(BudgetService budgetService) {
+        this.budgetService = budgetService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }

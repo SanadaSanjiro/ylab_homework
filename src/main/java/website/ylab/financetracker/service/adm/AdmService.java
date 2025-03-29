@@ -1,6 +1,7 @@
 package website.ylab.financetracker.service.adm;
 
-import website.ylab.financetracker.service.ServiceProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import website.ylab.financetracker.service.auth.Role;
 import website.ylab.financetracker.service.auth.UserService;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
@@ -14,12 +15,19 @@ import java.util.Objects;
 /**
  * Provides methods for admin's operations.
  */
+@Service
 public class AdmService {
-    private final UserService userService = ServiceProvider.getUserService();
-    private final TransactionService transactionService = ServiceProvider.getTransactionService();
+    private final UserService userService;
+    private final TransactionService transactionService;
+
+    @Autowired
+    public AdmService(UserService userService, TransactionService transactionService) {
+        this.userService = userService;
+        this.transactionService = transactionService;
+    }
 
     public List<UserResponse> getUsers() {
-        return ServiceProvider.getUserService().getAllUsersResponse();
+        return userService.getAllUsersResponse();
     }
 
     public List<TransactionResponse> getUserTransactions(long userId) {

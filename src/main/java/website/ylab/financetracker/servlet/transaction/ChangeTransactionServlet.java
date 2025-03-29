@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.transactions.TrackerTransaction;
 import website.ylab.financetracker.service.transactions.TransactionService;
 
@@ -16,13 +15,13 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
 
-@WebServlet(name = "changeTransaction", value ="/transaction/change")
+//@WebServlet(name = "changeTransaction", value ="/transaction/change")
 public class ChangeTransactionServlet extends HttpServlet {
     private final TransactionService transactionService;
     private final ObjectMapper objectMapper;
 
-    public ChangeTransactionServlet() {
-        this.transactionService = ServiceProvider.getTransactionService();
+    public ChangeTransactionServlet(TransactionService transactionService) {
+        this.transactionService = transactionService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }

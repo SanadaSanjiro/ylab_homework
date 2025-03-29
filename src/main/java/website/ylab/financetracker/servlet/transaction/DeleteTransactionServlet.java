@@ -8,20 +8,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.transactions.TrackerTransaction;
 import website.ylab.financetracker.service.transactions.TransactionService;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Scanner;
 
-@WebServlet(name = "deleteTransaction", value ="/transaction/delete")
+//@WebServlet(name = "deleteTransaction", value ="/transaction/delete")
 public class DeleteTransactionServlet extends HttpServlet {
     private final TransactionService transactionService;
     private final ObjectMapper objectMapper;
 
-    public DeleteTransactionServlet() {
-        this.transactionService = ServiceProvider.getTransactionService();
+    public DeleteTransactionServlet(TransactionService transactionService) {
+        this.transactionService = transactionService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
@@ -40,7 +40,7 @@ public class DeleteTransactionServlet extends HttpServlet {
         if (Objects.isNull(useridObj)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
-            try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+            try (Scanner scanner = new Scanner(req.getInputStream(), StandardCharsets.UTF_8)) {
                 String jsonData = scanner.useDelimiter("\\A").next();
                 transaction = objectMapper.readValue(jsonData, TrackerTransaction.class);
                 response =transactionService.getById(transaction.getId());

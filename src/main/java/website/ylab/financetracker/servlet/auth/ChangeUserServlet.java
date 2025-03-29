@@ -9,22 +9,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserDataVerificator;
 import website.ylab.financetracker.service.auth.UserService;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Scanner;
 
-@WebServlet(name = "changeUser", value = "/user/change")
+//@WebServlet(name = "changeUser", value = "/user/change")
 public class ChangeUserServlet extends HttpServlet {
     private final UserService userService;
     private final ObjectMapper objectMapper;
+    private final UserDataVerificator userDataVerificator;
 
-    public ChangeUserServlet() {
-        this.userService = ServiceProvider.getUserService();
+    public ChangeUserServlet(UserService userService, UserDataVerificator userDataVerificator) {
+        this.userService = userService;
+        this.userDataVerificator = userDataVerificator;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
@@ -42,7 +44,7 @@ public class ChangeUserServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
             UserResponse response = userService.getByName(usernameObj.toString());
-            try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+            try (Scanner scanner = new Scanner(req.getInputStream(), StandardCharsets.UTF_8)) {
                 String jsonData = scanner.useDelimiter("\\A").next();
                 try {
                     TrackerUser user = objectMapper.readValue(jsonData, TrackerUser.class);
@@ -66,14 +68,14 @@ public class ChangeUserServlet extends HttpServlet {
 
     private boolean isValidUser(TrackerUser user) {
         String username = user.getUsername();
-        if (!UserDataVerificator.isValidName(username) || !userService.isUniqueName(username)) {
+        if (!userDataVerificator.isValidName(username) || !userService.isUniqueName(username)) {
             return false;
         }
         String email = user.getEmail();
-        if (!UserDataVerificator.isValidEmail(email) || !userService.isUniqueEmail(email)) {
+        if (!userDataVerificator.isValidEmail(email) || !userService.isUniqueEmail(email)) {
             return false;
         }
         String password = user.getPassword();
-        return UserDataVerificator.isValidPassword(password);
+        return userDataVerificator.isValidPassword(password);
     }
 }

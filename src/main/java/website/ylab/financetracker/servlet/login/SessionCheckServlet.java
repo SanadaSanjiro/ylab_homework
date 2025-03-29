@@ -3,15 +3,15 @@ package website.ylab.financetracker.servlet.login;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import website.ylab.financetracker.controllers.auth.SessionStatusDto;
 
 import java.io.IOException;
 
-@WebServlet(name = "loginCheck", value = "/auth/check")
+//@WebServlet(name = "loginCheck", value = "/auth/check")
 public class SessionCheckServlet extends HttpServlet {
     private final ObjectMapper objectMapper;
 

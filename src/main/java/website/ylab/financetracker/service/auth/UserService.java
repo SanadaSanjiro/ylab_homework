@@ -1,6 +1,9 @@
 package website.ylab.financetracker.service.auth;
 
-import website.ylab.financetracker.service.ServiceProvider;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import website.ylab.financetracker.in.dto.auth.UserMapper;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.out.repository.TrackerUserRepository;
@@ -11,10 +14,13 @@ import java.util.Optional;
 /**
  * Provides methods for changing user data.
  */
+@Service
 public class UserService {
     private final TrackerUserRepository trackerUserRepository;
     private final UserMapper mapper = UserMapper.INSTANCE;
+    Logger logger = LogManager.getLogger(UserService.class);
 
+    @Autowired
     public UserService(TrackerUserRepository trackerUserRepository) {
         this.trackerUserRepository = trackerUserRepository;
     }
@@ -42,8 +48,10 @@ public class UserService {
         Optional<TrackerUser> optional = trackerUserRepository.create(newUser);
         if (optional.isPresent()) {
             TrackerUser trackerUser = optional.get();
+            logger.info("User created {}", trackerUser.toString());
             return mapper.toResponse(trackerUser);
         } else {
+            logger.warn("User {} not created", newUser);
             return null;
         }
     }
@@ -134,7 +142,7 @@ public class UserService {
     }
 
     /**
-     * Removes a user from the system. Also deletes all of their data.
+     * Removes a user from the system. Users data must be previously deleted using UserDataDeletionService.
      * @param id long user id to delete
      * @return String with a result.
      */
@@ -142,9 +150,6 @@ public class UserService {
         Optional<TrackerUser> optional = trackerUserRepository.getById(id);
         if (optional.isEmpty()) return null;
         TrackerUser storedUser = optional.get();
-        ServiceProvider.getTransactionService().deleteUserTransactions(storedUser.getId());
-        ServiceProvider.getBudgetService().deleteByUserId(storedUser.getId());
-        ServiceProvider.getTargetService().deleteByUserId(id);
         optional = trackerUserRepository.delete(storedUser);
         return optional.map(mapper::toResponse).orElse(null);
     }

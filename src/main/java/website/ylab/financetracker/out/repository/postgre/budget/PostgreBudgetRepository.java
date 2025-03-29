@@ -1,7 +1,11 @@
 package website.ylab.financetracker.out.repository.postgre.budget;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import website.ylab.financetracker.out.repository.BudgetRepository;
-import website.ylab.financetracker.util.ConnectionProvider;
+import website.ylab.financetracker.service.ConnectionProvider;
 import website.ylab.financetracker.service.budget.TrackerBudget;
 
 import java.sql.*;
@@ -9,13 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class PostgreBudgetRepository implements BudgetRepository {
     // The sole purpose of this array is to give names to the values while parsing the values
     // retrieved from the database, making the code more understandable.
     private final String[] dbFields = {"id", "bg_limit", "userid", "uuid"};
     private final ConnectionProvider connectionProvider;
     private final BudgetEntityMapper mapper = BudgetEntityMapper.INSTANCE;
+    Logger logger = LogManager.getLogger(PostgreBudgetRepository.class);
 
+    @Autowired
     public PostgreBudgetRepository(ConnectionProvider connectionProvider) {
         this.connectionProvider = connectionProvider;
     }
@@ -57,31 +64,32 @@ public class PostgreBudgetRepository implements BudgetRepository {
         String query = "select * from fin_tracker.budget where userid = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setLong(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<BudgetEntity> entities = parseRS(resultSet);
             if (entities.isEmpty()) return Optional.empty();
             return (Optional.of(mapper.toBudget(entities.get(0))));
         } catch (SQLException e) {
+            logger.error("Error getting budget by user id: {}", e.getMessage());
             return Optional.empty();
         }
     }
 
     public Optional<BudgetEntity> createBudget(BudgetEntity budget) {
-        String querry = "insert into fin_tracker.budget " +
+        String query = "insert into fin_tracker.budget " +
                 "(bg_limit, userid, uuid) " +
                 "values (?,?,?);";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(querry, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setDouble(1, budget.getLimit());
             preparedStatement.setLong(2, budget.getUserId());
             preparedStatement.setString(3, budget.getUuid());
             preparedStatement.executeUpdate();
             return getByUUID(budget.getUuid());
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while creating transaction " + e.getMessage());
+            logger.error("Error creating budget: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -90,12 +98,12 @@ public class PostgreBudgetRepository implements BudgetRepository {
         String query = "delete from fin_tracker.budget where uuid = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, budget.getUuid());
             preparedStatement.executeUpdate();
             return Optional.of(budget);
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while deleting transaction " + e.getMessage());
+            logger.error("Error deleting budget: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -104,13 +112,13 @@ public class PostgreBudgetRepository implements BudgetRepository {
         String query = "select * from fin_tracker.budget where id = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<BudgetEntity> list =  parseRS(resultSet);
             return list.stream().findFirst();
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while getting transaction by id " + e.getMessage());
+            logger.error("Error getting budget by id: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -119,12 +127,12 @@ public class PostgreBudgetRepository implements BudgetRepository {
         String query = "select * from fin_tracker.budget where userid = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setLong(1, userid);
             ResultSet resultSet = preparedStatement.executeQuery();
             return parseRS(resultSet);
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while getting transaction by id " + e.getMessage());
+            logger.error("Error getting budget list by user id: {}", e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -133,13 +141,13 @@ public class PostgreBudgetRepository implements BudgetRepository {
         String query = "select * from fin_tracker.budget where uuid = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, uuid);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<BudgetEntity> list =  parseRS(resultSet);
             return list.stream().findFirst();
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while getting transaction by id " + e.getMessage());
+            logger.error("Error getting budget list by uuid: {}", e.getMessage());
             return Optional.empty();
         }
     }

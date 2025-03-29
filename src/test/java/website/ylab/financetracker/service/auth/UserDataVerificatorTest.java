@@ -9,16 +9,17 @@ class UserDataVerificatorTest {
     String invalidName = "@#@$";
     String email = "bob@gmail.com";
     String invalidEmail = "Alice.gmail.com";
+    UserDataVerificator verificator = new UserDataVerificator();
 
     @Test
     void isValidEmail() {
-        assertTrue(UserDataVerificator.isValidEmail(email));
-        assertFalse(UserDataVerificator.isValidEmail(invalidEmail));
+        assertTrue(verificator.isValidEmail(email));
+        assertFalse(verificator.isValidEmail(invalidEmail));
     }
 
     @Test
     void isValidName() {
-        assertTrue(UserDataVerificator.isValidName(username));
-        assertFalse(UserDataVerificator.isValidName(invalidName));
+        assertTrue(verificator.isValidName(username));
+        assertFalse(verificator.isValidName(invalidName));
     }
 }

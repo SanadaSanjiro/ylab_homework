@@ -9,22 +9,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import website.ylab.financetracker.in.dto.stat.TurnoverResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.service.stat.StatService;
 import website.ylab.financetracker.service.stat.TurnoverRequest;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.Scanner;
 
-@WebServlet(name = "getturnover", value ="/stat/turnover")
+//@WebServlet(name = "getturnover", value ="/stat/turnover")
 public class GetTurnoverServlet extends HttpServlet {
     private final StatService statService;
     private final ObjectMapper objectMapper;
 
-    public GetTurnoverServlet() {
-        this.statService = ServiceProvider.getStatService();
+    public GetTurnoverServlet(StatService statService) {
+        this.statService = statService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
@@ -41,7 +41,7 @@ public class GetTurnoverServlet extends HttpServlet {
         if (Objects.isNull(useridObj)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
-            try (Scanner scanner = new Scanner(req.getInputStream(), "UTF-8")) {
+            try (Scanner scanner = new Scanner(req.getInputStream(), StandardCharsets.UTF_8)) {
                 String jsonData = scanner.useDelimiter("\\A").next();
                 SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
                 objectMapper.setDateFormat(df);
