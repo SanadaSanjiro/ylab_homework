@@ -14,6 +14,7 @@ class TargetControllerTest {
     TargetService service = Mockito.mock(TargetService.class);
     HttpSession session = Mockito.mock(HttpSession.class);
     TargetController controller = new TargetController(service);
+
     @Test
     void getTarget() {
         Mockito.when(session.getAttribute("userid")).thenReturn("1");

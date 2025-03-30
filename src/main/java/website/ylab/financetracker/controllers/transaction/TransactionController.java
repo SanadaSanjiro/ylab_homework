@@ -64,7 +64,7 @@ public class TransactionController {
         }
         try {
             transaction.setUserId(Long.parseLong(useridObj.toString()));
-            List<TransactionResponse> response =service.getFiltered(transaction);
+            List<TransactionResponse> response = service.getFiltered(transaction);
             if (Objects.nonNull(response)) {
                 logger.info("GetFiltered request: ok");
                 return ResponseEntity.ok(response);
