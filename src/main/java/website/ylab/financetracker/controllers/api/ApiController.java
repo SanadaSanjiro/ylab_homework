@@ -41,7 +41,7 @@ public class ApiController {
             logger.info("GetBudgetExceedance request: ok");
             return ResponseEntity.ok(response);
         } catch (NumberFormatException e) {
-            logger.warn("GetBudgetExceedance request failed {}");
+            logger.warn("Got an exception while parsing userId {}", e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

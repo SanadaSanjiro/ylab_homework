@@ -63,7 +63,7 @@ public class SessionController {
                 return ResponseEntity.ok(response);
             }
         } catch (Exception e) {
-            logger.warn("Logging off caused exception");
+            logger.warn("Logging off caused exception {}", e.getMessage());
         }
         return ResponseEntity.badRequest().build();
     }
