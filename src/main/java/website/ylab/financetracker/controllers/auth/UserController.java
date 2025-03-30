@@ -71,19 +71,17 @@ public class UserController {
     @DeleteMapping(value="/delete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> deleteUser(HttpSession session) {
         logger.info("Get deleteUser request");
-        Object usernameObj = session.getAttribute("username");
-        if (Objects.isNull(usernameObj)) {
+        Object useridObj = session.getAttribute("userid");
+        if (Objects.isNull(useridObj)) {
             logger.info("DeleteUser request rejected: unauthorized");
             return ResponseEntity.status(SC_UNAUTHORIZED).build();
         }
-        UserResponse response = userService.getByName(usernameObj.toString());;
+        long userId = Long.parseLong(useridObj.toString());
+        UserResponse response = userService.deleteUser(userId);
         if (Objects.nonNull(response)) {
-            response = userService.deleteUser(response.getId());
-            if (Objects.nonNull(response)) {
-                logger.info("User {} successfully deleted", response);
-                session.invalidate();
-                return ResponseEntity.ok(response);
-            }
+            logger.info("User {} successfully deleted", response);
+            session.invalidate();
+            return ResponseEntity.ok(response);
         }
         logger.warn("DeleteUser request failed {}");
         return ResponseEntity.badRequest().build();
