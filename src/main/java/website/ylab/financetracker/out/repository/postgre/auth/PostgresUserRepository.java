@@ -26,7 +26,6 @@ public class PostgresUserRepository implements TrackerUserRepository {
     @Autowired
     public PostgresUserRepository(ConnectionProvider connectionProvider) {
         this.connectionProvider = connectionProvider;
-        addTestUser();
     }
 
     @Override
@@ -198,17 +197,5 @@ public class PostgresUserRepository implements TrackerUserRepository {
         if (sql.equalsIgnoreCase("t")) return Boolean.TRUE;
         if (sql.equalsIgnoreCase("f")) return Boolean.FALSE;
         return null;
-    }
-
-    private void addTestUser() {
-        if (getByName("admin").isEmpty()) {
-            TrackerUser admin = new TrackerUser()
-                    .setUsername("admin")
-                    .setEmail("admin@admin.com")
-                    .setPassword("123")
-                    .setRole(Role.ADMIN)
-                    .setEnabled (true);
-            create(admin);
-        }
     }
 }

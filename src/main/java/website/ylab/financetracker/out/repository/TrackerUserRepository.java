@@ -7,8 +7,6 @@ import java.util.Optional;
 
 /**
  * Describes methods for working with user entities
- * Repository implementation must create admin user with role=Role.ADMIN, name=admin, password=123, isEnabled = true
- * and non-empty email
  */
 public interface TrackerUserRepository {
     /**
