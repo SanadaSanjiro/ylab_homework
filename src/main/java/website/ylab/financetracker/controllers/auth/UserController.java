@@ -60,7 +60,8 @@ public class UserController {
             if (Objects.nonNull(response)) {
                 session.setAttribute("username", response.getName());
                 logger.info("User {} successfully changed", response);
-                return ResponseEntity.ok(response); }
+                return ResponseEntity.ok(response);
+            }
         }
         logger.warn("ChangeUser request failed {}");
         return ResponseEntity.badRequest().build();

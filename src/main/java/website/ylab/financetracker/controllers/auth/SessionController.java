@@ -1,6 +1,5 @@
 package website.ylab.financetracker.controllers.auth;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,12 +17,12 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @RestController
 @RequestMapping("/auth")
-public class LoginController {
+public class SessionController {
     private final UserService userService;
     private final UserDataVerificator userDataVerificator;
-    Logger logger = LogManager.getLogger(LoginController.class);
+    Logger logger = LogManager.getLogger(SessionController.class);
 
-    public LoginController(UserService userService, UserDataVerificator userDataVerificator) {
+    public SessionController(UserService userService, UserDataVerificator userDataVerificator) {
         this.userService = userService;
         this.userDataVerificator = userDataVerificator;
     }
