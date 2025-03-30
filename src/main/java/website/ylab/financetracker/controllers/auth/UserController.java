@@ -52,7 +52,8 @@ public class UserController {
         Object usernameObj = session.getAttribute("username");
         if (Objects.isNull(usernameObj)) {
             logger.info("ChangeUser request rejected: unauthorized");
-            return ResponseEntity.status(SC_UNAUTHORIZED).build(); }
+            return ResponseEntity.status(SC_UNAUTHORIZED).build();
+        }
         if (isValidUser(user)) {
             UserResponse response = userService.getByName(usernameObj.toString());
             user.setId(response.getId());
@@ -73,7 +74,8 @@ public class UserController {
         Object usernameObj = session.getAttribute("username");
         if (Objects.isNull(usernameObj)) {
             logger.info("DeleteUser request rejected: unauthorized");
-            return ResponseEntity.status(SC_UNAUTHORIZED).build(); }
+            return ResponseEntity.status(SC_UNAUTHORIZED).build();
+        }
         UserResponse response = userService.getByName(usernameObj.toString());;
         if (Objects.nonNull(response)) {
             response = userService.deleteUser(response.getId());
@@ -93,7 +95,8 @@ public class UserController {
         Object usernameObj = session.getAttribute("username");
         if (Objects.isNull(usernameObj)) {
             logger.info("GetUser request rejected: unauthorized");
-            return ResponseEntity.status(SC_UNAUTHORIZED).build(); }
+            return ResponseEntity.status(SC_UNAUTHORIZED).build();
+        }
         UserResponse response = userService.getByName(usernameObj.toString());;
         if (Objects.nonNull(response)) {
             logger.info("Get user request completed successfully. {} returned", response);
