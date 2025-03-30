@@ -3,6 +3,7 @@ package website.ylab.financetracker.controllers.auth;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class SessionController {
     private final UserDataVerificator userDataVerificator;
     Logger logger = LogManager.getLogger(SessionController.class);
 
+    @Autowired
     public SessionController(UserService userService, UserDataVerificator userDataVerificator) {
         this.userService = userService;
         this.userDataVerificator = userDataVerificator;

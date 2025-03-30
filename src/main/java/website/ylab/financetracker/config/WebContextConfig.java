@@ -10,6 +10,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Configuration
@@ -26,6 +27,8 @@ public class WebContextConfig implements WebMvcConfigurer {
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder()
                 .indentOutput(true);
-        converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
+        //Sets date format for convertor
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        converters.add(new MappingJackson2HttpMessageConverter(builder.build().setDateFormat(df)));
     }
 }

@@ -3,6 +3,7 @@ package website.ylab.financetracker.controllers.budget;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class BudgetController {
     private final BudgetService budgetService;
     Logger logger = LogManager.getLogger(BudgetController.class);
 
+    @Autowired
     public BudgetController(BudgetService budgetService) {
         this.budgetService = budgetService;
     }

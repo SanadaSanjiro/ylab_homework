@@ -3,6 +3,7 @@ package website.ylab.financetracker.controllers.api;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,7 @@ public class ApiController {
     private final ApiService apiService;
     Logger logger = LogManager.getLogger(ApiController.class);
 
-
+    @Autowired
     public ApiController(ApiService apiService) {
         this.apiService = apiService;
     }
