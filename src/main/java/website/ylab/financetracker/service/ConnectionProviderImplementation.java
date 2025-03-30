@@ -2,12 +2,18 @@ package website.ylab.financetracker.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * Provides database connections
@@ -15,16 +21,11 @@ import java.sql.SQLException;
 @Service
 public class ConnectionProviderImplementation implements ConnectionProvider {
     Logger logger = LogManager.getLogger(ConnectionProviderImplementation.class);
-    //@Value("${spring.datasource.url:default}")
-    private String url="jdbc:postgresql://localhost:5432/ylabft_db";
-    //@Value("${spring.datasource.username:default}")
-    private String user="ft_admin";
-    //@Value("${spring.datasource.password:default}")
-    private String password="MyP@ss4DB";
-    //@Value("${spring.datasource.schema:default}")
-    private String schema="fin_tracker";
-    //@Value("${liquibase.changelog:default}")
-    private String changelog="db/changelog/db.changelog-master.yml";
+    private String url;
+    private String user;
+    private String password;
+    private String schema;
+    private String changelog;
     private final String persistenceType = "";
 
     public ConnectionProviderImplementation() {
@@ -35,6 +36,20 @@ public class ConnectionProviderImplementation implements ConnectionProvider {
         } catch (ClassNotFoundException e) {
             logger.error("DB driver error");
             throw new RuntimeException(e);
+        }
+        Resource resource = new ClassPathResource("application.yml");
+        try {
+            Properties properties = PropertiesLoaderUtils.loadProperties(resource);
+            url = properties.getProperty("url");
+            user = properties.getProperty("username");
+            password = properties.getProperty("password");
+            schema = properties.getProperty("schema");
+            changelog = properties.getProperty("changelog");
+            logger.info("Get DB connection properties: url={}, user={}, password={}, schema={}, changelog={}",
+                    url, user, password, schema, changelog);
+        } catch (Exception e) {
+            logger.error("Can't get database connection properties. {}",  e.getMessage());
+            throw new RuntimeException("Can't get database connection properties");
         }
     }
 

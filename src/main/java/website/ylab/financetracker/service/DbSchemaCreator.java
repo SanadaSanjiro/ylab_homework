@@ -2,7 +2,6 @@ package website.ylab.financetracker.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -14,7 +13,6 @@ public class DbSchemaCreator {
     private final ConnectionProvider connectionProvider;
     Logger logger = LogManager.getLogger(DbSchemaCreator.class);
 
-    @Autowired
     public DbSchemaCreator(ConnectionProvider connectionProvider) {
         this.connectionProvider = connectionProvider;
     }
