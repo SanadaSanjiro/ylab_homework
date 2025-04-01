@@ -1,8 +1,11 @@
 package website.ylab.financetracker.out.repository.postgre.target;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import website.ylab.financetracker.out.repository.TargetRepository;
-import website.ylab.financetracker.out.repository.postgre.budget.BudgetEntity;
-import website.ylab.financetracker.util.ConnectionProvider;
+import website.ylab.financetracker.service.ConnectionProvider;
 import website.ylab.financetracker.service.targets.TrackerTarget;
 
 import java.sql.*;
@@ -10,13 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class PostgresTargetRepository implements TargetRepository {
     // The sole purpose of this array is to give names to the values while parsing the values
     // retrieved from the database, making the code more understandable.
     private final String[] dbFields = {"id", "amount", "userid", "uuid"};
     private final ConnectionProvider connectionProvider;
     private final TargetEntityMapper mapper = TargetEntityMapper.INSTANCE;
+    Logger logger = LogManager.getLogger(PostgresTargetRepository.class);
 
+    @Autowired
     public PostgresTargetRepository(ConnectionProvider connectionProvider) {
         this.connectionProvider = connectionProvider;
     }
@@ -55,31 +61,32 @@ public class PostgresTargetRepository implements TargetRepository {
         String query = "select * from fin_tracker.target where userid = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setLong(1, userid);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<TargetEntity> entities = parseRS(resultSet);
             if (entities.isEmpty()) return Optional.empty();
             return (Optional.of(mapper.toTarget(entities.get(0))));
         } catch (SQLException e) {
+            logger.error("Error getting target by user id: {}", e.getMessage());
             return Optional.empty();
         }
     }
 
     public Optional<TargetEntity> createTarget(TargetEntity target) {
-        String querry = "insert into fin_tracker.target " +
+        String query = "insert into fin_tracker.target " +
                 "(amount, userid, uuid) " +
                 "values (?,?,?);";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(querry, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setDouble(1, target.getAmount());
             preparedStatement.setLong(2, target.getUserId());
             preparedStatement.setString(3, target.getUuid());
             preparedStatement.executeUpdate();
             return getByUUID(target.getUuid());
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while creating transaction " + e.getMessage());
+            logger.error("Error creating target: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -88,12 +95,12 @@ public class PostgresTargetRepository implements TargetRepository {
         String query = "delete from fin_tracker.target where uuid = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, target.getUuid());
             preparedStatement.executeUpdate();
             return Optional.of(target);
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while deleting transaction " + e.getMessage());
+            logger.error("Error deleting target: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -102,13 +109,13 @@ public class PostgresTargetRepository implements TargetRepository {
         String query = "select * from fin_tracker.target where id = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<TargetEntity> list =  parseRS(resultSet);
             return list.stream().findFirst();
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while getting transaction by id " + e.getMessage());
+            logger.error("Error getting target by id: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -118,13 +125,13 @@ public class PostgresTargetRepository implements TargetRepository {
         String query = "select * from fin_tracker.target where uuid = ?;";
         try (Connection connection = connectionProvider.getConnection();
              PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, uuid);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<TargetEntity> list =  parseRS(resultSet);
             return list.stream().findFirst();
         } catch (SQLException e) {
-            System.out.println("Got SQL Exception while getting transaction by id " + e.getMessage());
+            logger.error("Error getting target by uuid: {}", e.getMessage());
             return Optional.empty();
         }
     }

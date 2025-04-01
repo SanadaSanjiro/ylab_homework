@@ -1,29 +1,38 @@
 package website.ylab.financetracker.service.targets;
 
-import website.ylab.financetracker.in.dto.budget.BudgetResponse;
-import website.ylab.financetracker.service.ServiceProvider;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserService;
 import website.ylab.financetracker.in.dto.target.TargetMapper;
 import website.ylab.financetracker.in.dto.target.TargetResponse;
 import website.ylab.financetracker.out.repository.TargetRepository;
-import website.ylab.financetracker.service.budget.TrackerBudget;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class TargetService {
     private final TargetRepository targetRepository;
-    private final UserService userService = ServiceProvider.getUserService();
+    private final UserService userService;
     private final TargetMapper mapper = TargetMapper.INSTANCE;
+    Logger logger = LogManager.getLogger(TargetService.class);
 
-    public TargetService(TargetRepository targetRepository) {
+    @Autowired
+    public TargetService(TargetRepository targetRepository, UserService userService) {
         this.targetRepository = targetRepository;
+        this.userService = userService;
     }
 
     public TargetResponse setTarget(TrackerTarget request) {
+        logger.info("Get setTarget request");
         Optional<TrackerUser> optional = userService.getById(request.getUserId());
-        if (optional.isEmpty()) return null;
+        if (optional.isEmpty()) {
+            logger.warn("User not found for a request {}", request);
+            return null;
+        }
         request.setUuid(UUID.randomUUID().toString());
         Optional<TrackerTarget> targetOptional = targetRepository.setTarget(request);
         return targetOptional.map(mapper::toResponse).orElse(null);
@@ -47,7 +56,12 @@ public class TargetService {
     }
 
     public TargetResponse getByUserId(long userId) {
-        Optional<TrackerTarget> optional = targetRepository.getById(userId);
-        return optional.map(mapper::toResponse).orElse(null);
+        logger.info("Get getTargetByUserId request");
+        Optional<TrackerTarget> optional = targetRepository.getByUserId(userId);
+        if (optional.isEmpty()) {
+            logger.warn("Target not found for a request {}", userId);
+            return null;
+        }
+        return mapper.toResponse(optional.get());
     }
 }

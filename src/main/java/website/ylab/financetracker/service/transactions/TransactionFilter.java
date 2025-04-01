@@ -2,8 +2,6 @@ package website.ylab.financetracker.service.transactions;
 
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;

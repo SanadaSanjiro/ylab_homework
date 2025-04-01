@@ -2,11 +2,9 @@ package website.ylab.financetracker.service.transactions;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.auth.TrackerUser;
-import website.ylab.financetracker.in.cli.auth.UserAuthService;
 import website.ylab.financetracker.out.repository.TrackerTransactionRepository;
 
 import java.util.Date;

@@ -1,10 +1,11 @@
 package website.ylab.financetracker.service.stat;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import website.ylab.financetracker.in.dto.stat.BalanceResponse;
 import website.ylab.financetracker.in.dto.stat.CategoryExpensesResponse;
 import website.ylab.financetracker.in.dto.stat.ReportResponse;
 import website.ylab.financetracker.in.dto.stat.TurnoverResponse;
-import website.ylab.financetracker.service.ServiceProvider;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.transactions.TransactionService;
 import website.ylab.financetracker.service.transactions.TransactionType;
@@ -12,8 +13,14 @@ import website.ylab.financetracker.service.transactions.TransactionType;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class StatService {
-    private final TransactionService transactionService = ServiceProvider.getTransactionService();
+    private final TransactionService transactionService;
+
+    @Autowired
+    public StatService(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
     /**
      * Gets overall balance by user ID

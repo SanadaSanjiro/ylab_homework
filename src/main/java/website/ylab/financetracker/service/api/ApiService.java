@@ -1,5 +1,7 @@
 package website.ylab.financetracker.service.api;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import website.ylab.financetracker.in.dto.api.EmailNotification;
 import website.ylab.financetracker.in.dto.budget.BudgetResponse;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
@@ -14,11 +16,13 @@ import java.util.*;
 /**
  * Provides methods for API.
  */
+@Service
 public class ApiService {
     private final BudgetService budgetService;
     private final TransactionService transactionService;
     private final UserService userService;
 
+    @Autowired
     public ApiService(BudgetService budgetService, TransactionService transactionService, UserService userService) {
         this.budgetService = budgetService;
         this.transactionService = transactionService;

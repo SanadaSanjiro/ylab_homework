@@ -1,16 +1,14 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" build-on-make="true" name="ylab">
+  <artifact type="war" build-on-make="true" name="ylab">
     <output-path>$PROJECT_DIR$/out/artifacts/ylab</output-path>
-    <root id="root">
+    <root id="archive" name="ylab.war">
       <element id="javaee-facet-resources" facet="ylab_homework/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="ylab_homework" />
+          <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.5" />
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.5" />
-          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.5" />
           <element id="library" level="project" name="Maven: com.opencsv:opencsv:5.9" />
           <element id="library" level="project" name="Maven: commons-io:commons-io:2.18.0" />
           <element id="library" level="project" name="Maven: javax.xml.bind:jaxb-api:2.3.1" />
@@ -22,7 +20,24 @@
           <element id="library" level="project" name="Maven: org.mapstruct:mapstruct:1.5.5.Final" />
           <element id="library" level="project" name="Maven: org.postgresql:postgresql:42.7.5" />
           <element id="library" level="project" name="Maven: org.projectlombok:lombok-mapstruct-binding:0.2.0" />
-          <element id="library" level="project" name="Maven: org.yaml:snakeyaml:2.3" />
+          <element id="library" level="project" name="Maven: io.micrometer:micrometer-commons:1.14.5" />
+          <element id="library" level="project" name="Maven: io.micrometer:micrometer-observation:1.14.5" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.24.3" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.24.3" />
+          <element id="library" level="project" name="Maven: org.aspectj:aspectjrt:1.9.23" />
+          <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.9.23" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-aop:6.2.5" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-beans:6.2.5" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-context:6.2.5" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-core:6.2.5" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-expression:6.2.5" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-jcl:6.2.5" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-web:6.2.5" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:6.2.5" />
+          <element id="library" level="project" name="Maven: org.yaml:snakeyaml:2.4" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.18.3" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.18.3" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.18.3" />
         </element>
       </element>
     </root>

@@ -1,18 +1,23 @@
 package website.ylab.financetracker.service.transactions;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import website.ylab.financetracker.in.dto.transaction.TransactionMapper;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.out.repository.TrackerTransactionRepository;
 
 import java.util.*;
 
+
 /**
  * Provides methods for changing transaction data.
  */
+@Service
 public class TransactionService {
     private final TrackerTransactionRepository repository;
     private final TransactionMapper mapper = TransactionMapper.INSTANCE;
 
+    @Autowired
     public TransactionService(TrackerTransactionRepository repository) {
         this.repository = repository;
     }

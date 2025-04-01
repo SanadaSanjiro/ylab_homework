@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 import website.ylab.financetracker.service.auth.Role;
 import website.ylab.financetracker.service.auth.TrackerUser;
-import website.ylab.financetracker.util.ConnectionProvider;
-import website.ylab.financetracker.util.DbSchemaCreator;
-import website.ylab.financetracker.util.LiquibaseStarter;
+import website.ylab.financetracker.service.ConnectionProvider;
+import website.ylab.financetracker.service.DbSchemaCreator;
+import website.ylab.financetracker.service.LiquibaseStarter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -31,7 +31,7 @@ class PostgreUserRepositoryTest {
             .withPassword("MyP@ss4DB");
     static ConnectionProvider connectionProvider;
     static LiquibaseStarter liquibaseStarter;
-    static PostgreUserRepository repository;
+    static PostgresUserRepository repository;
 
     @BeforeAll
     static void beforeAll() throws Exception {
@@ -65,7 +65,7 @@ class PostgreUserRepositoryTest {
         System.out.println("Applying liquibase migrations");
         liquibaseStarter = new LiquibaseStarter(connectionProvider);
         liquibaseStarter.applyMigrations();
-        repository = new PostgreUserRepository(connectionProvider);
+        repository = new PostgresUserRepository(connectionProvider);
     }
 
     @AfterAll
