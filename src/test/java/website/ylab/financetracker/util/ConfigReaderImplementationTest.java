@@ -21,7 +21,7 @@ class ConfigReaderImplementationTest {
      */
     @Test
     void read() {
-        ConfigReaderImplementation cri = new ConfigReaderImplementation();
+        ConfigReaderImpl cri = new ConfigReaderImpl();
         Map<String, String > result = cri.read(configFilePath, ": ", "#");
         assertTrue(Files.exists(Paths.get(configFilePath)));
         assertFalse(result.containsKey("commentedparameter"));

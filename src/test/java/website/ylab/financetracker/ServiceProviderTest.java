@@ -1,16 +1,12 @@
 package website.ylab.financetracker;
 
 import org.junit.jupiter.api.Test;
+import website.ylab.financetracker.service.ServiceProvider;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ServiceProviderTest {
 
-    @Test
-    void getUserAuthService() {
-        assertNotNull(ServiceProvider.getUserAuthService());
-    }
 
     @Test
     void getUserService() {

@@ -1,5 +1,8 @@
 package website.ylab.financetracker.util;
 
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 /**
@@ -7,10 +10,11 @@ import java.util.Map;
  */
 public class DataBaseConfigProvider {
     static {
-        getConfiguration(new ConfigReaderImplementation());
+        getConfiguration(new ConfigReaderImpl());
     }
     // path to database configuration file
-    private static final String CONFIG_FILE_PATH = "src/main/resources/db.cfg";
+    //private static final String CONFIG_FILE_PATH = "src/main/resources/db.properties";
+    private static final String CONFIG_FILE_PATH = "db.properties";
     // separator of parameter names and their values
     private static final String DELIMITER = ": ";
     // a character sequence that marks a line of a file as a comment
@@ -80,12 +84,19 @@ public class DataBaseConfigProvider {
     }
 
     private static void getConfiguration(ConfigReader confreader) {
-        Map<String, String> properties = confreader.read(CONFIG_FILE_PATH, DELIMITER, COMMENT_MARKER);
-        persistenceType = properties.get("persistence");
-        dbUser = properties.get("username");
-        dbPassword = properties.get("password");
-        dbUrl = properties.get("url");
-        dbSchema = properties.get("schema");
-        lqChangelog = properties.get("changelog");
+        try {
+            ClassLoader classLoader = DataBaseConfigProvider.class.getClassLoader();
+            URL resourceUrl = classLoader.getResource(CONFIG_FILE_PATH);
+            Path path = Paths.get(resourceUrl.toURI());
+            Map<String, String> properties = confreader.read(path.toString(), DELIMITER, COMMENT_MARKER);
+            persistenceType = properties.get("persistence");
+            dbUser = properties.get("username");
+            dbPassword = properties.get("password");
+            dbUrl = properties.get("url");
+            dbSchema = properties.get("schema");
+            lqChangelog = properties.get("changelog");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
