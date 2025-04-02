@@ -142,7 +142,8 @@ public class UserService {
     }
 
     /**
-     * Removes a user from the system. Users data must be previously deleted using UserDataDeletionService.
+     * Removes a user from the system. User data such as transactions, budget and goals will also be deleted
+     * when performing this method.
      * @param id long user id to delete
      * @return String with a result.
      */
