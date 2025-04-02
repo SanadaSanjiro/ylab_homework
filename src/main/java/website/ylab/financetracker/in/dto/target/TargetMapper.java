@@ -11,7 +11,6 @@ import website.ylab.financetracker.service.targets.TrackerTarget;
 
 @Mapper()
 public interface TargetMapper {
-    //add instance to call mapper
     TargetMapper INSTANCE = Mappers.getMapper(TargetMapper.class);
     /**
      * Maps TrackerTarget into TargetResponse

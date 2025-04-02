@@ -10,13 +10,20 @@ import website.ylab.financetracker.service.transactions.TrackerTransaction;
 import website.ylab.financetracker.service.transactions.TransactionType;
 import website.ylab.financetracker.util.DateConvertor;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 
 @Repository
 public class PostgreTransactionRepository implements TrackerTransactionRepository {
-    // The sole purpose of this array is to give names to the values while parsing the values
-    // retrieved from the database, making the code more understandable.
     private final String[] dbFields = {"id", "category", "description", "type", "amount", "date", "userid", "uuid"};
     private final ConnectionProvider connectionProvider;
     Logger logger = LogManager.getLogger(PostgreTransactionRepository.class);

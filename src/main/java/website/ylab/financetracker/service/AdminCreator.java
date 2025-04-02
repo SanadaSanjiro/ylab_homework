@@ -22,10 +22,9 @@ public class AdminCreator {
             TrackerUser admin = new TrackerUser()
                     .setUsername("admin")
                     .setEmail("admin@admin.com")
-                    .setPassword("123")
-                    .setRole(Role.ADMIN)
-                    .setEnabled(true);
-            service.addNewUser(admin);
+                    .setPassword("123");
+            long id = service.addNewUser(admin).getId();
+            service.changeUserRole(id, Role.ADMIN);
         }
     }
 }

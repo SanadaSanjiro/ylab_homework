@@ -10,7 +10,6 @@ import website.ylab.financetracker.service.budget.TrackerBudget;
  */
 @Mapper
 public interface BudgetMapper {
-    //add instance to call mapper
     BudgetMapper INSTANCE = Mappers.getMapper(BudgetMapper.class);
     /**
      * Maps TrackerBudget into BudgetResponse

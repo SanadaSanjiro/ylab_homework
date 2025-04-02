@@ -17,7 +17,6 @@ import java.util.List;
 @EnableWebMvc
 @ComponentScan("website.ylab.financetracker")
 public class WebContextConfig implements WebMvcConfigurer {
-    // For @Value annotation
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();

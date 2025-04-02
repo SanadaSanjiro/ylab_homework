@@ -13,7 +13,6 @@ import java.util.List;
  */
 @Mapper
 public interface TransactionMapper {
-    //add instance to call mapper
     TransactionMapper INSTANCE = Mappers.getMapper(TransactionMapper.class);
 
     /**

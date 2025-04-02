@@ -9,7 +9,11 @@ import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.out.repository.TrackerUserRepository;
 import website.ylab.financetracker.service.ConnectionProvider;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,8 +21,6 @@ import java.util.Optional;
 
 @Repository
 public class PostgresUserRepository implements TrackerUserRepository {
-    // The sole purpose of this array is to give names to the values while parsing the values
-    // retrieved from the database, making the code more understandable.
     private final String[] dbFields = {"id", "name", "email", "password", "role", "enabled"};
     private final ConnectionProvider connectionProvider;
     Logger logger = LogManager.getLogger(PostgresUserRepository.class);
