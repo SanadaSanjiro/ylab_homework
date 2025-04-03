@@ -1,12 +1,16 @@
 server:
   port: 8089
+  servlet:
+    context-path: /ylab
 
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ylabft_db
     username: ft_admin
     password: MyP@ss4DB
-    schema: fin_tracker
+  sql:
+    init:
+      schema-locations: fin_tracker
 
-liquibase:
-  changelog: db/changelog/db.changelog-master.yml
+  liquibase:
+    change-log: db/changelog/db.changelog-master.yml

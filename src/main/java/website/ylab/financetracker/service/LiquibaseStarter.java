@@ -9,6 +9,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -19,6 +20,8 @@ import java.sql.SQLException;
  */
 @Service
 public class LiquibaseStarter {
+    @Value("${spring.liquibase.change-log}")
+    private String changelog;
     private final ConnectionProvider connectionProvider;
     Logger logger = LogManager.getLogger(LiquibaseStarter.class);
 
@@ -36,7 +39,8 @@ public class LiquibaseStarter {
             Database database =
                     DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             Liquibase liquibase =
-                    new Liquibase(connectionProvider.getChangelog(), new ClassLoaderResourceAccessor(), database);
+                    new Liquibase(changelog,
+                            new ClassLoaderResourceAccessor(), database);
             liquibase.update();
         } catch (SQLException | LiquibaseException e) {
             logger.error("Liquibase migrations failed. ", e);

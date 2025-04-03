@@ -2,6 +2,7 @@ package website.ylab.financetracker.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -18,35 +19,22 @@ import java.util.Properties;
 @Service
 public class ConnectionProviderImplementation implements ConnectionProvider {
     Logger logger = LogManager.getLogger(ConnectionProviderImplementation.class);
+    @Value("${spring.datasource.url}")
     private String url;
+    @Value("${spring.datasource.username}")
     private String user;
+    @Value("${spring.datasource.password}")
     private String password;
+    @Value("${spring.sql.init.schema-locations}")
     private String schema;
-    private String changelog;
-    private final String persistenceType = "";
 
     public ConnectionProviderImplementation() {
-        logger.info("DB connection settings: url={}, schema={}, user={}", url, schema, user);
         try {
             Class.forName("org.postgresql.Driver");
             logger.info("DB driver successfully called");
         } catch (ClassNotFoundException e) {
             logger.error("DB driver error");
             throw new RuntimeException(e);
-        }
-        Resource resource = new ClassPathResource("application.yml");
-        try {
-            Properties properties = PropertiesLoaderUtils.loadProperties(resource);
-            url = properties.getProperty("url");
-            user = properties.getProperty("username");
-            password = properties.getProperty("password");
-            schema = properties.getProperty("schema");
-            changelog = properties.getProperty("changelog");
-            logger.info("Get DB connection properties: url={}, user={}, password={}, schema={}, changelog={}",
-                    url, user, password, schema, changelog);
-        } catch (Exception e) {
-            logger.error("Can't get database connection properties. {}",  e.getMessage());
-            throw new RuntimeException("Can't get database connection properties");
         }
     }
 
@@ -68,14 +56,4 @@ public class ConnectionProviderImplementation implements ConnectionProvider {
     public String getSchema() {
         return schema;
     }
-
-    /**
-     * Returns path to master changelog from config file
-     * @return String path to master changelog
-     */
-    @Override
-    public String getChangelog() { return changelog; }
-
-    @Override
-    public String getPersistenceType() { return persistenceType; }
 }

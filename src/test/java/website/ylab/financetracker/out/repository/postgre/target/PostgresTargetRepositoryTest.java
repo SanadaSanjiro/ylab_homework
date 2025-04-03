@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 import website.ylab.financetracker.service.ConnectionProvider;
 import website.ylab.financetracker.service.DbSchemaCreator;
-import website.ylab.financetracker.service.LiquibaseStarter;
 import website.ylab.financetracker.service.targets.TrackerTarget;
 
 import java.sql.Connection;
@@ -26,7 +25,6 @@ class PostgresTargetRepositoryTest {
             .withUsername("ft_admin")
             .withPassword("MyP@ss4DB");
     static ConnectionProvider connectionProvider;
-    static LiquibaseStarter liquibaseStarter;
     static PostgresTargetRepository repository;
 
     @BeforeAll
@@ -44,23 +42,10 @@ class PostgresTargetRepositoryTest {
             public String getSchema() {
                 return "fin_tracker";
             }
-
-            @Override
-            public String getChangelog() {
-                return "db/changelog/db.changelog-master.yml";
-            }
-
-            @Override
-            public String getPersistenceType() {
-                return "postgresql";
-            }
         };
         System.out.println("Creating schema");
         DbSchemaCreator schemaCreator = new DbSchemaCreator(connectionProvider);
         schemaCreator.createDbSchema();
-        System.out.println("Applying liquibase migrations");
-        liquibaseStarter = new LiquibaseStarter(connectionProvider);
-        liquibaseStarter.applyMigrations();
         repository = new PostgresTargetRepository(connectionProvider);
     }
 

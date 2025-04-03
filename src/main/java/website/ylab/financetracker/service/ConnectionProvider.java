@@ -19,16 +19,4 @@ public interface ConnectionProvider {
      * @return String schema name
      */
     String getSchema();
-
-    /**
-     * get master changelog file name from config file
-     * @return String master changelog file name
-     */
-    String getChangelog();
-
-    /**
-     * get persistence type from config file
-     * @return String persistence type. Could be ram or postgresql
-     */
-    String getPersistenceType();
 }

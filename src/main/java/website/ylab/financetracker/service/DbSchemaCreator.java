@@ -25,9 +25,9 @@ public class DbSchemaCreator {
              Statement statement = connection.createStatement())
         {
             statement.execute(createSchemaSQL);
+            logger.info("Schema created");
         } catch (SQLException e) {
-            logger.error("DbSchemaCreator got an exception:  ", e.getMessage());
+            logger.error("DbSchemaCreator got an exception: {}", e.getMessage());
         }
-        logger.info("Schema created");
     }
 }

@@ -8,7 +8,6 @@ import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.ConnectionProvider;
 import website.ylab.financetracker.service.DbSchemaCreator;
 import website.ylab.financetracker.service.budget.TrackerBudget;
-import website.ylab.financetracker.service.LiquibaseStarter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -30,7 +29,6 @@ class PostgreBudgetRepositoryTest {
             .withUsername("ft_admin")
             .withPassword("MyP@ss4DB");
     static ConnectionProvider connectionProvider;
-    static LiquibaseStarter liquibaseStarter;
     static PostgreBudgetRepository repository;
 
     @BeforeAll
@@ -48,23 +46,10 @@ class PostgreBudgetRepositoryTest {
             public String getSchema() {
                 return "fin_tracker";
             }
-
-            @Override
-            public String getChangelog() {
-                return "db/changelog/db.changelog-master.yml";
-            }
-
-            @Override
-            public String getPersistenceType() {
-                return "postgresql";
-            }
         };
         System.out.println("Creating schema");
         DbSchemaCreator schemaCreator = new DbSchemaCreator(connectionProvider);
         schemaCreator.createDbSchema();
-        System.out.println("Applying liquibase migrations");
-        liquibaseStarter = new LiquibaseStarter(connectionProvider);
-        liquibaseStarter.applyMigrations();
         repository = new PostgreBudgetRepository(connectionProvider);
     }
 
