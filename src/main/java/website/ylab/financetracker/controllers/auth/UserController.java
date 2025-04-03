@@ -1,5 +1,7 @@
 package website.ylab.financetracker.controllers.auth;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +20,8 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name= "User profile functions",
+        description = "Provides functions for working with the user profile")
 public class UserController {
     private final UserService userService;
     private final UserDataVerificator userDataVerificator;
@@ -29,6 +33,7 @@ public class UserController {
         this.userDataVerificator = userDataVerificator;
     }
 
+    @Operation(summary = "Adds new user into the system.")
     @PostMapping(value ="/add",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -44,6 +49,7 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Changes user data (name, password and email address).")
     @PutMapping(value = "/change",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,6 +74,7 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Deletes a user and all their data (transactions, budget and target).")
     @DeleteMapping(value="/delete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> deleteUser(HttpSession session) {
         logger.info("Get deleteUser request");
@@ -87,6 +94,7 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Provides information about the user (name, email, whether enabled, and role).")
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> getUser(HttpSession session) {
         logger.info("Get getUser request");

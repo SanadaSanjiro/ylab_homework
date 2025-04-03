@@ -1,5 +1,7 @@
 package website.ylab.financetracker.controllers.budget;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +23,8 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @RestController
 @RequestMapping("/budget")
+@Tag(name= "Budget functions",
+        description = "Allows you to set your budget limit or see its current value")
 public class BudgetController {
     private final BudgetService budgetService;
     Logger logger = LogManager.getLogger(BudgetController.class);
@@ -30,6 +34,7 @@ public class BudgetController {
         this.budgetService = budgetService;
     }
 
+    @Operation(summary = "Gets users budget limit.")
     @GetMapping(value="/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BudgetResponse> getBudget(HttpSession session) {
         logger.info("Get getBudget request");
@@ -51,6 +56,7 @@ public class BudgetController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Sets users budget limit.")
     @PostMapping(value="/set",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)

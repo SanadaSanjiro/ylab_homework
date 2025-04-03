@@ -1,5 +1,7 @@
 package website.ylab.financetracker.controllers.auth;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +20,8 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name= "Session operations",
+        description = "Allows you to log in/out and check session status.")
 public class SessionController {
     private final UserService userService;
     private final UserDataVerificator userDataVerificator;
@@ -29,6 +33,7 @@ public class SessionController {
         this.userDataVerificator = userDataVerificator;
     }
 
+    @Operation(summary = "Authorizes the user in the system")
     @PostMapping(value ="/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,6 +54,7 @@ public class SessionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Terminates the user session")
     @PostMapping(value = "/logout", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> logout(HttpSession session) {
         Object useridObj = session.getAttribute("userid");
@@ -70,6 +76,7 @@ public class SessionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Allows you to check the session status.")
     @GetMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SessionStatusDto> checkSession(HttpSession session) {
         SessionStatusDto dto = new SessionStatusDto(session);

@@ -1,5 +1,7 @@
 package website.ylab.financetracker.controllers.adm;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +28,8 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @RestController
 @RequestMapping("/adm")
+@Tag(name= "Administrator functions",
+        description = "Allows you to perform operations on users and their data. Requires ADMIN role.")
 public class AdmController {
     private final UserService userService;
     private final TransactionService transactionService;
@@ -37,6 +41,7 @@ public class AdmController {
         this.userService = userService;
     }
 
+    @Operation(summary = "Block user by id")
     @PutMapping(value ="/block",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -56,6 +61,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Unblock user by id")
     @PutMapping(value ="/unblock",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -75,6 +81,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Change user's role")
     @PutMapping(value ="/role",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -94,6 +101,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Delete user and all his data by id")
     @DeleteMapping(value ="/delete",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -113,6 +121,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Get list of all registered users")
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UserResponse>> getUsers(HttpSession session) {
         logger.info("Get getUsers request");
@@ -130,6 +139,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Get user's transactions by user id")
     @GetMapping(value = "/transactions", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TransactionResponse>> getUserTransactions(
             @RequestBody TrackerUser user, HttpSession session) {

@@ -1,5 +1,7 @@
 package website.ylab.financetracker.controllers.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +21,8 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name= "API functions",
+        description = "Provides functions for external services.")
 public class ApiController {
     private final ApiService apiService;
     Logger logger = LogManager.getLogger(ApiController.class);
@@ -28,6 +32,7 @@ public class ApiController {
         this.apiService = apiService;
     }
 
+    @Operation(summary = "Checks if the user has exceeded their budget.")
     @GetMapping(value="/exceedance", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> getBudgetExceedance(HttpSession session) {
         logger.info("Get GetBudgetExceedance request");
@@ -47,6 +52,7 @@ public class ApiController {
         }
     }
 
+    @Operation(summary = "Exports a list of emails with notifications for users who have exceeded their budget.")
     @GetMapping(value = "/email", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<EmailNotification>> getEmail(HttpSession session) {
         logger.info("Get GetEmail request");

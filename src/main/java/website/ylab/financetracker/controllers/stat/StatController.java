@@ -1,5 +1,7 @@
 package website.ylab.financetracker.controllers.stat;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +25,7 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @RestController
 @RequestMapping("/stat")
+@Tag(name= "Statistics and analytics")
 public class StatController {
     private final StatService statService;
     Logger logger = LogManager.getLogger(StatController.class);
@@ -32,6 +35,7 @@ public class StatController {
         this.statService = statService;
     }
 
+    @Operation(summary = "Current balance")
     @GetMapping(value="/balance", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BalanceResponse> getBalance(HttpSession session) {
         logger.info("Get getBalance request");
@@ -53,6 +57,7 @@ public class StatController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Expenses by category")
     @GetMapping(value="/expenses", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CategoryExpensesResponse> getExpenses(HttpSession session) {
         logger.info("Get getExpenses request");
@@ -74,6 +79,7 @@ public class StatController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Calculation of total income and expenses for the last month")
     @GetMapping(value="/turnover",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -98,6 +104,7 @@ public class StatController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Summary report")
     @GetMapping(value="/report", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReportResponse> getReport(HttpSession session) {
         logger.info("Get getReport request");

@@ -1,5 +1,7 @@
 package website.ylab.financetracker.controllers.target;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +23,8 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @RestController
 @RequestMapping("/target")
+@Tag(name= "Target functions",
+        description = "Allows you to set your target or see its current value")
 public class TargetController {
     private final TargetService targetService;
     Logger logger = LogManager.getLogger(TargetController.class);
@@ -30,6 +34,7 @@ public class TargetController {
         this.targetService = targetService;
     }
 
+    @Operation(summary = "Gets users target value.")
     @GetMapping(value="/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TargetResponse> getTarget(HttpSession session) {
         logger.info("Get getTarget request");
@@ -51,6 +56,7 @@ public class TargetController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Sets users target value.")
     @PostMapping(value="/set",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,5 +1,7 @@
 package website.ylab.financetracker.controllers.transaction;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +26,7 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @RestController
 @RequestMapping("/transaction")
+@Tag(name= "Transactions processing functions")
 public class TransactionController {
     private final TransactionService service;
     Logger logger = LogManager.getLogger(TransactionController.class);
@@ -33,6 +36,7 @@ public class TransactionController {
         this.service = service;
     }
 
+    @Operation(summary = "Get transaction by id")
     @GetMapping(value="/get",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -57,6 +61,7 @@ public class TransactionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Get a filtered list of transactions (by date, category or type)")
     @GetMapping(value="/filtered",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -82,6 +87,7 @@ public class TransactionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Delete transaction by id")
     @DeleteMapping(value = "/delete",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -111,6 +117,7 @@ public class TransactionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Change transaction")
     @PutMapping(value="/change",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -136,6 +143,7 @@ public class TransactionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Add new transaction")
     @PostMapping(value="/add",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
