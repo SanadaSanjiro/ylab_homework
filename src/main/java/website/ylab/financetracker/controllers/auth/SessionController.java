@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import website.ylab.financetracker.in.dto.auth.LoginDTO;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserDataVerificator;
@@ -37,7 +38,8 @@ public class SessionController {
     @PostMapping(value ="/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> login(@RequestBody TrackerUser user, HttpSession session) {
+    public ResponseEntity<UserResponse> login(@RequestBody LoginDTO dto, HttpSession session) {
+        TrackerUser user = new TrackerUser().setUsername(dto.getUsername()).setPassword(dto.getPassword());
         if (isValidInput(user)) {
             boolean isValid = userService.checkPassword(user);
             boolean isEnabled = userService.isEnabled(user.getUsername());

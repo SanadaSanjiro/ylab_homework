@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import website.ylab.financetracker.in.dto.budget.BudgetResponse;
+import website.ylab.financetracker.in.dto.budget.SetBudgetDTO;
 import website.ylab.financetracker.service.budget.BudgetService;
 import website.ylab.financetracker.service.budget.TrackerBudget;
 
@@ -60,7 +61,7 @@ public class BudgetController {
     @PostMapping(value="/set",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BudgetResponse> setBudget(@RequestBody TrackerBudget budget, HttpSession session) {
+    public ResponseEntity<BudgetResponse> setBudget(@RequestBody SetBudgetDTO dto, HttpSession session) {
         logger.info("Get setBudget request");
         Object useridObj = session.getAttribute("userid");
         if (Objects.isNull(useridObj)) {
@@ -68,7 +69,9 @@ public class BudgetController {
             return ResponseEntity.status(SC_UNAUTHORIZED).build();
         }
         try {
+            TrackerBudget budget = new TrackerBudget();
             budget.setUserId(Long.parseLong(useridObj.toString()));
+            budget.setLimit(dto.getLimit());
             BudgetResponse response = budgetService.setBudget(budget);
             if (Objects.nonNull(response)) {
                 logger.info("SetBudget request: ok");

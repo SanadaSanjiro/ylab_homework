@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import website.ylab.financetracker.in.dto.target.SetTargetDTO;
 import website.ylab.financetracker.in.dto.target.TargetResponse;
 import website.ylab.financetracker.service.targets.TargetService;
 import website.ylab.financetracker.service.targets.TrackerTarget;
@@ -60,7 +61,7 @@ public class TargetController {
     @PostMapping(value="/set",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TargetResponse> setTarget(@RequestBody TrackerTarget target, HttpSession session) {
+    public ResponseEntity<TargetResponse> setTarget(@RequestBody SetTargetDTO dto, HttpSession session) {
         logger.info("Get setTarget request");
         Object useridObj = session.getAttribute("userid");
         if (Objects.isNull(useridObj)) {
@@ -68,7 +69,9 @@ public class TargetController {
             return ResponseEntity.status(SC_UNAUTHORIZED).build();
         }
         try {
+            TrackerTarget target = new TrackerTarget();
             target.setUserId(Long.parseLong(useridObj.toString()));
+            target.setAmount(dto.getAmount());
             TargetResponse response = targetService.setTarget(target);
             if (Objects.nonNull(response)) {
                 logger.info("SetTarget request: ok");

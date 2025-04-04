@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import website.ylab.financetracker.in.dto.auth.UserDataDTO;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserDataVerificator;
@@ -37,7 +38,10 @@ public class UserController {
     @PostMapping(value ="/add",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> addUser(@RequestBody TrackerUser user) {
+    public ResponseEntity<UserResponse> addUser(@RequestBody UserDataDTO dto) {
+        TrackerUser user = new TrackerUser().setUsername(dto.getUsername())
+                .setPassword(dto.getPassword())
+                .setEmail(dto.getEmail());
         logger.info("Get addUser request");
         if (isValidUser(user)) {
             UserResponse response = userService.addNewUser(user);
@@ -53,13 +57,16 @@ public class UserController {
     @PutMapping(value = "/change",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> changeUser(@RequestBody TrackerUser user, HttpSession session) {
+    public ResponseEntity<UserResponse> changeUser(@RequestBody UserDataDTO dto, HttpSession session) {
         logger.info("Get changeUser request");
         Object usernameObj = session.getAttribute("username");
         if (Objects.isNull(usernameObj)) {
             logger.info("ChangeUser request rejected: unauthorized");
             return ResponseEntity.status(SC_UNAUTHORIZED).build();
         }
+        TrackerUser user = new TrackerUser().setUsername(dto.getUsername())
+                .setPassword(dto.getPassword())
+                .setEmail(dto.getEmail());
         if (isValidUser(user)) {
             UserResponse response = userService.getByName(usernameObj.toString());
             user.setId(response.getId());

@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
+import website.ylab.financetracker.in.dto.auth.RoleDTO;
+import website.ylab.financetracker.in.dto.auth.UserIdDTO;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.auth.Role;
@@ -50,7 +52,8 @@ class AdmControllerTest {
         Mockito.when(session.getAttribute("role")).thenReturn(Role.ADMIN.toString());
         Mockito.when(userService.blockUser(Mockito.anyLong())).thenReturn(response.setEnabled(false));
 
-        ResponseEntity<UserResponse> result = controller.blockUser(user, session);
+        UserIdDTO dto = new UserIdDTO().setUserid(1L);
+        ResponseEntity<UserResponse> result = controller.blockUser(dto, session);
         assertEquals("200 OK", result.getStatusCode().toString());
         assertEquals(username, result.getBody().getName());
         assertFalse(result.getBody().isEnabled());
@@ -61,7 +64,8 @@ class AdmControllerTest {
         Mockito.when(session.getAttribute("role")).thenReturn(Role.ADMIN.toString());
         Mockito.when(userService.unblockUser(Mockito.anyLong())).thenReturn(response.setEnabled(true));
 
-        ResponseEntity<UserResponse> result = controller.unblockUser(user, session);
+        UserIdDTO dto = new UserIdDTO().setUserid(1L);
+        ResponseEntity<UserResponse> result = controller.unblockUser(dto, session);
         assertEquals("200 OK", result.getStatusCode().toString());
         assertEquals(username, result.getBody().getName());
         assertTrue(result.getBody().isEnabled());
@@ -73,7 +77,8 @@ class AdmControllerTest {
         Mockito.when(userService.changeUserRole(Mockito.anyLong(), Mockito.any()))
                 .thenReturn(response.setRole(Role.ADMIN.toString()));
 
-        ResponseEntity<UserResponse> result = controller.changeRole(user, session);
+        RoleDTO dto = new RoleDTO().setUserid(1L).setRole("USER");
+        ResponseEntity<UserResponse> result = controller.changeRole(dto, session);
         assertEquals("200 OK", result.getStatusCode().toString());
         assertEquals(username, result.getBody().getName());
         assertEquals(Role.ADMIN.toString(), result.getBody().getRole());
@@ -85,7 +90,7 @@ class AdmControllerTest {
         Mockito.when(userService.deleteUser(Mockito.anyLong()))
                 .thenReturn(response);
 
-        ResponseEntity<UserResponse> result = controller.deleteUser(user, session);
+        ResponseEntity<UserResponse> result = controller.deleteUser(1L, session);
         assertEquals("200 OK", result.getStatusCode().toString());
         assertEquals(username, result.getBody().getName());
     }
@@ -108,7 +113,7 @@ class AdmControllerTest {
         Mockito.when(session.getAttribute("role")).thenReturn(Role.ADMIN.toString());
         Mockito.when(transactionService.getUserTransaction(Mockito.anyLong()))
                 .thenReturn(List.of(transactionResponse));
-        ResponseEntity<List<TransactionResponse>> result =controller.getUserTransactions(user, session);
+        ResponseEntity<List<TransactionResponse>> result =controller.getUserTransactions(1L, session);
         assertEquals("200 OK", result.getStatusCode().toString());
         assertEquals(100.0, result.getBody().get(0).getAmount());
     }

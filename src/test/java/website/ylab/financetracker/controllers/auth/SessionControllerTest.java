@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
+import website.ylab.financetracker.in.dto.auth.LoginDTO;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.auth.Role;
 import website.ylab.financetracker.service.auth.TrackerUser;
@@ -42,7 +43,8 @@ class SessionControllerTest {
         Mockito.when(userService.isEnabled(Mockito.any())).thenReturn(true);
         Mockito.when(userService.getByName(Mockito.any())).thenReturn(response);
 
-        ResponseEntity<UserResponse> result = controller.login(user, session);
+        LoginDTO dto = new LoginDTO().setUsername(username).setPassword(password);
+        ResponseEntity<UserResponse> result = controller.login(dto, session);
         assertEquals("200 OK", result.getStatusCode().toString());
         assertEquals(username, result.getBody().getName());
     }

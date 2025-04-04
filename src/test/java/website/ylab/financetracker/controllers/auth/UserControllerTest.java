@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
+import website.ylab.financetracker.in.dto.auth.UserDataDTO;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.auth.Role;
 import website.ylab.financetracker.service.auth.TrackerUser;
@@ -50,7 +51,8 @@ class UserControllerTest {
         Mockito.when(userService.isUniqueName(Mockito.any())).thenReturn(true);
         Mockito.when(userService.isUniqueEmail(Mockito.any())).thenReturn(true);
 
-        ResponseEntity<UserResponse> result = controller.addUser(user);
+        UserDataDTO dto = new UserDataDTO().setUsername(username).setPassword(password).setEmail(email);
+        ResponseEntity<UserResponse> result = controller.addUser(dto);
         assertEquals("200 OK", result.getStatusCode().toString());
         assertEquals(username, result.getBody().getName());
     }
@@ -69,7 +71,8 @@ class UserControllerTest {
         Mockito.when(userService.isUniqueEmail(Mockito.any())).thenReturn(true);
         user.setUsername(newUsername);
 
-        ResponseEntity<UserResponse> result = controller.changeUser(user, session);
+        UserDataDTO dto = new UserDataDTO().setUsername(username).setPassword(password).setEmail(email);
+        ResponseEntity<UserResponse> result = controller.changeUser(dto, session);
         assertEquals("200 OK", result.getStatusCode().toString());
         assertEquals(newUsername, result.getBody().getName());
     }
