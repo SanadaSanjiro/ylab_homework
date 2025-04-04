@@ -3,11 +3,13 @@ package website.ylab.financetracker.out.repository.postgre.budget;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.ConnectionProvider;
 import website.ylab.financetracker.service.DbSchemaCreator;
 import website.ylab.financetracker.service.budget.TrackerBudget;
+import website.ylab.financetracker.service.LiquibaseStarter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -29,6 +31,7 @@ class PostgreBudgetRepositoryTest {
             .withUsername("ft_admin")
             .withPassword("MyP@ss4DB");
     static ConnectionProvider connectionProvider;
+    static LiquibaseStarter liquibaseStarter;
     static PostgreBudgetRepository repository;
 
     @BeforeAll
@@ -50,6 +53,11 @@ class PostgreBudgetRepositoryTest {
         System.out.println("Creating schema");
         DbSchemaCreator schemaCreator = new DbSchemaCreator(connectionProvider);
         schemaCreator.createDbSchema();
+        System.out.println("Applying liquibase migrations");
+        liquibaseStarter = new LiquibaseStarter(connectionProvider);
+        ReflectionTestUtils.setField(liquibaseStarter, "changelog",
+                "db/changelog/db.changelog-master.yml");
+        liquibaseStarter.applyMigrations();
         repository = new PostgreBudgetRepository(connectionProvider);
     }
 

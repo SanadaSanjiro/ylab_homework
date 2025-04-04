@@ -4,9 +4,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
 import website.ylab.financetracker.service.ConnectionProvider;
 import website.ylab.financetracker.service.DbSchemaCreator;
+import website.ylab.financetracker.service.LiquibaseStarter;
 import website.ylab.financetracker.service.transactions.TrackerTransaction;
 import website.ylab.financetracker.service.transactions.TransactionType;
 import website.ylab.financetracker.util.DateConvertor;
@@ -35,6 +37,7 @@ class PostgreTransactionRepositoryTest {
             .withUsername("ft_admin")
             .withPassword("MyP@ss4DB");
     static ConnectionProvider connectionProvider;
+    static LiquibaseStarter liquibaseStarter;
     static PostgreTransactionRepository repository;
 
     @BeforeAll
@@ -56,6 +59,11 @@ class PostgreTransactionRepositoryTest {
         System.out.println("Creating schema");
         DbSchemaCreator schemaCreator = new DbSchemaCreator(connectionProvider);
         schemaCreator.createDbSchema();
+        System.out.println("Applying liquibase migrations");
+        liquibaseStarter = new LiquibaseStarter(connectionProvider);
+        ReflectionTestUtils.setField(liquibaseStarter, "changelog",
+                "db/changelog/db.changelog-master.yml");
+        liquibaseStarter.applyMigrations();
         repository = new PostgreTransactionRepository(connectionProvider);
     }
 
@@ -89,9 +97,9 @@ class PostgreTransactionRepositoryTest {
         List<TrackerTransaction> list = repository.getByUserId(userid);
         assertFalse(list.isEmpty());
         TrackerTransaction returnedTransaction = list.stream()
-                        .filter(t->t.getUuid().equals(uuid))
-                        .findFirst()
-                        .orElse(null);
+                .filter(t->t.getUuid().equals(uuid))
+                .findFirst()
+                .orElse(null);
         assertEquals(type, returnedTransaction.getType());
         assertEquals(amount, returnedTransaction.getAmount());
         assertEquals(category.toLowerCase(), returnedTransaction.getCategory());
