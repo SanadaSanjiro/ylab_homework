@@ -5,10 +5,12 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
 
 @Aspect
+@Component
 public class LoggableAspect {
-    @Pointcut("within(@website.ylab.financetracker.annotations.Loggable *) && execution(* * (..))")
+    @Pointcut("@annotation(website.ylab.financetracker.annotations.Loggable)")
     public void annotatedByLoggable() {}
 
     @Around("annotatedByLoggable()")
