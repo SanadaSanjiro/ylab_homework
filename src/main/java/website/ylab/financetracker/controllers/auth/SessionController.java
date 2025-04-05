@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import website.ylab.financetracker.annotations.Loggable;
 import website.ylab.financetracker.in.dto.auth.LoginDTO;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.auth.TrackerUser;
@@ -34,6 +35,7 @@ public class SessionController {
         this.userDataVerificator = userDataVerificator;
     }
 
+    @Loggable
     @Operation(summary = "Authorizes the user in the system")
     @PostMapping(value ="/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -56,6 +58,7 @@ public class SessionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Terminates the user session")
     @PostMapping(value = "/logout", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> logout(HttpSession session) {
@@ -78,6 +81,7 @@ public class SessionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Allows you to check the session status.")
     @GetMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SessionStatusDto> checkSession(HttpSession session) {

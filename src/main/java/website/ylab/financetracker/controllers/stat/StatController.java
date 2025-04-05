@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import website.ylab.financetracker.annotations.Loggable;
 import website.ylab.financetracker.in.dto.stat.BalanceResponse;
 import website.ylab.financetracker.in.dto.stat.CategoryExpensesResponse;
 import website.ylab.financetracker.in.dto.stat.ReportResponse;
@@ -36,6 +37,7 @@ public class StatController {
         this.statService = statService;
     }
 
+    @Loggable
     @Operation(summary = "Current balance")
     @GetMapping(value="/balance", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BalanceResponse> getBalance(HttpSession session) {
@@ -58,6 +60,7 @@ public class StatController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Expenses by category")
     @GetMapping(value="/expenses", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CategoryExpensesResponse> getExpenses(HttpSession session) {
@@ -80,6 +83,7 @@ public class StatController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Calculation of total income and expenses for the last month")
     @PostMapping(value="/turnover",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -105,6 +109,7 @@ public class StatController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Summary report")
     @GetMapping(value="/report", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReportResponse> getReport(HttpSession session) {

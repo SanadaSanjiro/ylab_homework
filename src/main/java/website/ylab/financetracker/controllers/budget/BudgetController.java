@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import website.ylab.financetracker.annotations.Loggable;
 import website.ylab.financetracker.in.dto.budget.BudgetResponse;
 import website.ylab.financetracker.in.dto.budget.SetBudgetDTO;
 import website.ylab.financetracker.service.budget.BudgetService;
@@ -35,6 +36,7 @@ public class BudgetController {
         this.budgetService = budgetService;
     }
 
+    @Loggable
     @Operation(summary = "Gets users budget limit.")
     @GetMapping(value="/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BudgetResponse> getBudget(HttpSession session) {
@@ -57,6 +59,7 @@ public class BudgetController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Sets users budget limit.")
     @PostMapping(value="/set",
             consumes = MediaType.APPLICATION_JSON_VALUE,

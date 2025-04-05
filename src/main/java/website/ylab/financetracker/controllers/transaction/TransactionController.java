@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import website.ylab.financetracker.annotations.Loggable;
 import website.ylab.financetracker.in.dto.transaction.ChangeDTOMapper;
 import website.ylab.financetracker.in.dto.transaction.ChangeTransactionDTO;
 import website.ylab.financetracker.in.dto.transaction.FilterDTO;
@@ -46,6 +47,7 @@ public class TransactionController {
         this.service = service;
     }
 
+    @Loggable
     @Operation(summary = "Get transaction by id")
     @GetMapping(value="/get/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,6 +72,7 @@ public class TransactionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Get a filtered list of transactions (by date, category or type)")
     @PostMapping(value="/filtered",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -98,6 +101,7 @@ public class TransactionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Delete transaction by id")
     @DeleteMapping(value = "/delete/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -127,6 +131,7 @@ public class TransactionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Change transaction")
     @PutMapping(value="/change",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -154,6 +159,7 @@ public class TransactionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Add new transaction")
     @PostMapping(value="/add",
             consumes = MediaType.APPLICATION_JSON_VALUE,

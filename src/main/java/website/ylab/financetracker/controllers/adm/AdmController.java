@@ -44,6 +44,7 @@ public class AdmController {
         this.userService = userService;
     }
 
+    @Loggable
     @Operation(summary = "Block user by id")
     @PutMapping(value ="/block",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -64,6 +65,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Unblock user by id")
     @PutMapping(value ="/unblock",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -84,6 +86,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Change user's role")
     @PutMapping(value ="/role",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -109,6 +112,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Delete user and all his data by id")
     @DeleteMapping(value ="/delete/{userid}",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -147,6 +151,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Get user's transactions by user id")
     @GetMapping(value = "/transactions/{userid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TransactionResponse>> getUserTransactions(

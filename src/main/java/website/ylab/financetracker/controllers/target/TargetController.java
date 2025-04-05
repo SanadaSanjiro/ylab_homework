@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import website.ylab.financetracker.annotations.Loggable;
 import website.ylab.financetracker.in.dto.target.SetTargetDTO;
 import website.ylab.financetracker.in.dto.target.TargetResponse;
 import website.ylab.financetracker.service.targets.TargetService;
@@ -35,6 +36,7 @@ public class TargetController {
         this.targetService = targetService;
     }
 
+    @Loggable
     @Operation(summary = "Gets users target value.")
     @GetMapping(value="/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TargetResponse> getTarget(HttpSession session) {
@@ -57,6 +59,7 @@ public class TargetController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Loggable
     @Operation(summary = "Sets users target value.")
     @PostMapping(value="/set",
             consumes = MediaType.APPLICATION_JSON_VALUE,

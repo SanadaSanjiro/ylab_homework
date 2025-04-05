@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import website.ylab.financetracker.annotations.Loggable;
 import website.ylab.financetracker.in.dto.api.EmailNotification;
 import website.ylab.financetracker.service.api.ApiService;
 
@@ -32,6 +33,7 @@ public class ApiController {
         this.apiService = apiService;
     }
 
+    @Loggable
     @Operation(summary = "Checks if the user has exceeded their budget.")
     @GetMapping(value="/exceedance", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> getBudgetExceedance(HttpSession session) {
@@ -52,6 +54,7 @@ public class ApiController {
         }
     }
 
+    @Loggable
     @Operation(summary = "Exports a list of emails with notifications for users who have exceeded their budget.")
     @GetMapping(value = "/email", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<EmailNotification>> getEmail(HttpSession session) {
