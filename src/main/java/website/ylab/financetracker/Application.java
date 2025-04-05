@@ -3,10 +3,12 @@ package website.ylab.financetracker;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import website.ylab.audit.annotation.EnableAudit;
 
 import java.util.logging.Logger;
 
 @SpringBootApplication
+@EnableAudit
 public class Application implements CommandLineRunner {
     Logger logger = Logger.getLogger(Application.class.getName());
     @Override

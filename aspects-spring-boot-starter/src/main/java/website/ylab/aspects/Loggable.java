@@ -1,4 +1,4 @@
-package website.ylab.financetracker.annotations;
+package website.ylab.aspects;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

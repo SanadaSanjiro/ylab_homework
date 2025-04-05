@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import website.ylab.financetracker.annotations.Loggable;
+import website.ylab.aspects.Loggable;
 import website.ylab.financetracker.in.dto.target.SetTargetDTO;
 import website.ylab.financetracker.in.dto.target.TargetResponse;
 import website.ylab.financetracker.service.targets.TargetService;

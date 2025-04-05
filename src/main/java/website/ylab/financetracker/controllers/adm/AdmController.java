@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import website.ylab.financetracker.annotations.Loggable;
+import website.ylab.audit.annotation.Auditable;
+import website.ylab.aspects.Loggable;
 import website.ylab.financetracker.in.dto.auth.RoleDTO;
 import website.ylab.financetracker.in.dto.auth.UserIdDTO;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
@@ -132,6 +133,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Auditable
     @Loggable
     @Operation(summary = "Get list of all registered users")
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)

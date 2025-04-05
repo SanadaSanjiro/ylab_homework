@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import website.ylab.financetracker.annotations.Loggable;
+import website.ylab.aspects.Loggable;
 import website.ylab.financetracker.in.dto.transaction.ChangeDTOMapper;
 import website.ylab.financetracker.in.dto.transaction.ChangeTransactionDTO;
 import website.ylab.financetracker.in.dto.transaction.FilterDTO;

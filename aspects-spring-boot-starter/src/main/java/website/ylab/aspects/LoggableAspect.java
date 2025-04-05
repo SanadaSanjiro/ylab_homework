@@ -1,4 +1,4 @@
-package website.ylab.financetracker.aspects;
+package website.ylab.aspects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +13,7 @@ import org.aspectj.lang.annotation.Pointcut;
 public class LoggableAspect {
     Logger logger = LogManager.getLogger(this.getClass());
 
-    @Pointcut("@annotation(website.ylab.financetracker.annotations.Loggable)")
+    @Pointcut("@annotation(website.ylab.aspects.Loggable)")
     public void annotatedByLoggable() {}
 
     @Around("annotatedByLoggable()")

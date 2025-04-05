@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import website.ylab.financetracker.annotations.Loggable;
+import website.ylab.aspects.Loggable;
 import website.ylab.financetracker.in.dto.auth.LoginDTO;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.auth.TrackerUser;
