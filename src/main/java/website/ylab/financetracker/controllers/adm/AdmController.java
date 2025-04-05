@@ -57,6 +57,7 @@ public class AdmController {
             logger.info("BlockUser request rejected: don't have permissions");
             return ResponseEntity.status(SC_UNAUTHORIZED).build();
         }
+        System.out.println(dto.getUserid());
         UserResponse response = userService.blockUser(dto.getUserid());
         if (Objects.nonNull(response)) {
             logger.info("User {} successfully blocked", response);
@@ -66,6 +67,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Auditable
     @Loggable
     @Operation(summary = "Unblock user by id")
     @PutMapping(value ="/unblock",
@@ -87,6 +89,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Auditable
     @Loggable
     @Operation(summary = "Change user's role")
     @PutMapping(value ="/role",
@@ -113,6 +116,7 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Auditable
     @Loggable
     @Operation(summary = "Delete user and all his data by id")
     @DeleteMapping(value ="/delete/{userid}",
