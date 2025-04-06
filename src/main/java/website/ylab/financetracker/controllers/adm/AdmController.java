@@ -45,6 +45,7 @@ public class AdmController {
         this.userService = userService;
     }
 
+    @Auditable
     @Loggable
     @Operation(summary = "Block user by id")
     @PutMapping(value ="/block",
