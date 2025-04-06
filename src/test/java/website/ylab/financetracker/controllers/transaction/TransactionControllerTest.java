@@ -1,27 +1,44 @@
 package website.ylab.financetracker.controllers.transaction;
 
-import jakarta.servlet.http.HttpSession;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import website.ylab.financetracker.in.dto.transaction.ChangeTransactionDTO;
 import website.ylab.financetracker.in.dto.transaction.FilterDTO;
 import website.ylab.financetracker.in.dto.transaction.TransactionRequest;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.auth.TrackerUser;
-import website.ylab.financetracker.service.transactions.TrackerTransaction;
-import website.ylab.financetracker.service.transactions.TransactionFilter;
 import website.ylab.financetracker.service.transactions.TransactionService;
 import website.ylab.financetracker.service.transactions.TransactionType;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WebMvcTest
 class TransactionControllerTest {
+    @Autowired
+    MockMvc mvc;
+
     SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
     TransactionType type1 = TransactionType.INCOME;
     String category1 = "Travel";
@@ -29,9 +46,9 @@ class TransactionControllerTest {
     String password = "123456";
     String email = "bob@gmail.com";
     TrackerUser user;
-    TransactionService transactionService = Mockito.mock(TransactionService.class);
-    HttpSession session = Mockito.mock(HttpSession.class);
-    TransactionController controller = new TransactionController(transactionService);
+
+    @MockBean
+    TransactionService transactionService;
 
     @BeforeEach
     void setUp() {
@@ -43,70 +60,116 @@ class TransactionControllerTest {
     }
 
     @Test
-    void getById() {
-        Mockito.when(session.getAttribute("userid")).thenReturn("1");
+    void getById() throws Exception {
         TransactionResponse transactionResponse = getResponse(type1, category1);
         Mockito.when(transactionService.getById(Mockito.anyLong())).thenReturn(transactionResponse);
+        HashMap<String, Object> sessionattr = new HashMap<String, Object>();
+        sessionattr.put("userid", "1");
 
-        ResponseEntity<TransactionResponse> result = controller.getById(1L, session);
-        assertEquals("200 OK", result.getStatusCode().toString());
-        assertEquals(100.0, result.getBody().getAmount());
-        assertEquals("Travel", result.getBody().getCategory());
+        MvcResult result = mvc.perform(get("/transaction/get/1").sessionAttrs(sessionattr))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        String json = result.getResponse().getContentAsString();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        TransactionResponse response = mapper.readValue(json, TransactionResponse.class);
+        assertEquals(100.0, response.getAmount());
+        assertEquals("Travel", response.getCategory());
     }
 
     @Test
-    void getFiltered() {
-        Mockito.when(session.getAttribute("userid")).thenReturn("1");
+    void getFiltered() throws Exception {
         TransactionResponse transactionResponse = getResponse(type1, category1);
         Mockito.when(transactionService.getFiltered(Mockito.any())).thenReturn(List.of(transactionResponse));
+        HashMap<String, Object> sessionattr = new HashMap<String, Object>();
+        sessionattr.put("userid", "1");
 
         FilterDTO dto = new FilterDTO();
-        ResponseEntity<List<TransactionResponse>> result = controller.getFiltered(
-                dto, session);
-        assertEquals("200 OK", result.getStatusCode().toString());
-        assertEquals(100.0, result.getBody().get(0).getAmount());
-        assertEquals("Travel", result.getBody().get(0).getCategory());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(dto);
+        MvcResult result = mvc.perform(post("/transaction/filtered").sessionAttrs(sessionattr)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        String json = result.getResponse().getContentAsString();
+        List<TransactionResponse> actual = mapper.readValue(json, new TypeReference<List<TransactionResponse>>() {});
+        assertEquals(100.0, actual.get(0).getAmount());
+        assertEquals("Travel", actual.get(0).getCategory());
     }
 
     @Test
-    void deleteTransaction() {
-        Mockito.when(session.getAttribute("userid")).thenReturn("1");
+    void deleteTransaction() throws Exception {
         TransactionResponse transactionResponse = getResponse(type1, category1);
         transactionResponse.setUserId(1L);
         Mockito.when(transactionService.getById(Mockito.anyLong())).thenReturn(transactionResponse);
         Mockito.when(transactionService.deleteTransaction(Mockito.anyLong())).thenReturn(transactionResponse);
+        HashMap<String, Object> sessionattr = new HashMap<String, Object>();
+        sessionattr.put("userid", "1");
 
-        ResponseEntity<TransactionResponse> result = controller.deleteTransaction( 1L, session);
-        assertEquals("200 OK", result.getStatusCode().toString());
-        assertEquals(100.0, result.getBody().getAmount());
-        assertEquals("Travel", result.getBody().getCategory());
+        MvcResult result = mvc.perform(delete("/transaction/delete/1").sessionAttrs(sessionattr))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        String json = result.getResponse().getContentAsString();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        TransactionResponse response = mapper.readValue(json, TransactionResponse.class);
+        assertEquals(100.0, response.getAmount());
+        assertEquals("Travel", response.getCategory());
     }
 
     @Test
-    void changeTransaction() {
-        Mockito.when(session.getAttribute("userid")).thenReturn("1");
+    void changeTransaction() throws Exception {
         TransactionResponse transactionResponse = getResponse(type1, category1);
         Mockito.when(transactionService.changeTransaction(Mockito.any())).thenReturn(transactionResponse);
+        HashMap<String, Object> sessionattr = new HashMap<String, Object>();
+        sessionattr.put("userid", "1");
         ChangeTransactionDTO dto = new ChangeTransactionDTO().setAmount(100.0)
                 .setDescription("new desc")
                 .setCategory("Travel");
-        ResponseEntity<TransactionResponse> result = controller.changeTransaction(dto, session);
-        assertEquals("200 OK", result.getStatusCode().toString());
-        assertEquals(100.0, result.getBody().getAmount());
-        assertEquals("Travel", result.getBody().getCategory());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(dto);
+        MvcResult result = mvc.perform(put("/transaction/change").sessionAttrs(sessionattr)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        String json = result.getResponse().getContentAsString();
+        TransactionResponse response = mapper.readValue(json, TransactionResponse.class);
+        assertEquals(100.0, response.getAmount());
+        assertEquals("Travel", response.getCategory());
     }
 
     @Test
-    void addTransaction() {
-        Mockito.when(session.getAttribute("userid")).thenReturn("1");
-
+    void addTransaction() throws Exception {
         TransactionResponse transactionResponse = getResponse(type1, category1);
         Mockito.when(transactionService.addNewTransaction(Mockito.any())).thenReturn(transactionResponse);
-
+        HashMap<String, Object> sessionattr = new HashMap<String, Object>();
+        sessionattr.put("userid", "1");
         TransactionRequest dto = getRequest();
-        ResponseEntity<TransactionResponse> result = controller.addTransaction(dto, session);
-        assertEquals("200 OK", result.getStatusCode().toString());
-        assertEquals(100.0, result.getBody().getAmount());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(dto);
+
+        MvcResult result = mvc.perform(post("/transaction/add").sessionAttrs(sessionattr)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        String json = result.getResponse().getContentAsString();
+        TransactionResponse response = mapper.readValue(json, TransactionResponse.class);
+        assertEquals(100.0, response.getAmount());
     }
 
     private TransactionResponse getResponse(TransactionType type, String category) {

@@ -5,6 +5,8 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/audit-starter/pom.xml" />
+        <option value="$PROJECT_DIR$/aspects-spring-boot-starter/pom.xml" />
       </list>
     </option>
   </component>
