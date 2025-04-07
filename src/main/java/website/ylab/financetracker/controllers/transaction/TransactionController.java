@@ -32,6 +32,9 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Transactions processing functions
+ */
 @RestController
 @RequestMapping("/transaction")
 @Tag(name= "Transactions processing functions")
@@ -47,6 +50,12 @@ public class TransactionController {
         this.service = service;
     }
 
+    /**
+     * Get transaction by id
+     * @param id long
+     * @param session HttpSession
+     * @return ResponseEntity<TransactionResponse>
+     */
     @Loggable
     @Operation(summary = "Get transaction by id")
     @GetMapping(value="/get/{id}",
@@ -72,6 +81,12 @@ public class TransactionController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Get a filtered list of transactions (by date, category or type)
+     * @param dto FilterDTO
+     * @param session HttpSession
+     * @return ResponseEntity<List<TransactionResponse>>
+     */
     @Loggable
     @Operation(summary = "Get a filtered list of transactions (by date, category or type)")
     @PostMapping(value="/filtered",
@@ -101,6 +116,12 @@ public class TransactionController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Delete transaction by id
+     * @param id long
+     * @param session HttpSession
+     * @return ResponseEntity<TransactionResponse>
+     */
     @Loggable
     @Operation(summary = "Delete transaction by id")
     @DeleteMapping(value = "/delete/{id}",
@@ -131,6 +152,12 @@ public class TransactionController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Change transaction
+     * @param dto ChangeTransactionDTO
+     * @param session HttpSession
+     * @return ResponseEntity<TransactionResponse>
+     */
     @Loggable
     @Operation(summary = "Change transaction")
     @PutMapping(value="/change",
@@ -159,6 +186,12 @@ public class TransactionController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Add new transaction
+     * @param dto TransactionRequest
+     * @param session HttpSession
+     * @return ResponseEntity<TransactionResponse>
+     */
     @Loggable
     @Operation(summary = "Add new transaction")
     @PostMapping(value="/add",

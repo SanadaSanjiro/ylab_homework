@@ -12,6 +12,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+/**
+ * Provides the basic configuration of the project
+ */
 @Configuration
 @ComponentScan("website.ylab.financetracker")
 public class WebContextConfig implements WebMvcConfigurer {
@@ -20,11 +23,14 @@ public class WebContextConfig implements WebMvcConfigurer {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
+    /**
+     * Specifies the required date format.
+     * @param converters List<HttpMessageConverter>
+     */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder()
                 .indentOutput(true);
-        //Sets date format for convertor
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         converters.add(new MappingJackson2HttpMessageConverter(builder.build().setDateFormat(df)));
     }

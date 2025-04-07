@@ -23,10 +23,13 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Allows users to set a target amount or check the current amount.
+ */
 @RestController
 @RequestMapping("/target")
 @Tag(name= "Target functions",
-        description = "Allows you to set your target or see its current value")
+        description = "Allows users to set a target amount or check the current amount.")
 public class TargetController {
     private final TargetService targetService;
     Logger logger = LogManager.getLogger(TargetController.class);
@@ -36,8 +39,13 @@ public class TargetController {
         this.targetService = targetService;
     }
 
+    /**
+     * Gets users target amount.
+     * @param session HttpSession
+     * @return ResponseEntity<TargetResponse>
+     */
     @Loggable
-    @Operation(summary = "Gets users target value.")
+    @Operation(summary = "Gets users target amount.")
     @GetMapping(value="/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TargetResponse> getTarget(HttpSession session) {
         logger.info("Get getTarget request");
@@ -59,6 +67,12 @@ public class TargetController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Sets users target value.
+     * @param dto SetTargetDTO
+     * @param session HttpSession
+     * @return ResponseEntity<TargetResponse>
+     */
     @Loggable
     @Operation(summary = "Sets users target value.")
     @PostMapping(value="/set",

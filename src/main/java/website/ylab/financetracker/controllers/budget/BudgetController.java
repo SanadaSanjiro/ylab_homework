@@ -23,10 +23,14 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Allows users to set a budget limit or check the current limit.
+ * All functions require prior authentication in the system.
+ */
 @RestController
 @RequestMapping("/budget")
 @Tag(name= "Budget functions",
-        description = "Allows you to set your budget limit or see its current value")
+        description = "Allows users to set a budget limit or check the current limit.")
 public class BudgetController {
     private final BudgetService budgetService;
     Logger logger = LogManager.getLogger(BudgetController.class);
@@ -36,6 +40,11 @@ public class BudgetController {
         this.budgetService = budgetService;
     }
 
+    /**
+     * Gets users budget limit.
+     * @param session HttpSession
+     * @return ResponseEntity<BudgetResponse>
+     */
     @Loggable
     @Operation(summary = "Gets users budget limit.")
     @GetMapping(value="/get", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -59,6 +68,12 @@ public class BudgetController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Sets users budget limit.
+     * @param dto SetBudgetDTO
+     * @param session HttpSession
+     * @return ResponseEntity<BudgetResponse>
+     */
     @Loggable
     @Operation(summary = "Sets users budget limit.")
     @PostMapping(value="/set",

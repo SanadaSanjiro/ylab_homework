@@ -8,7 +8,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
 
-
+/**
+ * Provides runtime logging functionality.
+ */
 @Aspect
 public class LoggableAspect {
     Logger logger = LogManager.getLogger(this.getClass());
@@ -16,6 +18,12 @@ public class LoggableAspect {
     @Pointcut("@annotation(website.ylab.aspects.Loggable)")
     public void annotatedByLoggable() {}
 
+    /**
+     * Logs the method call and its execution time.
+     * @param joinPoint ProceedingJoinPoint
+     * @return result of calling a base class method
+     * @throws Throwable some exceptions
+     */
     @Around("annotatedByLoggable()")
     public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
         logger.info("Calling method {}", joinPoint.getSignature().getName());

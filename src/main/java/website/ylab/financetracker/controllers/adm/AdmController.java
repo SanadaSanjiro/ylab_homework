@@ -30,6 +30,9 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Administrator functions controller. All functionality requires an administrator role
+ */
 @RestController
 @RequestMapping("/adm")
 @Tag(name= "Administrator functions",
@@ -45,6 +48,12 @@ public class AdmController {
         this.userService = userService;
     }
 
+    /**
+     * Block user by id
+     * @param dto UserIdDTO
+     * @param session HttpSession
+     * @return ResponseEntity<UserResponse>
+     */
     @Auditable
     @Loggable
     @Operation(summary = "Block user by id")
@@ -68,6 +77,12 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Unblock user by id
+     * @param dto UserIdDTO
+     * @param session HttpSession
+     * @return ResponseEntity<UserResponse>
+     */
     @Auditable
     @Loggable
     @Operation(summary = "Unblock user by id")
@@ -90,6 +105,12 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Change user's role
+     * @param dto RoleDTO
+     * @param session HttpSession
+     * @return ResponseEntity<UserResponse>
+     */
     @Auditable
     @Loggable
     @Operation(summary = "Change user's role")
@@ -117,6 +138,12 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Delete user and all his data by id
+     * @param userid long
+     * @param session HttpSession
+     * @return ResponseEntity<UserResponse>
+     */
     @Auditable
     @Loggable
     @Operation(summary = "Delete user and all his data by id")
@@ -138,6 +165,11 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Get list of all registered users
+     * @param session HttpSession
+     * @return ResponseEntity<List<UserResponse>>
+     */
     @Auditable
     @Loggable
     @Operation(summary = "Get list of all registered users")
@@ -158,6 +190,12 @@ public class AdmController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Get user's transactions by user id
+     * @param userid long
+     * @param session HttpSession
+     * @return ResponseEntity<List<TransactionResponse>>
+     */
     @Loggable
     @Operation(summary = "Get user's transactions by user id")
     @GetMapping(value = "/transactions/{userid}", produces = MediaType.APPLICATION_JSON_VALUE)

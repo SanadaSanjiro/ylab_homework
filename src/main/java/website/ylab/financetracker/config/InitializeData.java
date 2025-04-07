@@ -27,6 +27,10 @@ public class InitializeData {
         this.adminCreator = adminCreator;
     }
 
+    /**
+     * Creates schema, applies liquibase migrations and adds Admin user at application startup on context refresh
+     * @param event ContextRefreshedEvent
+     */
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
         dbSchemaCreator.createDbSchema();

@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import website.ylab.audit.aspects.AuditableAspect;
 
+/**
+ * Adds audit advice to a project configuration
+ */
 @Configuration
 public class AuditConfig {
     Logger logger = LogManager.getLogger(AuditConfig.class);

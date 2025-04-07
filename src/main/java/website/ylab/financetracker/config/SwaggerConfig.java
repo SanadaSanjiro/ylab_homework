@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Provides the configuration required for Swagger-ui to work correctly.
+ */
 @Configuration
 public class SwaggerConfig implements WebMvcConfigurer {
     @Bean

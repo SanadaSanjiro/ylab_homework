@@ -5,6 +5,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Adds logging advice to a project configuration
+ */
 @Configuration
 public class AopConfig {
     Logger logger = LogManager.getLogger(AopConfig.class);

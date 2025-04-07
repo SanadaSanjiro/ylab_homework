@@ -20,6 +20,9 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Provides functions for external services. All functions require prior authentication in the system.
+ */
 @RestController
 @RequestMapping("/api")
 @Tag(name= "API functions",
@@ -33,6 +36,11 @@ public class ApiController {
         this.apiService = apiService;
     }
 
+    /**
+     * Checks if the user has exceeded their budget.
+     * @param session HttpSession
+     * @return ResponseEntity<Boolean>
+     */
     @Loggable
     @Operation(summary = "Checks if the user has exceeded their budget.")
     @GetMapping(value="/exceedance", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,6 +62,11 @@ public class ApiController {
         }
     }
 
+    /**
+     * Exports a list of emails with notifications for users who have exceeded their budget.
+     * @param session HttpSession
+     * @return ResponseEntity<List<EmailNotification>>
+     */
     @Loggable
     @Operation(summary = "Exports a list of emails with notifications for users who have exceeded their budget.")
     @GetMapping(value = "/email", produces = MediaType.APPLICATION_JSON_VALUE)

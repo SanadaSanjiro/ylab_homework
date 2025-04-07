@@ -20,6 +20,9 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Provides session operations such as login, logout, and checking session status.
+ */
 @RestController
 @RequestMapping("/auth")
 @Tag(name= "Session operations",
@@ -35,8 +38,14 @@ public class SessionController {
         this.userDataVerificator = userDataVerificator;
     }
 
+    /**
+     * Performs user authentication
+     * @param dto LoginDTO
+     * @param session HttpSession
+     * @return ResponseEntity<UserResponse>
+     */
     @Loggable
-    @Operation(summary = "Authorizes the user in the system")
+    @Operation(summary = "Performs user authentication")
     @PostMapping(value ="/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -58,8 +67,13 @@ public class SessionController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Logs the user out
+     * @param session HttpSession
+     * @return ResponseEntity<UserResponse>
+     */
     @Loggable
-    @Operation(summary = "Terminates the user session")
+    @Operation(summary = "Logs the user out")
     @PostMapping(value = "/logout", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> logout(HttpSession session) {
         Object useridObj = session.getAttribute("userid");
@@ -81,8 +95,13 @@ public class SessionController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Checks the session status.
+     * @param session HttpSession
+     * @return ResponseEntity<SessionStatusDto>
+     */
     @Loggable
-    @Operation(summary = "Allows you to check the session status.")
+    @Operation(summary = "Checks the session status.")
     @GetMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SessionStatusDto> checkSession(HttpSession session) {
         SessionStatusDto dto = new SessionStatusDto(session);

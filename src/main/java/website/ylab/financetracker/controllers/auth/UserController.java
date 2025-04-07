@@ -19,6 +19,10 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Provides functions for working with the user profile. Methods require pre-authentication
+ * unless otherwise specified in the method description.
+ */
 @RestController
 @RequestMapping("/user")
 @Tag(name= "User profile functions",
@@ -34,6 +38,11 @@ public class UserController {
         this.userDataVerificator = userDataVerificator;
     }
 
+    /**
+     * Adds new user into the system. This feature does not require prior authentication.
+     * @param dto UserDataDTO
+     * @return ResponseEntity<UserResponse>
+     */
     @Operation(summary = "Adds new user into the system.")
     @PostMapping(value ="/add",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -53,6 +62,12 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Changes user data (name, password and email address).
+     * @param dto UserDataDTO
+     * @param session HttpSession
+     * @return ResponseEntity<UserResponse>
+     */
     @Operation(summary = "Changes user data (name, password and email address).")
     @PutMapping(value = "/change",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -81,6 +96,11 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Deletes a user and all their data (transactions, budget and target).
+     * @param session HttpSession
+     * @return Get deleteUser request
+     */
     @Operation(summary = "Deletes a user and all their data (transactions, budget and target).")
     @DeleteMapping(value="/delete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> deleteUser(HttpSession session) {
@@ -101,6 +121,11 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Provides information about the user (name, email, whether enabled, and role).
+     * @param session HttpSession
+     * @return ResponseEntity<UserResponse>
+     */
     @Operation(summary = "Provides information about the user (name, email, whether enabled, and role).")
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> getUser(HttpSession session) {

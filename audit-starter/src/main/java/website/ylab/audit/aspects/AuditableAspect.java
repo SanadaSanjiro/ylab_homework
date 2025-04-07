@@ -12,6 +12,9 @@ import org.aspectj.lang.reflect.MethodSignature;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Provides audit advice functionality.
+ */
 @Aspect
 public class AuditableAspect {
     Logger logger = LogManager.getLogger(this.getClass());
@@ -19,6 +22,12 @@ public class AuditableAspect {
     @Pointcut("@annotation(website.ylab.audit.annotation.Auditable)")
     public void annotatedByAuditable() {}
 
+    /**
+     * Audits user calls to methods marked with the @Auditable annotation
+     * @param joinPoint roceedingJoinPoint
+     * @return result of calling a base class method
+     * @throws Throwable some exceptions
+     */
     @Around("annotatedByAuditable()")
     public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
         Object par = getParameterByName(joinPoint, "session");

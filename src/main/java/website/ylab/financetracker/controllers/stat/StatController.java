@@ -25,6 +25,10 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Statistics and analytics.
+ * All functions require prior authentication in the system.
+ */
 @RestController
 @RequestMapping("/stat")
 @Tag(name= "Statistics and analytics")
@@ -37,8 +41,13 @@ public class StatController {
         this.statService = statService;
     }
 
+    /**
+     * Current user balance
+     * @param session HttpSession
+     * @return ResponseEntity<BalanceResponse>
+     */
     @Loggable
-    @Operation(summary = "Current balance")
+    @Operation(summary = "Current user balance")
     @GetMapping(value="/balance", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BalanceResponse> getBalance(HttpSession session) {
         logger.info("Get getBalance request");
@@ -60,8 +69,13 @@ public class StatController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * User expenses grouped by category
+     * @param session HttpSession
+     * @return ResponseEntity<CategoryExpensesResponse>
+     */
     @Loggable
-    @Operation(summary = "Expenses by category")
+    @Operation(summary = "User expenses grouped by category")
     @GetMapping(value="/expenses", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CategoryExpensesResponse> getExpenses(HttpSession session) {
         logger.info("Get getExpenses request");
@@ -83,6 +97,12 @@ public class StatController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Calculation of total income and expenses for the last month
+     * @param request TurnoverRequest
+     * @param session HttpSession
+     * @return ResponseEntity<TurnoverResponse>
+     */
     @Loggable
     @Operation(summary = "Calculation of total income and expenses for the last month")
     @PostMapping(value="/turnover",
@@ -109,6 +129,11 @@ public class StatController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Summary report
+     * @param session HttpSession
+     * @return ResponseEntity<ReportResponse>
+     */
     @Loggable
     @Operation(summary = "Summary report")
     @GetMapping(value="/report", produces = MediaType.APPLICATION_JSON_VALUE)
