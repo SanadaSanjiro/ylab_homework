@@ -3,8 +3,9 @@ package website.ylab.financetracker.in.dto.transaction;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
-
+/**
+ * Used when changing transaction data
+ */
 @Accessors(chain = true)
 @Data
 public class ChangeTransactionDTO {

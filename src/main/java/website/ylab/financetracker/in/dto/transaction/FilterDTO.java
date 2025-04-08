@@ -6,6 +6,9 @@ import lombok.experimental.Accessors;
 
 import java.util.Date;
 
+/**
+ * Used to set filters by type, category and date when retrieving a filtered list of transactions
+ */
 @Accessors(chain = true)
 @Data
 public class FilterDTO {

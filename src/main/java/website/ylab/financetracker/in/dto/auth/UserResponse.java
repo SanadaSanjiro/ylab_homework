@@ -3,6 +3,9 @@ package website.ylab.financetracker.in.dto.auth;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+/**
+ * Used to return results of operations on users.
+ */
 @Accessors(chain = true)
 @Data
 public class UserResponse {

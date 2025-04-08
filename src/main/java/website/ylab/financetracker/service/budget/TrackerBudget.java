@@ -3,6 +3,9 @@ package website.ylab.financetracker.service.budget;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+/**
+ * Budget Model
+ */
 @Accessors(chain = true)
 @Data
 public class TrackerBudget {

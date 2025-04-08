@@ -8,6 +8,9 @@ import website.ylab.financetracker.util.CustomDateSerializer;
 
 import java.util.Date;
 
+/**
+ * Used when creating a new transaction
+ */
 @Accessors(chain = true)
 @Data
 public class TransactionRequest {

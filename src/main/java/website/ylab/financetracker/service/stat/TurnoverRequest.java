@@ -8,6 +8,9 @@ import website.ylab.financetracker.util.CustomDateSerializer;
 
 import java.util.Date;
 
+/**
+ * Serves to transfer data when requesting turnover for a period
+ */
 @Getter
 @Setter
 public class TurnoverRequest {

@@ -13,6 +13,9 @@ import website.ylab.financetracker.out.repository.TargetRepository;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Provides methods for changing users targets.
+ */
 @Service
 public class TargetService {
     private final TargetRepository targetRepository;
@@ -26,6 +29,11 @@ public class TargetService {
         this.userService = userService;
     }
 
+    /**
+     * Sets a target amount for the user.
+     * @param request TrackerTarget
+     * @return TargetResponse
+     */
     public TargetResponse setTarget(TrackerTarget request) {
         logger.info("Get setTarget request");
         Optional<TrackerUser> optional = userService.getById(request.getUserId());
@@ -38,23 +46,11 @@ public class TargetService {
         return targetOptional.map(mapper::toResponse).orElse(null);
     }
 
-    public TargetResponse getTarget(long id) {
-        Optional<TrackerTarget> optional = targetRepository.getById(id);
-        return optional.map(mapper::toResponse).orElse(null);
-    }
-
-    public TargetResponse deleteTarget(long id) {
-        Optional<TrackerTarget> optional = targetRepository.deleteTarget(id);
-        return optional.map(mapper::toResponse).orElse(null);
-    }
-
-    public TargetResponse deleteByUserId(long userId) {
-        Optional<TrackerTarget> optional = targetRepository.getByUserId(userId);
-        if (optional.isEmpty()) return null;
-        optional = targetRepository.deleteTarget(optional.get().getId());
-        return optional.map(mapper::toResponse).orElse(null);
-    }
-
+    /**
+     * Returns a target by user id
+     * @param userId long
+     * @return TargetResponse
+     */
     public TargetResponse getByUserId(long userId) {
         logger.info("Get getTargetByUserId request");
         Optional<TrackerTarget> optional = targetRepository.getByUserId(userId);
