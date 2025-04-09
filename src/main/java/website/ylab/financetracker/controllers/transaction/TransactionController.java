@@ -69,8 +69,9 @@ public class TransactionController {
             return ResponseEntity.status(SC_UNAUTHORIZED).build();
         }
         try {
+            long userid =  Long.parseLong(useridObj.toString());
             TransactionResponse  response =service.getById(id);
-            if (Objects.nonNull(response)) {
+            if (Objects.nonNull(response) && userid==response.getUserId()) {
                 logger.info("GetTransaction request: ok");
                 return ResponseEntity.ok(response);
             }
@@ -101,7 +102,6 @@ public class TransactionController {
             return ResponseEntity.status(SC_UNAUTHORIZED).build();
         }
         try {
-            System.out.println(dto.getDate());
             TrackerTransaction transaction = filterMapper.toModel(dto);
             transaction.setUserId(Long.parseLong(useridObj.toString()));
             List<TransactionResponse> response = service.getFiltered(transaction);
@@ -213,7 +213,7 @@ public class TransactionController {
                 logger.info("AddTransaction request: ok");
                 return ResponseEntity.ok(response);
             }
-        } catch (NumberFormatException e) {
+        } catch (IllegalArgumentException e) {
             logger.warn("Got an exception in addTransaction while parsing userId {}", e.getMessage());
         }
         logger.warn("AddTransaction request failed {}");

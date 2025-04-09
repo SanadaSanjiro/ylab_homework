@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Data
 public class ChangeTransactionDTO {
+    private long id;
     private double amount;
     private String category;
     private String description;
