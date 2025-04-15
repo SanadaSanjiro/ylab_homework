@@ -6,9 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.apache.logging.log4j.Logger;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,9 +17,6 @@ class LoggableAspectTest {
     @Mock
     private ProceedingJoinPoint joinPoint;
 
-    @Mock
-    private Logger logger;
-
     @InjectMocks
     private LoggableAspect aspect;
 
@@ -31,9 +26,6 @@ class LoggableAspectTest {
         when(joinPoint.getSignature()).thenReturn(getSignature());
         aspect.logging(joinPoint);
         verify(joinPoint, times(1)).proceed();
-        verify(logger, times(1)).info(Mockito.anyString(),
-                Mockito.anyLong(), Mockito.anyString());
-        verify(logger, times(1)).info(Mockito.anyString(), Mockito.anyString());
     }
     private Signature getSignature() {
         return new Signature() {

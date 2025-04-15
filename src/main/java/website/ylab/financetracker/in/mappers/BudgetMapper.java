@@ -1,8 +1,9 @@
-package website.ylab.financetracker.in.dto.budget;
+package website.ylab.financetracker.in.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import website.ylab.financetracker.in.dto.budget.BudgetResponse;
 import website.ylab.financetracker.service.budget.TrackerBudget;
 
 /**

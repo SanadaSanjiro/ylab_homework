@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import website.ylab.aspects.Loggable;
-import website.ylab.financetracker.in.dto.transaction.ChangeDTOMapper;
+import website.ylab.financetracker.in.mappers.ChangeDTOMapper;
 import website.ylab.financetracker.in.dto.transaction.ChangeTransactionDTO;
 import website.ylab.financetracker.in.dto.transaction.FilterDTO;
-import website.ylab.financetracker.in.dto.transaction.FilterMapper;
-import website.ylab.financetracker.in.dto.transaction.RequestMapper;
+import website.ylab.financetracker.in.mappers.FilterMapper;
+import website.ylab.financetracker.in.mappers.RequestMapper;
 import website.ylab.financetracker.in.dto.transaction.TransactionRequest;
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
 import website.ylab.financetracker.service.transactions.TrackerTransaction;
@@ -70,7 +70,7 @@ public class TransactionController {
         }
         try {
             long userid =  Long.parseLong(useridObj.toString());
-            TransactionResponse  response =service.getById(id);
+            TransactionResponse  response = service.getById(id);
             if (Objects.nonNull(response) && userid==response.getUserId()) {
                 logger.info("GetTransaction request: ok");
                 return ResponseEntity.ok(response);

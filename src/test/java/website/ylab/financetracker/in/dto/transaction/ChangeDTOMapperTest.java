@@ -1,6 +1,7 @@
 package website.ylab.financetracker.in.dto.transaction;
 
 import org.junit.jupiter.api.Test;
+import website.ylab.financetracker.in.mappers.ChangeDTOMapper;
 import website.ylab.financetracker.service.transactions.TrackerTransaction;
 
 import static org.junit.jupiter.api.Assertions.*;

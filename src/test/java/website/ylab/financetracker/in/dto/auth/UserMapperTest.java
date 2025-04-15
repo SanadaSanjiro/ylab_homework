@@ -1,6 +1,7 @@
 package website.ylab.financetracker.in.dto.auth;
 
 import org.junit.jupiter.api.Test;
+import website.ylab.financetracker.in.mappers.UserMapper;
 import website.ylab.financetracker.service.auth.Role;
 import website.ylab.financetracker.service.auth.TrackerUser;
 

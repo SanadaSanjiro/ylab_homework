@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserService;
-import website.ylab.financetracker.in.dto.target.TargetMapper;
+import website.ylab.financetracker.in.mappers.TargetMapper;
 import website.ylab.financetracker.in.dto.target.TargetResponse;
 import website.ylab.financetracker.out.repository.TargetRepository;
 

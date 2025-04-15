@@ -2,7 +2,7 @@ package website.ylab.financetracker.service.budget;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import website.ylab.financetracker.in.dto.budget.BudgetMapper;
+import website.ylab.financetracker.in.mappers.BudgetMapper;
 import website.ylab.financetracker.in.dto.budget.BudgetResponse;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.out.repository.BudgetRepository;

@@ -178,6 +178,7 @@ class TransactionControllerTest {
                 .setType(type.toString())
                 .setAmount(100.0)
                 .setCategory(category)
+                .setUserId(1L)
                 .setId(user.getId());
         try {
             response.setDate(formatter.parse(1 + ".01.2025"));

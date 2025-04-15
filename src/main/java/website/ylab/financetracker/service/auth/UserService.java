@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import website.ylab.financetracker.in.dto.auth.UserMapper;
+import website.ylab.financetracker.in.mappers.UserMapper;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.out.repository.TrackerUserRepository;
 
