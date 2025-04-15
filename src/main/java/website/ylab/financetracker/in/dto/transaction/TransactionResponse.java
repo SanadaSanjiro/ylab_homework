@@ -8,6 +8,9 @@ import website.ylab.financetracker.util.CustomDateSerializer;
 
 import java.util.Date;
 
+/**
+ * Used to return results of operations on transactions.
+ */
 @Accessors(chain = true)
 @Data
 public class TransactionResponse {

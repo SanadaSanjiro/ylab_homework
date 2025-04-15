@@ -1,12 +1,20 @@
 package website.ylab.financetracker.controllers.target;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import website.ylab.aspects.Loggable;
+import website.ylab.financetracker.in.dto.target.SetTargetDTO;
 import website.ylab.financetracker.in.dto.target.TargetResponse;
 import website.ylab.financetracker.service.targets.TargetService;
 import website.ylab.financetracker.service.targets.TrackerTarget;
@@ -15,8 +23,13 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Allows users to set a target amount or check the current amount.
+ */
 @RestController
 @RequestMapping("/target")
+@Tag(name= "Target functions",
+        description = "Allows users to set a target amount or check the current amount.")
 public class TargetController {
     private final TargetService targetService;
     Logger logger = LogManager.getLogger(TargetController.class);
@@ -26,6 +39,13 @@ public class TargetController {
         this.targetService = targetService;
     }
 
+    /**
+     * Gets users target amount.
+     * @param session HttpSession
+     * @return ResponseEntity<TargetResponse>
+     */
+    @Loggable
+    @Operation(summary = "Gets users target amount.")
     @GetMapping(value="/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TargetResponse> getTarget(HttpSession session) {
         logger.info("Get getTarget request");
@@ -47,10 +67,18 @@ public class TargetController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Sets users target value.
+     * @param dto SetTargetDTO
+     * @param session HttpSession
+     * @return ResponseEntity<TargetResponse>
+     */
+    @Loggable
+    @Operation(summary = "Sets users target value.")
     @PostMapping(value="/set",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TargetResponse> setTarget(@RequestBody TrackerTarget target, HttpSession session) {
+    public ResponseEntity<TargetResponse> setTarget(@RequestBody SetTargetDTO dto, HttpSession session) {
         logger.info("Get setTarget request");
         Object useridObj = session.getAttribute("userid");
         if (Objects.isNull(useridObj)) {
@@ -58,7 +86,9 @@ public class TargetController {
             return ResponseEntity.status(SC_UNAUTHORIZED).build();
         }
         try {
+            TrackerTarget target = new TrackerTarget();
             target.setUserId(Long.parseLong(useridObj.toString()));
+            target.setAmount(dto.getAmount());
             TargetResponse response = targetService.setTarget(target);
             if (Objects.nonNull(response)) {
                 logger.info("SetTarget request: ok");

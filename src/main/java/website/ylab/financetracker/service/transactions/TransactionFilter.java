@@ -1,6 +1,7 @@
 package website.ylab.financetracker.service.transactions;
 
 import website.ylab.financetracker.in.dto.transaction.TransactionResponse;
+import website.ylab.financetracker.util.DateConvertor;
 
 import java.util.Date;
 import java.util.List;
@@ -18,7 +19,8 @@ public class TransactionFilter {
      */
     public static List<TransactionResponse> filter(List<TransactionResponse> list, Date dateFilter) {
         if (Objects.isNull(dateFilter)) { return list; }
-        return list.stream().filter(t->t.getDate().compareTo(dateFilter)==0).toList();
+        Date date = DateConvertor.removeTime(dateFilter);
+        return list.stream().filter(t->t.getDate().compareTo(date)==0).toList();
     }
 
     /**

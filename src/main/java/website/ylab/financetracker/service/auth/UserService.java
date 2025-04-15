@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import website.ylab.financetracker.in.dto.auth.UserMapper;
+import website.ylab.financetracker.in.mappers.UserMapper;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.out.repository.TrackerUserRepository;
 
@@ -142,7 +142,8 @@ public class UserService {
     }
 
     /**
-     * Removes a user from the system. Users data must be previously deleted using UserDataDeletionService.
+     * Removes a user from the system. User data such as transactions, budget and goals will also be deleted
+     * when performing this method.
      * @param id long user id to delete
      * @return String with a result.
      */

@@ -1,5 +1,7 @@
 package website.ylab.financetracker.controllers.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import website.ylab.aspects.Loggable;
 import website.ylab.financetracker.in.dto.api.EmailNotification;
 import website.ylab.financetracker.service.api.ApiService;
 
@@ -17,8 +20,13 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Provides functions for external services. All functions require prior authentication in the system.
+ */
 @RestController
 @RequestMapping("/api")
+@Tag(name= "API functions",
+        description = "Provides functions for external services.")
 public class ApiController {
     private final ApiService apiService;
     Logger logger = LogManager.getLogger(ApiController.class);
@@ -28,6 +36,13 @@ public class ApiController {
         this.apiService = apiService;
     }
 
+    /**
+     * Checks if the user has exceeded their budget.
+     * @param session HttpSession
+     * @return ResponseEntity<Boolean>
+     */
+    @Loggable
+    @Operation(summary = "Checks if the user has exceeded their budget.")
     @GetMapping(value="/exceedance", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> getBudgetExceedance(HttpSession session) {
         logger.info("Get GetBudgetExceedance request");
@@ -47,6 +62,13 @@ public class ApiController {
         }
     }
 
+    /**
+     * Exports a list of emails with notifications for users who have exceeded their budget.
+     * @param session HttpSession
+     * @return ResponseEntity<List<EmailNotification>>
+     */
+    @Loggable
+    @Operation(summary = "Exports a list of emails with notifications for users who have exceeded their budget.")
     @GetMapping(value = "/email", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<EmailNotification>> getEmail(HttpSession session) {
         logger.info("Get GetEmail request");

@@ -9,7 +9,11 @@ import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.out.repository.TrackerUserRepository;
 import website.ylab.financetracker.service.ConnectionProvider;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,8 +21,6 @@ import java.util.Optional;
 
 @Repository
 public class PostgresUserRepository implements TrackerUserRepository {
-    // The sole purpose of this array is to give names to the values while parsing the values
-    // retrieved from the database, making the code more understandable.
     private final String[] dbFields = {"id", "name", "email", "password", "role", "enabled"};
     private final ConnectionProvider connectionProvider;
     Logger logger = LogManager.getLogger(PostgresUserRepository.class);
@@ -109,17 +111,42 @@ public class PostgresUserRepository implements TrackerUserRepository {
     public Optional<TrackerUser> delete(TrackerUser user) {
         Optional<TrackerUser> optional = getById(user.getId());
         if (optional.isEmpty()) { return optional; }
+        String deleteTransactionsQuery = "delete from fin_tracker.ft_transaction where userid = ?;";
+        String deleteTargetQuery = "delete from fin_tracker.target where userid = ?;";
+        String deleteBudgetQuery = "delete from fin_tracker.budget where userid = ?;";
         String query = "delete from fin_tracker.user where id = ?;";
-        try (Connection connection = connectionProvider.getConnection();
-             PreparedStatement preparedStatement
-                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setLong(1, user.getId());
-            preparedStatement.executeUpdate();
-            return optional;
+        try (Connection connection = connectionProvider.getConnection()) {
+            connection.setAutoCommit(false);
+            try (
+            PreparedStatement userStatement
+                     = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement transactionStatement
+                     = connection.prepareStatement(deleteTransactionsQuery, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement targetStatement
+                     = connection.prepareStatement(deleteTargetQuery, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement budgetStatement
+                     = connection.prepareStatement(deleteBudgetQuery, Statement.RETURN_GENERATED_KEYS);
+             ) {
+                connection.setAutoCommit(false);
+                userStatement.setLong(1, user.getId());
+                userStatement.executeUpdate();
+                transactionStatement.setLong(1, user.getId());
+                transactionStatement.executeUpdate();
+                targetStatement.setLong(1, user.getId());
+                targetStatement.executeUpdate();
+                budgetStatement.setLong(1, user.getId());
+                budgetStatement.executeUpdate();
+                connection.commit();
+                return optional;
+            }
+            catch (SQLException e) {
+                connection.rollback();
+                logger.error("Error deleting user {}", e.getMessage());
+            }
         } catch (SQLException e) {
-            logger.error("Error deleting user {}", e.getMessage());
-            return Optional.empty();
+            logger.error("Error obtaining connection while deleting user {}", e.getMessage());
         }
+        return Optional.empty();
     }
 
     @Override

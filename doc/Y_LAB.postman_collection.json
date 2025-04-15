@@ -242,11 +242,8 @@
 					"item": [
 						{
 							"name": "getTransactionNoFilter",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
@@ -272,11 +269,8 @@
 						},
 						{
 							"name": "getTransactionDateFilter",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
@@ -302,11 +296,8 @@
 						},
 						{
 							"name": "getTransactionTypeFilter",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
@@ -332,11 +323,8 @@
 						},
 						{
 							"name": "getTransactionCategoryFilter",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
@@ -362,11 +350,8 @@
 						},
 						{
 							"name": "getTransaction3Filter",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
@@ -481,23 +466,15 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": 5\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{endpoint}}/transaction/delete",
+							"raw": "{{endpoint}}/transaction/delete/1",
 							"host": [
 								"{{endpoint}}"
 							],
 							"path": [
 								"transaction",
-								"delete"
+								"delete",
+								"1"
 							]
 						}
 					},
@@ -628,29 +605,18 @@
 				},
 				{
 					"name": "getTransactions",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": 3\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{endpoint}}/adm/transactions",
+							"raw": "{{endpoint}}/adm/transactions/2",
 							"host": [
 								"{{endpoint}}"
 							],
 							"path": [
 								"adm",
-								"transactions"
+								"transactions",
+								"2"
 							]
 						}
 					},
@@ -663,7 +629,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"role\": \"ADMIN\"\r\n}",
+							"raw": "{\r\n    \"userid\": 1,\r\n    \"role\": \"ADMIN\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -690,7 +656,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1\r\n}",
+							"raw": "{\r\n    \"userid\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -717,7 +683,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1\r\n}",
+							"raw": "{\r\n    \"userid\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -742,23 +708,15 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": 6\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{endpoint}}/adm/delete",
+							"raw": "{{endpoint}}/adm/delete/2",
 							"host": [
 								"{{endpoint}}"
 							],
 							"path": [
 								"adm",
-								"delete"
+								"delete",
+								"2"
 							]
 						}
 					},
@@ -789,11 +747,8 @@
 				},
 				{
 					"name": "getTurnover",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -864,13 +819,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{endpoint}}/api/notifications",
+							"raw": "{{endpoint}}/api/email",
 							"host": [
 								"{{endpoint}}"
 							],
 							"path": [
 								"api",
-								"notifications"
+								"email"
 							]
 						}
 					},
@@ -889,6 +844,146 @@
 							"path": [
 								"api",
 								"exceedance"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SWAGGER",
+			"item": [
+				{
+					"name": "Api",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>Path</th>\r",
+									"        <th>Method</th>\r",
+									"        <th>Tags</th>\r",
+									"        <th>Operation ID</th>\r",
+									"        <th>Request Body</th>\r",
+									"        <th>Responses</th>\r",
+									"    </tr>\r",
+									"    \r",
+									"    {{#each response.paths}}\r",
+									"        {{#each this}}\r",
+									"            <tr>\r",
+									"                <td>{{@key}}</td>\r",
+									"                <td>{{@key}}</td>\r",
+									"                <td>{{tags}}</td>\r",
+									"                <td>{{operationId}}</td>\r",
+									"                <td>{{requestBody}}</td>\r",
+									"                <td>{{responses}}</td>\r",
+									"            </tr>\r",
+									"        {{/each}}\r",
+									"    {{/each}}\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return {response: pm.response.json()}\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/api-docs",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"api-docs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Swagger-ui",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>Path</th>\r",
+									"        <th>Method</th>\r",
+									"        <th>Tags</th>\r",
+									"        <th>Operation ID</th>\r",
+									"        <th>Request Body</th>\r",
+									"        <th>Responses</th>\r",
+									"    </tr>\r",
+									"    \r",
+									"    {{#each response.paths}}\r",
+									"        {{#each this}}\r",
+									"            <tr>\r",
+									"                <td>{{@key}}</td>\r",
+									"                <td>{{@key}}</td>\r",
+									"                <td>{{tags}}</td>\r",
+									"                <td>{{operationId}}</td>\r",
+									"                <td>{{requestBody}}</td>\r",
+									"                <td>{{responses}}</td>\r",
+									"            </tr>\r",
+									"        {{/each}}\r",
+									"    {{/each}}\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return {response: pm.response.json()}\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{endpoint}}/v3/api-docs",
+							"host": [
+								"{{endpoint}}"
+							],
+							"path": [
+								"v3",
+								"api-docs"
 							]
 						}
 					},

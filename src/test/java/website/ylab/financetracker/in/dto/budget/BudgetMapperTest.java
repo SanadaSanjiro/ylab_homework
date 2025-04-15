@@ -1,6 +1,7 @@
 package website.ylab.financetracker.in.dto.budget;
 
 import org.junit.jupiter.api.Test;
+import website.ylab.financetracker.in.mappers.BudgetMapper;
 import website.ylab.financetracker.service.budget.TrackerBudget;
 
 import static org.junit.jupiter.api.Assertions.*;

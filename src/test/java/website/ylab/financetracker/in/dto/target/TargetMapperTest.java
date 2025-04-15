@@ -1,6 +1,7 @@
 package website.ylab.financetracker.in.dto.target;
 
 import org.junit.jupiter.api.Test;
+import website.ylab.financetracker.in.mappers.TargetMapper;
 import website.ylab.financetracker.service.targets.TrackerTarget;
 
 import static org.junit.jupiter.api.Assertions.*;

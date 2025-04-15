@@ -3,7 +3,6 @@ package website.ylab.financetracker.service.transactions;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -13,7 +12,6 @@ import java.util.Date;
 @Accessors(chain = true)
 @Data
 public class TrackerTransaction {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private long id;
     private TransactionType type;
     private double amount;

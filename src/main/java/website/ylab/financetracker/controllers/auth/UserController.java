@@ -1,5 +1,7 @@
 package website.ylab.financetracker.controllers.auth;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import website.ylab.financetracker.in.dto.auth.UserDataDTO;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserDataVerificator;
@@ -16,8 +19,14 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Provides functions for working with the user profile. Methods require pre-authentication
+ * unless otherwise specified in the method description.
+ */
 @RestController
 @RequestMapping("/user")
+@Tag(name= "User profile functions",
+        description = "Provides functions for working with the user profile")
 public class UserController {
     private final UserService userService;
     private final UserDataVerificator userDataVerificator;
@@ -29,10 +38,19 @@ public class UserController {
         this.userDataVerificator = userDataVerificator;
     }
 
+    /**
+     * Adds new user into the system. This feature does not require prior authentication.
+     * @param dto UserDataDTO
+     * @return ResponseEntity<UserResponse>
+     */
+    @Operation(summary = "Adds new user into the system.")
     @PostMapping(value ="/add",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> addUser(@RequestBody TrackerUser user) {
+    public ResponseEntity<UserResponse> addUser(@RequestBody UserDataDTO dto) {
+        TrackerUser user = new TrackerUser().setUsername(dto.getUsername())
+                .setPassword(dto.getPassword())
+                .setEmail(dto.getEmail());
         logger.info("Get addUser request");
         if (isValidUser(user)) {
             UserResponse response = userService.addNewUser(user);
@@ -44,16 +62,26 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Changes user data (name, password and email address).
+     * @param dto UserDataDTO
+     * @param session HttpSession
+     * @return ResponseEntity<UserResponse>
+     */
+    @Operation(summary = "Changes user data (name, password and email address).")
     @PutMapping(value = "/change",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> changeUser(@RequestBody TrackerUser user, HttpSession session) {
+    public ResponseEntity<UserResponse> changeUser(@RequestBody UserDataDTO dto, HttpSession session) {
         logger.info("Get changeUser request");
         Object usernameObj = session.getAttribute("username");
         if (Objects.isNull(usernameObj)) {
             logger.info("ChangeUser request rejected: unauthorized");
             return ResponseEntity.status(SC_UNAUTHORIZED).build();
         }
+        TrackerUser user = new TrackerUser().setUsername(dto.getUsername())
+                .setPassword(dto.getPassword())
+                .setEmail(dto.getEmail());
         if (isValidUser(user)) {
             UserResponse response = userService.getByName(usernameObj.toString());
             user.setId(response.getId());
@@ -68,6 +96,12 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Deletes a user and all their data (transactions, budget and target).
+     * @param session HttpSession
+     * @return Get deleteUser request
+     */
+    @Operation(summary = "Deletes a user and all their data (transactions, budget and target).")
     @DeleteMapping(value="/delete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> deleteUser(HttpSession session) {
         logger.info("Get deleteUser request");
@@ -87,6 +121,12 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Provides information about the user (name, email, whether enabled, and role).
+     * @param session HttpSession
+     * @return ResponseEntity<UserResponse>
+     */
+    @Operation(summary = "Provides information about the user (name, email, whether enabled, and role).")
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> getUser(HttpSession session) {
         logger.info("Get getUser request");

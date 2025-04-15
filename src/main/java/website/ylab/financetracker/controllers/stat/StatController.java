@@ -1,5 +1,7 @@
 package website.ylab.financetracker.controllers.stat;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import website.ylab.aspects.Loggable;
 import website.ylab.financetracker.in.dto.stat.BalanceResponse;
 import website.ylab.financetracker.in.dto.stat.CategoryExpensesResponse;
 import website.ylab.financetracker.in.dto.stat.ReportResponse;
@@ -21,8 +25,13 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Statistics and analytics.
+ * All functions require prior authentication in the system.
+ */
 @RestController
 @RequestMapping("/stat")
+@Tag(name= "Statistics and analytics")
 public class StatController {
     private final StatService statService;
     Logger logger = LogManager.getLogger(StatController.class);
@@ -32,6 +41,13 @@ public class StatController {
         this.statService = statService;
     }
 
+    /**
+     * Current user balance
+     * @param session HttpSession
+     * @return ResponseEntity<BalanceResponse>
+     */
+    @Loggable
+    @Operation(summary = "Current user balance")
     @GetMapping(value="/balance", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BalanceResponse> getBalance(HttpSession session) {
         logger.info("Get getBalance request");
@@ -53,6 +69,13 @@ public class StatController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * User expenses grouped by category
+     * @param session HttpSession
+     * @return ResponseEntity<CategoryExpensesResponse>
+     */
+    @Loggable
+    @Operation(summary = "User expenses grouped by category")
     @GetMapping(value="/expenses", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CategoryExpensesResponse> getExpenses(HttpSession session) {
         logger.info("Get getExpenses request");
@@ -74,7 +97,15 @@ public class StatController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping(value="/turnover",
+    /**
+     * Calculation of total income and expenses for the last month
+     * @param request TurnoverRequest
+     * @param session HttpSession
+     * @return ResponseEntity<TurnoverResponse>
+     */
+    @Loggable
+    @Operation(summary = "Calculation of total income and expenses for the last month")
+    @PostMapping(value="/turnover",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TurnoverResponse> getTurnover(@RequestBody TurnoverRequest request, HttpSession session) {
@@ -98,6 +129,13 @@ public class StatController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Summary report
+     * @param session HttpSession
+     * @return ResponseEntity<ReportResponse>
+     */
+    @Loggable
+    @Operation(summary = "Summary report")
     @GetMapping(value="/report", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReportResponse> getReport(HttpSession session) {
         logger.info("Get getReport request");

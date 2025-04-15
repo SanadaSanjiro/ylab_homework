@@ -8,6 +8,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Creates a schema in the database for system deployment
+ */
 @Service
 public class DbSchemaCreator {
     private final ConnectionProvider connectionProvider;
@@ -17,6 +20,10 @@ public class DbSchemaCreator {
         this.connectionProvider = connectionProvider;
     }
 
+    /**
+     * Creates a schema in the database if it does not exist.
+     * The schema name is provided by the ConnectionProvider class.
+     */
     public void createDbSchema() {
         logger.info("Trying to create DB schema");
         String schema = connectionProvider.getSchema();
@@ -25,9 +32,9 @@ public class DbSchemaCreator {
              Statement statement = connection.createStatement())
         {
             statement.execute(createSchemaSQL);
+            logger.info("Schema created");
         } catch (SQLException e) {
-            logger.error("DbSchemaCreator got an exception:  ", e.getMessage());
+            logger.error("DbSchemaCreator got an exception: {}", e.getMessage());
         }
-        logger.info("Schema created");
     }
 }

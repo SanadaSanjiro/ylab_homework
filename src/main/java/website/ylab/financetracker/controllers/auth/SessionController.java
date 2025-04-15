@@ -1,5 +1,7 @@
 package website.ylab.financetracker.controllers.auth;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import website.ylab.aspects.Loggable;
+import website.ylab.financetracker.in.dto.auth.LoginDTO;
 import website.ylab.financetracker.in.dto.auth.UserResponse;
 import website.ylab.financetracker.service.auth.TrackerUser;
 import website.ylab.financetracker.service.auth.UserDataVerificator;
@@ -16,8 +20,13 @@ import java.util.Objects;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Provides session operations such as login, logout, and checking session status.
+ */
 @RestController
 @RequestMapping("/auth")
+@Tag(name= "Session operations",
+        description = "Allows you to log in/out and check session status.")
 public class SessionController {
     private final UserService userService;
     private final UserDataVerificator userDataVerificator;
@@ -29,10 +38,19 @@ public class SessionController {
         this.userDataVerificator = userDataVerificator;
     }
 
+    /**
+     * Performs user authentication
+     * @param dto LoginDTO
+     * @param session HttpSession
+     * @return ResponseEntity<UserResponse>
+     */
+    @Loggable
+    @Operation(summary = "Performs user authentication")
     @PostMapping(value ="/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> login(@RequestBody TrackerUser user, HttpSession session) {
+    public ResponseEntity<UserResponse> login(@RequestBody LoginDTO dto, HttpSession session) {
+        TrackerUser user = new TrackerUser().setUsername(dto.getUsername()).setPassword(dto.getPassword());
         if (isValidInput(user)) {
             boolean isValid = userService.checkPassword(user);
             boolean isEnabled = userService.isEnabled(user.getUsername());
@@ -49,6 +67,13 @@ public class SessionController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Logs the user out
+     * @param session HttpSession
+     * @return ResponseEntity<UserResponse>
+     */
+    @Loggable
+    @Operation(summary = "Logs the user out")
     @PostMapping(value = "/logout", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> logout(HttpSession session) {
         Object useridObj = session.getAttribute("userid");
@@ -70,6 +95,13 @@ public class SessionController {
         return ResponseEntity.badRequest().build();
     }
 
+    /**
+     * Checks the session status.
+     * @param session HttpSession
+     * @return ResponseEntity<SessionStatusDto>
+     */
+    @Loggable
+    @Operation(summary = "Checks the session status.")
     @GetMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SessionStatusDto> checkSession(HttpSession session) {
         SessionStatusDto dto = new SessionStatusDto(session);

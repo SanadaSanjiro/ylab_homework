@@ -8,15 +8,17 @@ import website.ylab.financetracker.out.repository.TargetRepository;
 import website.ylab.financetracker.service.ConnectionProvider;
 import website.ylab.financetracker.service.targets.TrackerTarget;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class PostgresTargetRepository implements TargetRepository {
-    // The sole purpose of this array is to give names to the values while parsing the values
-    // retrieved from the database, making the code more understandable.
     private final String[] dbFields = {"id", "amount", "userid", "uuid"};
     private final ConnectionProvider connectionProvider;
     private final TargetEntityMapper mapper = TargetEntityMapper.INSTANCE;

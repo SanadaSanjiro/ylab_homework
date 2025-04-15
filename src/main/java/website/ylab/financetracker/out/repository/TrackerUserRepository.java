@@ -38,7 +38,7 @@ public interface TrackerUserRepository {
     Optional<TrackerUser> update(TrackerUser user);
 
     /**
-     * Deletes user from a storage
+     * Deletes user from a storage. Also this method should delete all user's transactions, budgets and targets
      * @param user TrackerUser user to be deleted
      * @return Optional<TrackerUser> on success or an empty Optional on failure
      */

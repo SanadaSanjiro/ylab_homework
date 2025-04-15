@@ -4,6 +4,9 @@ package website.ylab.financetracker.service.targets;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+/**
+ * Target model
+ */
 @Accessors(chain = true)
 @Data
 public class TrackerTarget {

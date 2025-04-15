@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
 import website.ylab.financetracker.service.ConnectionProvider;
 import website.ylab.financetracker.service.DbSchemaCreator;
@@ -54,22 +55,14 @@ class PostgreTransactionRepositoryTest {
             public String getSchema() {
                 return "fin_tracker";
             }
-
-            @Override
-            public String getChangelog() {
-                return "db/changelog/db.changelog-master.yml";
-            }
-
-            @Override
-            public String getPersistenceType() {
-                return "postgresql";
-            }
         };
         System.out.println("Creating schema");
         DbSchemaCreator schemaCreator = new DbSchemaCreator(connectionProvider);
         schemaCreator.createDbSchema();
         System.out.println("Applying liquibase migrations");
         liquibaseStarter = new LiquibaseStarter(connectionProvider);
+        ReflectionTestUtils.setField(liquibaseStarter, "changelog",
+                "db/changelog/db.changelog-master.yml");
         liquibaseStarter.applyMigrations();
         repository = new PostgreTransactionRepository(connectionProvider);
     }
@@ -104,9 +97,9 @@ class PostgreTransactionRepositoryTest {
         List<TrackerTransaction> list = repository.getByUserId(userid);
         assertFalse(list.isEmpty());
         TrackerTransaction returnedTransaction = list.stream()
-                        .filter(t->t.getUuid().equals(uuid))
-                        .findFirst()
-                        .orElse(null);
+                .filter(t->t.getUuid().equals(uuid))
+                .findFirst()
+                .orElse(null);
         assertEquals(type, returnedTransaction.getType());
         assertEquals(amount, returnedTransaction.getAmount());
         assertEquals(category.toLowerCase(), returnedTransaction.getCategory());

@@ -3,6 +3,9 @@ package website.ylab.financetracker.controllers.auth;
 import jakarta.servlet.http.HttpSession;
 import lombok.Data;
 
+/**
+ * Serves to transmit information about the current session
+ */
 @Data
 public class SessionStatusDto {
     private String id;

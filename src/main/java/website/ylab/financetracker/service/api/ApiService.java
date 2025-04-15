@@ -11,7 +11,12 @@ import website.ylab.financetracker.service.budget.BudgetService;
 import website.ylab.financetracker.service.transactions.TransactionService;
 import website.ylab.financetracker.service.transactions.TransactionType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
 
 /**
  * Provides methods for API.
@@ -29,6 +34,11 @@ public class ApiService {
         this.userService = userService;
     }
 
+    /**
+     * Checks if the user's budget has been exceeded
+     * @param userId long
+     * @return boolean true if budget has been exceeded
+     */
     public boolean isExceeded(long userId) {
         BudgetResponse response = budgetService.getByUserId(userId);
         if (Objects.isNull(response)) { return  false; }
@@ -37,6 +47,10 @@ public class ApiService {
         return limit < expenses;
     }
 
+    /**
+     * Provides a list of emails to send to users who have exceeded their set budget.
+     * @return List<EmailNotification>
+     */
     public List<EmailNotification> getEmailNotifications() {
         List<TrackerUser> users = userService.getAllUsers();
         List<EmailNotification> notifications = new ArrayList<>();
